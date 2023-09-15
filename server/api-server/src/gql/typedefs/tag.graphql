@@ -1,0 +1,25 @@
+# type Tag {
+#     tag_id: ID!
+#     tag_name: String!
+#     tag_origin: String!
+# }
+
+# type Query {
+#     tags: [Tag!]!
+#     tag(tag_id: ID!): Tag!
+# }
+
+# type Mutation {
+#     createTag(tag_name: String!): Tag!
+#     updateTag(tag_id: ID!, tag_name: String!, tag_origin: String!): Tag!
+#     deleteTag(tag_id: ID!)
+# }
+
+# type Subscription {
+#     tagMutated: TagMutationPayload!
+# }
+
+# type TagMutationPayload {
+#     mutation: MutationType!
+#     node: Tag!
+# }

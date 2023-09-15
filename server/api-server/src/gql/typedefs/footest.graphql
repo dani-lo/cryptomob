@@ -1,0 +1,16 @@
+extend type Book {
+
+  title: String
+
+  author: Author
+
+}
+
+
+extend type Author {
+
+  name: String
+
+  books: [Book]
+
+}

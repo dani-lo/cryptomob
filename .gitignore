@@ -1,0 +1,6 @@
+*.localdata
+*.code-workspace
+cryptobits-env/
+node_modules/
+backups/
+src.bak/

@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model articles {
+  article_id          Int             @id @default(autoincrement())
+  article_link        String?         @unique @db.VarChar
+  article_description String?         @db.VarChar
+  article_title       String?         @db.VarChar
+  article_datepub     DateTime?       @db.Date
+  article_content     String?
+  author_id           Int?
+  tag_id              Int?
+  category_id         Int?
+  authors             authors?        @relation(fields: [author_id], references: [author_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_author")
+  categories          categories?     @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category")
+  tags                tags?           @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tag")
+  articles_tags       articles_tags[]
+}
+
+model articles_tags {
+  article_id Int
+  tag_id     Int
+  articles   articles @relation(fields: [article_id], references: [article_id], onDelete: NoAction, onUpdate: NoAction)
+  tags       tags     @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([article_id, tag_id], map: "articles_tags_pk")
+}
+
+model authors {
+  author_id   Int        @id @default(autoincrement())
+  author_name String?    @unique @db.VarChar
+  articles    articles[]
+}
+
+model categories {
+  category_id   Int        @id @default(autoincrement())
+  category_name String?    @db.VarChar
+  articles      articles[]
+}
+
+model tags {
+  tag_id        Int             @id @default(autoincrement())
+  tag_name      String?         @db.VarChar
+  tag_origin    t_tag_origin?
+  articles      articles[]
+  articles_tags articles_tags[]
+}
+
+enum t_tag_origin {
+  feed
+  user
+}

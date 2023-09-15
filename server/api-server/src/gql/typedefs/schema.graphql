@@ -1,0 +1,51 @@
+# schema {
+#   query: Query
+  # mutation: Mutation
+# }
+
+# type Query {}
+
+# type Mutation {}
+
+type Article {
+  article_id: ID!
+  article_title: String!
+  article_link: String!
+  article_description: String!
+  article_datepub: String!
+  article_content: String!
+  author: Author 
+  tags: [Tag]
+  category: Category
+}
+
+type Author {
+  author_id: ID!
+  author_name: String!
+  articles: [Article]
+}
+
+type Category {
+  category_id: ID!
+  category_name: String!
+}
+
+type Tag {
+  tag_id: ID!
+  tag_name: String!
+  tag_origin: String!
+  articles: [Article]
+}
+
+
+type Query {
+  articles: [Article!]!
+  article(article_id: ID!): Article!
+  authors: [Author!]!
+  author(author_id: ID!): Author!
+  categorys: [Category!]!
+  category(category_id: ID!): Category!
+  tags: [Tag!]!
+  tag(tag_id: ID!): Tag!
+}
+

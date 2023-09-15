@@ -1,0 +1,24 @@
+# type Author {
+#     author_id: ID!
+#     author_name: String!
+# }
+
+# extend type Query {
+#     authors: [Author!]!
+#     author(author_id: ID!): Author!
+# }
+
+# extend type Mutation {
+#     createAuthor(author_name: String!): Author!
+#     updateAuthor(author_id: ID!, author_name: String!): Author!
+#     deleteAuthor(author_id: ID!)
+# }
+
+# type Subscription {
+#     authorMutated: AuthorMutationPayload!
+# }
+
+# type AuthorMutationPayload {
+#     mutation: MutationType!
+#     node: Author!
+# }
