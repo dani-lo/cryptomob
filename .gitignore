@@ -4,3 +4,4 @@ cryptobits-env/
 node_modules/
 backups/
 src.bak/
+cryptomob-db
