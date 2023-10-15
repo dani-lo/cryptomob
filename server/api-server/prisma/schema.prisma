@@ -1,58 +1,176 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model articles {
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model Article {
   article_id          Int             @id @default(autoincrement())
   article_link        String?         @unique @db.VarChar
   article_description String?         @db.VarChar
   article_title       String?         @db.VarChar
   article_datepub     DateTime?       @db.Date
-  article_content     String?
-  author_id           Int?
-  tag_id              Int?
-  category_id         Int?
-  authors             authors?        @relation(fields: [author_id], references: [author_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_author")
-  categories          categories?     @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category")
-  tags                tags?           @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tag")
-  articles_tags       articles_tags[]
+  article_content     String?         @db.Text
+  article_bookmark    Boolean?        @db.Boolean
+  article_delete      Boolean?        @db.Boolean
+  article_origin      String?         @db.VarChar
+  author_id           Int?            @db.Integer
+  category_id         Int?            @db.Integer
+  app_id              Int             @db.Integer
+  author                Author?       @relation(fields: [author_id], references: [author_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_author")
+  category              Category?     @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category")
+  tags                  ArticlesTags[]
+  watchlists            WatchlistsArticles[]
+
+  @@map("articles")
 }
 
-model articles_tags {
-  article_id Int
-  tag_id     Int
-  articles   articles @relation(fields: [article_id], references: [article_id], onDelete: NoAction, onUpdate: NoAction)
-  tags       tags     @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction)
+model ArticlesTags {
+  article    Article     @relation(fields: [article_id], references: [article_id])
+  article_id     Int // relation scalar field (used in the `@relation` attribute above)
+  tag   Tag @relation(fields: [tag_id], references: [tag_id])
+  tag_id Int // relation scalar field (used in the `@relation` attribute above)
 
-  @@id([article_id, tag_id], map: "articles_tags_pk")
+  @@id([article_id, tag_id])
+
+  @@map("articles_tags")
 }
 
-model authors {
+model Author {
   author_id   Int        @id @default(autoincrement())
   author_name String?    @unique @db.VarChar
-  articles    articles[]
+  articles    Article[]
+  watchlists    WatchlistsAuthors[]
+  category_id         Int?            @db.Integer
+  category            Category?     @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category")
+
+  @@map("authors")
 }
 
-model categories {
+model Category {
   category_id   Int        @id @default(autoincrement())
   category_name String?    @db.VarChar
-  articles      articles[]
+  articles      Article[]
+  tags          Tag[]
+  authors       Author[]
+  user     User @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user")
+  user_id Int
+
+  @@map("categories")
 }
 
-model tags {
+model Comment {
+  comment_id   Int        @id @default(autoincrement())
+  comment_text String?    @db.VarChar
+  article_id Int
+  user     User @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user")
+  user_id Int
+
+  @@map("comments")
+}
+
+model Tag {
   tag_id        Int             @id @default(autoincrement())
-  tag_name      String?         @db.VarChar
-  tag_origin    t_tag_origin?
-  articles      articles[]
-  articles_tags articles_tags[]
+  tag_name      String        @db.VarChar
+  tag_origin    String
+  articles      ArticlesTags[]
+  watchlists    WatchlistsTags[]
+  // category       Category?  @relation(fields: [category_id], references: [category_id])
+  // category_id   Int? // relation scalar field (used in the `@relation` attribute above)
+  category_id         Int?            @db.Integer
+  category              Category?     @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category")
+  
+
+  @@map("tags")
 }
 
-enum t_tag_origin {
-  feed
-  user
+model User {
+  user_id        Int             @id @default(autoincrement())
+  user_name      String?         @db.VarChar
+  user_email    String        @db.VarChar
+  comments Comment[]
+  watchlists Watchlist[]
+  categories Category[]
+
+  @@map("users")
+}
+
+model Coin {
+  coin_id        Int             @id @default(autoincrement())
+  coin_name      String         @db.VarChar
+  coin_ticker    String         @db.VarChar
+  watchlists         WatchlistsCoins[]
+
+  @@map("coins")
+}
+
+// model Coinprice {
+//   coinprice_id Int             @id @default(autoincrement())
+
+//   coin                Coin        @relation(fields: [coin_id], references: [coin_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_coin")
+//   coin_id Int
+
+//   @@map("coins")
+// }
+
+model Watchlist {
+  watchlist_id Int  @id @default(autoincrement()) 
+  watchlist_name String   @db.VarChar
+  user     User @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user")
+  user_id Int
+  watchlist_delete Boolean
+  articles WatchlistsArticles[]
+  tags WatchlistsTags[]
+  authors WatchlistsAuthors[]
+  coins WatchlistsCoins[]
+
+  @@map("watchlists")
+}
+
+model WatchlistsArticles {
+  watchlist    Watchlist     @relation(fields: [watchlist_id], references: [watchlist_id])
+  watchlist_id     Int // relation scalar field (used in the `@relation` attribute above)
+  article   Article @relation(fields: [article_id], references: [article_id])
+  article_id Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([watchlist_id, article_id])
+
+  @@map("watchlists_articles")
+}
+
+model WatchlistsTags {
+  watchlist    Watchlist     @relation(fields: [watchlist_id], references: [watchlist_id])
+  watchlist_id     Int // relation scalar field (used in the `@relation` attribute above)
+  tag   Tag @relation(fields: [tag_id], references: [tag_id])
+  tag_id Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([watchlist_id, tag_id])
+
+  @@map("watchlists_tags")
+}
+
+model WatchlistsCoins {
+  watchlist    Watchlist     @relation(fields: [watchlist_id], references: [watchlist_id])
+  watchlist_id     Int // relation scalar field (used in the `@relation` attribute above)
+  coin   Coin @relation(fields: [coin_id], references: [coin_id])
+  coin_id Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([watchlist_id, coin_id])
+
+  @@map("watchlists_coins")
+}
+
+model WatchlistsAuthors {
+  watchlist    Watchlist     @relation(fields: [watchlist_id], references: [watchlist_id])
+  watchlist_id     Int // relation scalar field (used in the `@relation` attribute above)
+  author   Author @relation(fields: [author_id], references: [author_id])
+  author_id Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([watchlist_id, author_id])
+
+  @@map("watchlists_authors")
 }

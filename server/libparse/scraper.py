@@ -7,12 +7,12 @@ from util.strip import strip_tags
 import psycopg2
 
 from models import Article, Category, Author
-from sources import rss_sources
+from server.libparse.sources.sources import rss_sources
 
 conn = psycopg2.connect(database="crypotmob",
                         host="localhost",
-                        user="crypotmob_user",
-                        password="crypotmob_pass",
+                        user="postgres",
+                        password="postgres",
                         port="5432")
 
 Feed = feedparser.parse("https://www.newsbtc.com/feed/")

@@ -1,7 +1,7 @@
 import feedparser
 
 # from models import Article, Category, Author
-from sources import rss_sources
+from sources.crypto import rss_sources
 from orm import ApiArticle, ApiAuthor, ArticlesParser, ApiTag
 
 from util.gatherers import gather_tag_names
@@ -44,6 +44,8 @@ def main ():
 
     articles_parser = ArticlesParser()
 
+    print(articles_parser)
+
     i = 0
 
     for rss_source in rss_sources:
@@ -80,7 +82,7 @@ def main ():
                     "article_id": None,
                     "article_link": link,
                     "article_description":  summary,
-                    "article_content": content,
+                    "article_content": '',# no content for now, lets keep db size reasonable :-)
                     "article_title":  title,
                     "article_author": author_id,
                     "article_category": None,

@@ -1,13 +1,8 @@
-// import { nhost } from './nhost'
 import { GraphQLClient } from 'graphql-request'
+import { GRAPHQL_ENDPOINT } from '../queries'
 
-type AuthHeaderProps = {
-  authorization?: string
-}
 
-export const graphqlApiAddress = 'localhost:8000/graphql'
-
-export const gqlClient = new GraphQLClient(graphqlApiAddress, {
+export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
   headers: () => {
     // const authHeaders = {} as AuthHeaderProps
 

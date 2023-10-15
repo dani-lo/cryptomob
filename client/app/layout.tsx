@@ -1,21 +1,40 @@
 import { Metadata } from 'next'
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { config } from "@fortawesome/fontawesome-svg-core";
 
-config.autoAddCss = false;
+import { config as faCssConfig } from "@fortawesome/fontawesome-svg-core"
+import 'react-dropdown/style.css'
 
-import '../styles/global.css'
+import "@fortawesome/fontawesome-svg-core/styles.css"
+import "react-datepicker/dist/react-datepicker.css"
+
+import '@/src/styles/global.css'
+
+import Providers from "@/src/utils/provider"
+
+import { ApiParamsContextProvider } from '@/context/apiParams.context'
+
+import { HeaderComponent } from '@/components/header'
+import { TailwindHiddenLoaderComponent } from '@/components/tailwindHiddenLoader'
+
+faCssConfig.autoAddCss = false
 
 export default function RootLayout({
-    // Layouts must accept a children prop.
-    // This will be populated with nested layouts or pages
     children,
     }:{
         children: React.ReactNode
     }) {
-
+    
     return <html lang="en">
-        <body>{children}</body>
+        <body>
+            <TailwindHiddenLoaderComponent />
+            <HeaderComponent />
+            <Providers>
+                <ApiParamsContextProvider>
+                    {children}
+                </ApiParamsContextProvider>
+            </Providers>
+            <script async type="text/javascript" src="/sticky.js" />
+        </body>
+    
     </html>
 }
  

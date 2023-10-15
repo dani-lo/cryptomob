@@ -52,7 +52,9 @@ def cursor_result_to_api_authors (result) -> list[ApiAuthor]:
     authors = []
 
     for row in result:
-                
+        print('AUTHPR ROW')
+        print(row)
+
         author = {
             "author_id": row["author_id"],
             "author_name": row["author_name"],
@@ -60,7 +62,7 @@ def cursor_result_to_api_authors (result) -> list[ApiAuthor]:
 
         authors.append(author)
 
-    print("done <<<< ")
+    
     return authors
  
 def cursor_result_to_api_categories (result) -> list[ApiCategory]:
@@ -68,13 +70,16 @@ def cursor_result_to_api_categories (result) -> list[ApiCategory]:
     catogories = []
 
     for row in result:
-                
-        catogory = {
-            "catogory_id": row["catogory_id"],
-            "catogory_name": row["catogory_name"],
+        
+        print('CATEGORY ROW')
+        print(row)
+
+        category = {
+            "category_id": row["category_id"],
+            "category_name": row["category_name"],
         }
 
-        catogories.append(catogory)
+        catogories.append(category)
 
     return catogories
 
@@ -112,17 +117,25 @@ class ArticlesParser:
             cursor.execute("SELECT author_id, author_name FROM authors")
             fetched_authors = cursor.fetchall()
 
+            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 0')
+
             self.authors = cursor_result_to_api_authors(fetched_authors)
 
             cursor.execute("SELECT category_id, category_name FROM categories")
             fetched_categories = cursor.fetchall()
-
+            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 1')
             self.categories = cursor_result_to_api_categories(fetched_categories)
 
+            print('=====', self.categories)
+            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 19999')
             cursor.execute("SELECT article_link FROM articles")
             fetched_article_links = cursor.fetchall()
 
+            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 2')
+
             self.article_links = cursor_result_to_article_links(fetched_article_links)
+
+            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 3')
 
         except (Exception, psycopg2.DatabaseError) as error:
             print('__init__ ERROR')
@@ -310,6 +323,7 @@ class ArticlesParser:
 
     def save_article (self, article: ApiArticle) -> int | None : 
 
+        print(article)
         if article["article_link"] in self.article_links:
             return 
         

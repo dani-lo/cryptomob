@@ -17,7 +17,6 @@
     "export": "next build && next export",
     "lint": "eslint --ignore-path .gitignore --fix",
     "format": "prettier --ignore-path .gitignore \"pages/**/*.+(ts|js|tsx)\" --write",
-    "postinstall": "husky install",
     "codegen": "graphql-codegen"
   },
   "lint-staged": {
@@ -27,16 +26,26 @@
     ]
   },
   "dependencies": {
+    "@apollo/client": "3.8.3",
     "@fortawesome/fontawesome-svg-core": "6.4.2",
     "@fortawesome/free-solid-svg-icons": "6.4.2",
     "@fortawesome/react-fontawesome": "0.2.0",
     "@tanstack/react-query": "4.35.3",
     "@tanstack/react-query-devtools": "4.35.3",
+    "@tanstack/react-query-next-experimental": "5.0.0-alpha.80",
+    "@wojtekmaj/react-daterange-picker": "5.4.2",
+    "date-fns": "2.30.0",
     "graphql": "16.8.0",
     "graphql-request": "6.1.0",
+    "jotai": "2.4.3",
     "next": "13.4.19",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-date-range-ts": "1.6.1",
+    "react-datepicker": "4.18.0",
+    "react-daterange-picker": "2.0.1",
+    "react-dom": "18.2.0",
+    "react-dropdown": "1.11.0",
+    "styled-components": "6.0.8"
   },
   "devDependencies": {
     "@emotion/react": "11.11.1",
@@ -46,6 +55,8 @@
     "@graphql-typed-document-node/core": "3.2.0",
     "@types/node": "18.17.14",
     "@types/react": "18.2.21",
+    "@types/react-datepicker": "4.15.0",
+    "@types/react-daterange-picker": "2.0.8",
     "@types/react-dom": "18.2.7",
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
@@ -53,7 +64,6 @@
     "eslint": "8.48.0",
     "eslint-config-alloy": "5.1.1",
     "eslint-config-next": "13.4.19",
-    "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "postcss": "8.4.29",
     "prettier": "3.0.3",

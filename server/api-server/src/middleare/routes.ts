@@ -1,12 +1,12 @@
-import { Application } from "express"
-import prisma from "../db/prisma"
+// import { Application } from "express"
+// import prisma from "../db/prisma"
 
-export const populteRoutes = (app: Application) => {
+// export const populteRoutes = (app: Application) => {
 
-    app.get("/articles", async (req, res) => {
+//     app.get("/articles", async (req, res) => {
 
-        const articles = await prisma.articles.findMany()
+//         const articles = await prisma.articles.findMany()
         
-        res.json(articles)
-    })
-}
+//         res.json(articles)
+//     })
+// }

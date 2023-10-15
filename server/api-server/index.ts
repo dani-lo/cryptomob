@@ -32,16 +32,16 @@ import express, { Application, Request, Response } from "express"
 import bodyParser from "body-parser"
 import 'dotenv/config'
 import cors from 'cors'
-
+import { PrismaClient } from '@prisma/client'
 import { graphqlHTTP }from "express-graphql"
-// import { buildSchema } from "graphql"
-
 import { loadSchema } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { addResolversToSchema } from '@graphql-tools/schema'
-const { mergeResolvers } = require('@graphql-tools/merge')
+import { mergeResolvers } from '@graphql-tools/merge'
 
-import { resolvers } from './src/gql/resolvers'
+import { resolvers } from './src/graphql/resolvers'
+
+const schemaAddress = './src/graphql/schema.graphql'
 
 async function main() {
 
@@ -50,12 +50,21 @@ async function main() {
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
     
-    const cors_origin = process.env.NODE_ENV == 'development' ? true : '<https://cryptomob.net>'
+    const cors_origin = true//process.env.NODE_ENV == 'development' ? true : '<https://cryptomob.net>'
     
     app.use(cors({ origin: cors_origin }))
     
-    const schema = await loadSchema('./src/gql/typedefs/schema.graphql', { loaders: [new GraphQLFileLoader()] })
-    const appResolvers = [resolvers.author, resolvers.article, resolvers.tag]
+    const schema = await loadSchema(schemaAddress, { loaders: [new GraphQLFileLoader()] })
+    const appResolvers = [
+      resolvers.author, 
+      resolvers.article, 
+      resolvers.tag, 
+      resolvers.comment, 
+      resolvers.watchlist, 
+      resolvers.coin, 
+      resolvers.category,
+      resolvers.user
+    ]
     const schemaWithResolvers = addResolversToSchema({ schema, resolvers: mergeResolvers(appResolvers) })
     const root = {
         hello: () => {

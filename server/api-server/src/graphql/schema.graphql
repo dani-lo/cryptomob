@@ -1,0 +1,246 @@
+# type FilterParams {
+#   author: Int 
+#   tags: [Int]
+#   category: Int 
+#   hashtags: [Int]
+#   minItems: MinFilterParams
+# }
+
+# type MinFilterParams {
+#     tagged: Boolean
+#     userTagged: Boolean
+#     commented: Boolean
+#     watchlisted: Boolean
+#     categoryized: Boolean
+#     authored: Boolean
+#     userAdded: Boolean
+# }
+
+input PaginationParams {  
+  offset: Int!
+  limit: Int!
+  sortBy: String!
+  sortDirection: String!
+  fromDate: String!
+  toDate: String! 
+  appId: Int
+  whereTags: [Int]
+  whereAuthors: [Int]
+  whereCategories: [Int]
+  whereHashtag: [Int]
+  tagged: Boolean
+  userTagged: Boolean
+  commented: Boolean
+  watchlisted: Boolean
+  categoryized: Boolean
+  authored: Boolean
+  userAdded: Boolean
+  bookmarked:  Boolean
+}
+
+input FilterParams {
+  whereTags: [Int]
+  whereAuthors: [Int]
+  whereCategories: Int
+  whereHashtag: [Int]
+  tagged: Boolean
+  userTagged: Boolean
+  commented: Boolean
+  watchlisted: Boolean
+  categoryized: Boolean
+  authored: Boolean
+  userAdded: Boolean
+  bookmarked: Boolean
+}
+
+input UpdateBoolInput {
+  item_id: Int!
+  val: Boolean!
+}
+
+input ArticleExtras {
+  article_id: Int
+  watchlist_id: Int
+  category_id: Int
+  user_id: Int
+}
+
+type Query {
+  paginatedArticles(params: PaginationParams): PaginatedArticles!
+  paginatedComments(params: PaginationParams): PaginatedComments!
+  articles(offset: Int!, limit: Int!): [Article!]!
+  article(article_id: ID!): Article!
+  authors(params: FilterParams): [Author!]!
+  author(author_id: ID!): Author!
+  category(category_id: ID!): Category!
+  tags(params: FilterParams): [Tag!]!
+  tag(tag_id: ID!): Tag!
+  comments: [Comment!]!
+  coins:[Coin!]!
+  categories(params: FilterParams): [Category!]!
+  watchlists: [Watchlist!]!
+  users:[User!]!
+}
+
+type Mutation {
+  createArticle(input: ArticleInput): Article
+  createComment(input: CommentInput): Comment
+  createTestComment(text: String): Comment
+  bookmarkArticlez(input: UpdateBoolInput): Article 
+  deleteArticlez(input: UpdateBoolInput): Article
+  createCategory(input: CategoryInput): Category
+  createWatchlist(input: WatchlistInput): Watchlist
+  createTag(input: TagInput): Tag
+  watchlistArticle(article_id: Int, watchlist_id: Int): Int
+  categoriseArticle(article_id: Int, category_id: Int): Int
+  tagArticle(article_id: Int, tag_id: Int): Int
+  articleExtras(input: ArticleExtras): Article
+}
+
+# ---- articles 
+
+type Article {
+  article_id: ID!
+  article_title: String!
+  article_link: String!
+  article_datepub: String!
+  article_content: String
+  article_description: String
+  article_bookmark: Boolean
+  article_delete: Boolean
+  article_origin: String
+  app_id: Int
+  author: Author 
+  tags: [Tag]
+  comments: [Comment]
+  watchlists: [Watchlist]
+  category: Category
+}
+
+input ArticleInput {
+  article_id: Int
+  article_title: String!
+  article_description: String!
+  article_link: String!
+  app_id: Int!
+}
+
+type PaginatedArticles {
+  recordsCount: Int!
+  articles: [Article]!
+}
+
+# ---- authors 
+
+type Author {
+  author_id: ID!
+  author_name: String!
+  articles: [Article]
+  watchlists: [Watchlist]
+  articles_count: Int
+}
+
+# ---- categories 
+
+type Category {
+  category_id: ID!
+  category_name: String!
+  user: User!
+  articles: [Article]
+  articles_count: Int
+}
+
+input CategoryInput {
+  category_id: Int
+  category_name: String!
+  user_id: Int!
+}
+
+
+
+# ---- tags
+
+type Tag {
+  tag_id: ID!
+  tag_name: String!
+  tag_origin: String!
+  articles: [Article]
+  watchlists: [Watchlist]
+  category: Category
+  articles_count: Int
+}
+
+input TagInput {
+  tag_id: Int
+  tag_name: String!
+  tag_origin: String!
+}
+
+# ---- users
+
+type User {
+  user_id: ID!
+  user_name: String
+  user_email: String
+}
+
+# type PaginatedUsers {
+#   recordsCount: Int!
+#   users: [User]!
+# }
+
+# input UserInput {
+#   user_name: String
+#   user_email: String
+# }
+
+# # ---- comments
+
+type Comment {
+  comment_id: ID!
+  comment_text: String 
+  user: User
+  article: Article
+}
+
+type PaginatedComments {
+  recordsCount: Int!
+  comments: [Comment]!
+}
+
+input CommentInput {
+  comment_text: String 
+  user_id: Int
+  article_id: Int
+}
+
+type Watchlist {
+  watchlist_id: Int!
+  watchlist_name: String!
+  watchlist_delete: Boolean!
+  user: User!
+  tags: [Tag]
+  authors: [Author]
+  coins: [Coin]
+  articles: [Article]
+}
+
+input WatchlistInput {
+  watchlist_id: Int
+  watchlist_name: String
+  user_id: Int
+}
+
+
+# # ---- coins
+
+type Coin {
+  coin_id: Int
+  coin_name: String
+  coin_ticker: String
+  watchlists: [Watchlist]
+}
+
+# # ---- coinprices
+
+# type Coinprice {}
