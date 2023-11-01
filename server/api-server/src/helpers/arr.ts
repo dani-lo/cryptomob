@@ -1,2 +1,2 @@
 export const intersects = <T>(arrA: T[], arrB: T[]) => !!arrA.filter(x => arrB.includes(x))
-export const intersection = <T>(arrA: T[], arrB: T[]) => arrA.filter(x => arrB.includes(x))
+export const intersection = <T>(arrA: T[], arrB: T[]) => arrA.length > 0 && arrB.length > 0 ? arrA.filter(x => arrB.includes(x)) : arrA.concat(arrB)

@@ -15,7 +15,7 @@ export interface PaginatedResult {
 export interface ResourceItemsCount {
     tags_count ?: number; 
     categories_count ?: number; 
-    coins_count ?: number;
+    authors_count ?: number;
     articles_count ?: number;
     watchlists_count ?: number;
   }

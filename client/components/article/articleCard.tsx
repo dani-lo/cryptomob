@@ -17,6 +17,7 @@ import { ArticleModalActions } from "@/components/widgets/modal"
 import { ArticleDetailModalComponent } from "@/components/widgets/modal/articleDetail"
 import { ArticleCommentActionModalComponent } from "@/components/widgets/modal/articleActions"
 import { DeleteditemOverlayComponent } from "@/components/widgets/deletedItemOverlay"
+import Link from "next/link"
 
 
 interface Props {
@@ -56,7 +57,7 @@ export const ArticleCardComponent = (props: Props) => {
         <ArticleActionsHeaderComponent 
             article={ article } 
             onToggleComment={ () => setModalAction(modalaction === null ? ArticleModalActions.AddComment : null) }
-            onToggleExtras={ () => setModalAction(modalaction === null ? ArticleModalActions.AddToWatchlist : null)}
+            onToggleExtras={ () => setModalAction(modalaction === null ? ArticleModalActions.ArticleDetail : null)}
             onBookmarkArticle={ bookmarkArticle }
             onDeleteArticle={ deleteArticle }
         />
@@ -82,7 +83,7 @@ export const ArticleCardComponent = (props: Props) => {
                 { uniqueTags.length > 0 ?
 
                     uniqueTags.map(tag => {
-                        return <span className={ cnTag } key={ tag.tag_id }>{ tag.tag_name }</span>
+                        return <span className={ cnTag } key={ tag.tag_id }><Link href={ `/tags?tagId=${ tag.tag_id }` }>{ tag.tag_name }</Link></span>
                     }) :
 
                     <span className={ cnPayoff }>No Tags AVaialble for this article</span>
@@ -98,7 +99,7 @@ export const ArticleCardComponent = (props: Props) => {
                     /> : null 
             }
             {
-                modalaction === ArticleModalActions.AddToWatchlist ? 
+                modalaction === ArticleModalActions.ArticleDetail ? 
                     <ArticleDetailModalComponent
                         article={ article } 
                         userId={ 33 } 

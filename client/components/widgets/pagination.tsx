@@ -31,6 +31,7 @@ export const PaginationComponent = ({
         onSelectPage(paginationCtrl.nextOffset())
     }
 
+    // console.log('paginationCtrl.currPage, paginationCtrl.totalPages', paginationCtrl.currPage, paginationCtrl.totalPages)
 
     return <StyledPaginationContainer>
         <ul className="inline-flex -space-x-px text-sm">

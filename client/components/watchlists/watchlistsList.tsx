@@ -12,10 +12,11 @@ import { SortIconComponent } from '@/components/widgets/sortIcon';
 
 import { ellipsys } from '@/src/helpers/ellipsys'
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort'
+import Link from 'next/link';
  
 type WatchlistProp = WatchlistApiData & ResourceItemsCount
 
-export const WatchlistsListComponente = ({ watchlists } : { watchlists: WatchlistProp[] }) => {
+export const WatchlistsListComponent = ({ watchlists } : { watchlists: WatchlistProp[] }) => {
 
     const [searchterm, setSearchterm] = useState('')
     const [sortby, setSortby] = useState<[keyof WatchlistProp, SortDirection | null]>(['watchlist_name', null])
@@ -30,7 +31,23 @@ export const WatchlistsListComponente = ({ watchlists } : { watchlists: Watchlis
         setSortby([newSortField , sortDir])
     }
 
-    const sorted = sortItemsArray<WatchlistProp>(watchlists, sortby[0], sortby[1]) 
+    const sorter = (t: WatchlistApiData) => {
+        
+        switch (sortby[0]) {
+            case 'articles_count' :
+                return t.articles?.length || 0
+
+            case 'tags_count':
+                return t.tags?.length || 0
+
+            case 'authors_count':
+                return t.authors?.length || 0        
+        }
+
+        return 0
+    }
+
+    const sorted = sortItemsArray<WatchlistProp>(watchlists, sortby[0], sortby[1], sortby[0] !== 'watchlist_name' ? sorter : null) 
 
     return <div>
         <div className="flex items-center justify-between">
@@ -58,14 +75,6 @@ export const WatchlistsListComponente = ({ watchlists } : { watchlists: Watchlis
                             </div>
                             
                         </th>
-                        <th scope="col" className={ cnTable.th } onClick={ () => {
-                            onSortBy('tags_count')
-                        }}>
-                            <div className={ cnTable.thContent}>
-                                Tags Count
-                                { sortby[0] === 'tags_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
-                            </div>
-                        </th>
                         <th scope="col" className={ cnTable.th }onClick={ () => {
                             onSortBy('articles_count')
                         }}>
@@ -74,20 +83,21 @@ export const WatchlistsListComponente = ({ watchlists } : { watchlists: Watchlis
                                 { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
-                        {/* <th scope="col" className={ cnTable.th }onClick={ () => {
-                            onSortBy('categories_count')
+                        <th scope="col" className={ cnTable.th } onClick={ () => {
+                            onSortBy('tags_count')
                         }}>
                             <div className={ cnTable.thContent}>
-                                Categories count
-                                { sortby[0] === 'categories_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                Tags Count
+                                { sortby[0] === 'tags_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
-                        </th> */}
+                        </th>
+                        
                         <th scope="col" className={ cnTable.th }onClick={ () => {
-                            onSortBy('coins_count')
+                            onSortBy('authors_count')
                         }}>
                             <div className={ cnTable.thContent}>
-                                Coins count
-                                { sortby[0] === 'coins_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                Authors count
+                                { sortby[0] === 'authors_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
                         <th scope="col" className={ cnTable.th }>
@@ -114,12 +124,12 @@ export const WatchlistsListComponente = ({ watchlists } : { watchlists: Watchlis
                             </td>
                             <td className={ cnTable.td }>
                                 {
-                                    `${ w.tags_count || 0 }`
+                                    `${ w.articles?.length || 0 }`
                                 }
                             </td>
                             <td className={ cnTable.td }>
                                 {
-                                    `${ w.articles_count || 0 }`
+                                    `${ w.tags?.length || 0 }`
                                 }
                             </td>
                             {/* <td className={ cnTable.td }>
@@ -129,11 +139,11 @@ export const WatchlistsListComponente = ({ watchlists } : { watchlists: Watchlis
                             </td> */}
                             <td className={ cnTable.td }>
                                 {
-                                    `${ w.coins_count || 0 }`
+                                    `${ w.authors?.length || 0 }`
                                 }
                             </td>
                             <td className={ cnTable.td }>
-                                <a href="#">edit</a>
+                                <Link href={ `/watchlists?watchlistId=${ w.watchlist_id }` }>view</Link>
                             </td>
                         </tr>
                     })

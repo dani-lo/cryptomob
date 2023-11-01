@@ -1,21 +1,3 @@
-# type FilterParams {
-#   author: Int 
-#   tags: [Int]
-#   category: Int 
-#   hashtags: [Int]
-#   minItems: MinFilterParams
-# }
-
-# type MinFilterParams {
-#     tagged: Boolean
-#     userTagged: Boolean
-#     commented: Boolean
-#     watchlisted: Boolean
-#     categoryized: Boolean
-#     authored: Boolean
-#     userAdded: Boolean
-# }
-
 input PaginationParams {  
   offset: Int!
   limit: Int!
@@ -39,9 +21,12 @@ input PaginationParams {
 }
 
 input FilterParams {
+  appId: Int
+  fromDate: String
+  toDate: String
   whereTags: [Int]
   whereAuthors: [Int]
-  whereCategories: Int
+  whereCategories: [Int]
   whereHashtag: [Int]
   tagged: Boolean
   userTagged: Boolean
@@ -58,10 +43,27 @@ input UpdateBoolInput {
   val: Boolean!
 }
 
-input ArticleExtras {
+input ArticleCategoryMutation {
+  article_id: Int
+  category_id: Int
+  user_id: Int
+}
+
+input ArticleWatchlistMutation {
   article_id: Int
   watchlist_id: Int
-  category_id: Int
+  user_id: Int
+}
+
+input TagWatchlistMutation {
+  tag_id: Int
+  watchlist_id: Int
+  user_id: Int
+}
+
+input AuthorWatchlistMutation {
+  author_id: Int
+  watchlist_id: Int
   user_id: Int
 }
 
@@ -91,10 +93,14 @@ type Mutation {
   createCategory(input: CategoryInput): Category
   createWatchlist(input: WatchlistInput): Watchlist
   createTag(input: TagInput): Tag
-  watchlistArticle(article_id: Int, watchlist_id: Int): Int
-  categoriseArticle(article_id: Int, category_id: Int): Int
+  setWatchlistArticle(input: ArticleWatchlistMutation): Article
+  deleteWatchlistArticle(input: ArticleWatchlistMutation): Article
+  setCategoriseArticle(input: ArticleCategoryMutation): Article
   tagArticle(article_id: Int, tag_id: Int): Int
-  articleExtras(input: ArticleExtras): Article
+  setWatchlistTag(input: TagWatchlistMutation): Tag
+  deleteWatchlistTag(input: TagWatchlistMutation): Tag
+  setWatchlistAuthor(input: AuthorWatchlistMutation): Author
+  deleteWatchlistAuthor(input: AuthorWatchlistMutation): Author
 }
 
 # ---- articles 
@@ -166,7 +172,7 @@ type Tag {
   tag_origin: String!
   articles: [Article]
   watchlists: [Watchlist]
-  category: Category
+  # category: Category
   articles_count: Int
 }
 

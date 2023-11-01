@@ -1,6 +1,8 @@
 import { DataSource } from 'apollo-datasource'
 
-import prisma from '../../db/prisma'
+// import prisma from '../../db/prisma'
+import { getPool } from '../../db/pgPool';
+import { whereArrayInValues } from '../../helpers/where';
 
 export class WatchlistService extends DataSource {
 
@@ -10,86 +12,218 @@ export class WatchlistService extends DataSource {
 
     initialize() {}
 
-    async getWatchlists () {
-
-        return await prisma.watchlist.findMany()
-    }
-
-    async getWatchlistAuthors (watchlist_id: number) {
+    async pgGetWatchlists () {
         
-        return await prisma.watchlistsAuthors.findMany({
-            where: {
-                watchlist_id
-            }
-        })
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+             return pgclient.query('SELECT * FROM watchlists;')
+        } catch (err) {
+
+            console.log(err)
+            
+            return Promise.reject('Error fetching watchlists')
+
+        } finally {
+            pgclient.release()
+        }
     }
 
-    async getWatchlistTags (watchlist_id: number) {
+    async pgGetWatchlistAuthors (watchlistId: number) {
+        
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
 
-        const watchlistTags = await prisma.watchlistsTags.findMany({
-            where: {
-                watchlist_id
+        try {
+            const authorsIDsResult = await pgclient.query(`SELECT * FROM watchlists_authors WHERE watchlist_id = ${ watchlistId }`)
+
+            console.log(`SELECT * FROM watchlists_authors WHERE watchlist_id = ${ watchlistId }`)
+            console.log(authorsIDsResult)
+            const authorsIDs = authorsIDsResult.rows.map(r => r.author_id)
+
+            if (!authorsIDs?.length) {
+                return Promise.resolve({ rows: [] })
             }
-        })
 
-        return watchlistTags
+            return pgclient.query(
+                `SELECT * FROM authors WHERE author_id IN (${ whereArrayInValues(authorsIDs) })`)
+            
+        } catch (err) {
+        
+            console.log(err)
+        
+            return Promise.reject('Error fetching watchlist authors')
+        
+        } finally {
+            pgclient.release()
+        }
     }
 
-    async getWatchlistCoins (watchlist_id: number) {
+    async pgGetWatchlistTags (watchlistId: number) {
 
-        const watchlistTags = await prisma.watchlistsCoins.findMany({
-            where: {
-                watchlist_id
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+            const tagsIDsResult = await pgclient.query(`SELECT * FROM watchlists_tags WHERE watchlist_id = ${ watchlistId };`)
+            const tagsIDs = tagsIDsResult.rows.map(r => r.tag_id)
+
+            if (!tagsIDs?.length) {
+                return Promise.resolve({ rows: [] })
             }
-        })
 
-        return watchlistTags
+            return  pgclient.query(`
+                SELECT * FROM tags 
+                WHERE tag_id IN ${ whereArrayInValues(tagsIDs) };
+            `)
+            
+        } catch (err) {
+        
+            console.log(err)
+        
+            return Promise.reject('Error fetching watchlist tags')
+        
+        } finally {
+            pgclient.release()
+        }
     }
 
-    async getWatchlistArticles (watchlist_id: number) {
+    async pgGetWatchlistCoins (watchlistId: number) {
+        
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
 
-        const watchlistArticles = await prisma.watchlistsArticles.findMany({
-            where: {
-                watchlist_id
+        try {
+            const coinsIDsResult = await pgclient.query(`SELECT * FROM watchlists_coins WHERE watchlist_id = ${ watchlistId };`)
+            const coinsIDs = coinsIDsResult.rows.map(r => r.caoin_id)
+
+            if (!coinsIDs?.length) {
+                return Promise.resolve({ rows: [] })
             }
-        })
 
-        const articlesIds = watchlistArticles.map(w => w.article_id)
-
-        return await prisma.article.findMany({
-            where: {
-                article_id: {
-                    in: articlesIds
-                }
-            }
-        })
+            return pgclient.query(
+                `SELECT * FROM coins WHERE coin_id IN ${ whereArrayInValues(coinsIDs) };`)
+            
+        } catch (err) {
+        
+            console.log(err)
+        
+            return Promise.reject('Error fetching watchlist coins')
+        
+        } finally {
+            pgclient.release()
+        }
     }
 
-    async createWatchlist(watchlistName: string, userId: number) {
+    async pgGetWatchlistArticles (watchlistId: number) {
 
-        const watchlist = await prisma.watchlist.create({
-            data: {
-                watchlist_name: watchlistName,
-                watchlist_delete: false,
-                user_id: userId
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+            const articlesIDsResult = await pgclient.query(`SELECT * FROM watchlists_articles WHERE watchlist_id = ${ watchlistId};`)
+            const articlesIDs = articlesIDsResult.rows.map(r => r.article_id)
+
+            if (!articlesIDs?.length) {
+                return Promise.resolve({ rows: [] })
             }
-        })
 
-        return watchlist 
+            return pgclient.query(
+                `SELECT * FROM articles WHERE article_id IN ${ whereArrayInValues(articlesIDs) };`)
+            
+        } catch (err) {
+        
+            console.log(err)
+        
+            return Promise.reject('Error fetching watchlist articles')
+        
+        } finally {
+            pgclient.release()
+        }
     }
 
-    async watchlistArticle (watchlistId: number, articleId: number) {
+    async pgCreateWatchlist(watchlistName: string, userId: number) {
 
-        const relation = await prisma.watchlistsArticles.create({
-            data: {
-                watchlist_id: watchlistId,
-                article_id: articleId
-            }
-        })
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
 
-        return relation
+        try {
+
+            return pgclient.query(`
+                INSERT INTO watchlists (watchlist_name, watchlist_delete, user_id) 
+                VALUES (${ watchlistName }, false, ${ userId }) 
+                RETURNING *;
+            `)
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error creating watchlist')
+        } finally {
+            pgclient.release()
+        }
     }
 
-    
+    async pgWatchlistArticle(watchlistId: number, articleId: number) {
 
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+
+            return pgclient.query(`
+                INSERT INTO watchlists_articles (watchlist_id, article_id) 
+                VALUES (${ watchlistId }, ${ articleId }) 
+                RETURNING *;
+            `)
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error creating watchlist article')
+        } finally {
+            pgclient.release()
+        }
+    }
+
+    async pgWatchlistTag (watchlistId: number, tagId: number) {
+
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+        
+        try {
+
+            return pgclient.query(`
+                INSERT INTO watchlists_tags (watchlist_id, tag_id) 
+                VALUES (${ watchlistId }, ${ tagId }) 
+                RETURNING *;
+            `)
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error creating watchlist article')
+        } finally {
+            pgclient.release()
+        }
+    }
+
+    async pgWatchlistAuthor (watchlistId: number, authorId: number) {
+
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+        
+        try {
+
+            return pgclient.query(`
+                INSERT INTO watchlists_authors (watchlist_id, author_id) 
+                VALUES (${ watchlistId }, ${ authorId }) 
+                RETURNING *;
+            `)
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error creating watchlist article')
+        } finally {
+            pgclient.release()
+        }
+    }
 }

@@ -1,8 +1,10 @@
+import { ArticleAPiData } from "./article";
 import { UserApiData } from "./user";
 
 export interface CategoryApiData {
     category_id: number;
     category_name: string;
+    articles ?: ArticleAPiData[];
     user ?: UserApiData;
 }
 

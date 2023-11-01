@@ -8,6 +8,8 @@
   --z-3: 100;
   --z-4: 1000;
   --z-5: 10000;
+  --dark: #365764;
+
 }
 
 html,
@@ -87,6 +89,12 @@ textarea {
   margin: auto;
   position: relative;
   padding: 2rem;
+  max-width: 1000px;
+}
+
+.overlay-full-content h5 {
+  border-bottom: 1px dotted var(--dark);
+  padding-bottom: 1rem;
 }
 
 
@@ -101,7 +109,7 @@ input {
 }
 
 .logoimg path {
-  fill: #365764;
+  fill: var(--dark)
 }
 
 .react-datepicker-wrapper input {
@@ -212,4 +220,5 @@ input {
   position: relative;
   font-size: 0.8rem;
   min-width: 120px;
+  max-width: 300px;
 }

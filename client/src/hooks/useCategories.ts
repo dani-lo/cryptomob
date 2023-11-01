@@ -12,7 +12,7 @@ interface CategoryInput {
     user_id: number
 }
 
-export const useCategoriesWithArticlesCount = (params?: Partial<QueryFilterParams>) => {
+export const useCategoriesWithArticlesCount = (dateFrom = '2000-01-01', dateTo = '2030-12-31', filterParams ?: Partial<QueryFilterParams>) => {
     const { 
         isLoading,
         isError,
@@ -22,9 +22,9 @@ export const useCategoriesWithArticlesCount = (params?: Partial<QueryFilterParam
         isPreviousData 
     } : UseQueryResult<{ categories: (CategoryApiData & { articles_count: number})[] }, unknown> = useQuery({
 
-        queryKey: [GqlCacheKeys.categories, JSON.stringify(params || {})],
+        queryKey: [GqlCacheKeys.categories, `${JSON.stringify(filterParams || {})}-${ dateFrom }-${ dateTo }`],
         queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_CATEGORIES(params))
+            return await request(GRAPHQL_ENDPOINT, READ_CATEGORIES(dateFrom, dateTo, filterParams))
         },
         keepPreviousData: true
     })

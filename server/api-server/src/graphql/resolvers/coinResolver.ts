@@ -5,8 +5,8 @@ import { dataSources } from '../datasources';
 export default {
     Query: {
         async coins() {
-
-            return await dataSources.coinService.getCoins()
+            const result = await dataSources.coinService.pgGetCoins()
+            return result.rows
         }
     },
     Coin: {

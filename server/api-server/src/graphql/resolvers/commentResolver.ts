@@ -1,4 +1,4 @@
-import { ArticlesTags, Tag } from '@prisma/client';
+// import { ArticlesTags, Tag } from '@prisma/client';
 import { dataSources } from '../datasources';
 import { text } from 'stream/consumers';
 // import { pubsub } from '../pubsub';
@@ -12,7 +12,7 @@ export default {
             return []
         },
         async comments () {
-            return await dataSources.commentService.getComments()
+            return await dataSources.commentService.pgGetComments()
         }
     },
 
@@ -26,7 +26,7 @@ export default {
                 user_id
             } = args.input
  
-            const comment = await dataSources.commentService.createComment(comment_text, article_id, user_id)
+            const comment = await dataSources.commentService.pgCreateComment(comment_text, article_id, user_id)
 
             return comment
 
@@ -76,10 +76,13 @@ export default {
 
     Comment: {
         article(parent: { article_id: number }) {
-            return dataSources.articleService.getArticle(parent.article_id);
+            return dataSources.articleService.pgGetArticle(parent.article_id);
         },
-        user(parent: { user_id: number }) {
-            return dataSources.userService.getUser(parent.user_id);
+        async user(parent: { user_id: number }) {
+
+            const user = await dataSources.userService.pgGetUser(parent.user_id)
+
+            return user.rows[0]
         }
     }
 };

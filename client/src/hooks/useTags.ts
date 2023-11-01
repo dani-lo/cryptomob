@@ -1,16 +1,18 @@
-import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {  UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import request from "graphql-request";
 
 import { TagApiData } from "../models/tag";
 
 import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries";
-import { CREATE_TAG, READ_TAGS } from "../queries/tagQueries";
+import { CREATE_TAG, READ_TAGS, UNWATCHLIST_TAG, WATCHLIST_TAG } from "../queries/tagQueries";
 import { gqlClient } from "../utils/graphqlClient";
 import { QueryFilterParams } from "../store/app";
+import { updateClientTagsCache } from "../helpers/reactQueryCacheUtil";
 
 interface TagInput {tag_name: string, tag_origin: string}
 
-export const useTagsWithArticlesCount = ( params ?: Partial<QueryFilterParams>) => {
+export const useTagsWithArticlesCount = (dateFrom = '2000-01-01', dateTo = '2030-12-31', filterParams ?: Partial<QueryFilterParams>) => {
+
     const { 
         isLoading,
         isError,
@@ -20,9 +22,9 @@ export const useTagsWithArticlesCount = ( params ?: Partial<QueryFilterParams>) 
         isPreviousData 
     } : UseQueryResult<{ tags: (TagApiData & { articles_count: number})[] }, unknown> = useQuery({
 
-        queryKey: [GqlCacheKeys.tags, JSON.stringify(params || {})],
+        queryKey: [GqlCacheKeys.tags],
         queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_TAGS(params))
+            return await request(GRAPHQL_ENDPOINT, READ_TAGS(dateFrom, dateTo, filterParams))
         },
         keepPreviousData: true
     })
@@ -53,4 +55,46 @@ export const useAddtag = () => {
         },
     })
     
+}
+
+export const useWatchlistTag = () => {
+
+    const client = useQueryClient()
+  
+    return useMutation({ 
+        // @ts-ignore
+        mutationFn: (input: { tag_id: number; user_id: number; watchlist_id: number; }) => {
+            return gqlClient.request(
+                WATCHLIST_TAG,
+                { input }
+            )
+        },
+        onSuccess: (data: { setWatchlistTag: { data: TagApiData }}) => {
+            
+            const returned = data.setWatchlistTag as unknown as  TagApiData
+
+            updateClientTagsCache(client, returned)
+        },
+      })
+}
+
+export const useUnwatchlistTag = () => {
+
+    const client = useQueryClient()
+    
+    return useMutation({ 
+        // @ts-ignore
+        mutationFn: (input: { tag_id: number; user_id: number; watchlist_id: number; }) => {
+            return gqlClient.request(
+                UNWATCHLIST_TAG,
+                { input }
+            )
+        },
+        onSuccess: (data: { deleteWatchlistTag: { data: TagApiData }}) => {
+            
+            const returned = data.deleteWatchlistTag as unknown as  TagApiData
+
+            updateClientTagsCache(client, returned)
+        },
+      })
 }

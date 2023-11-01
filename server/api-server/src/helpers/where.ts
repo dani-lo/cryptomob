@@ -1,5 +1,3 @@
-import { WhereParameters } from "../graphql/resolvers";
-
-export const prismaWhere = (filters: WhereParameters) => {
-    
+export const whereArrayInValues = (arrayIn: any[]) => {
+    return JSON.stringify(arrayIn).replace('[', '(').replace(']', ')')
 }

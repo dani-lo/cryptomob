@@ -25,7 +25,7 @@ export const useWatchlistsWIthItemsCount = () => {
             articles_count: number; 
             tags_count: number; 
             categories_count: number; 
-            coins_count: number; 
+            authors_count: number; 
 
         })[] }, unknown> = useQuery({
 

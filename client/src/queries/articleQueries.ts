@@ -23,7 +23,8 @@ export const READ_ARTICLES = (
   const whereAuthors = JSON.stringify(filters?.authors || [])
   const whereCategories = JSON.stringify(filters?.categories || [])
   const minItems = filters?.minItems || {}
-  
+  console.log('PAG ARTICLES::::::::::::::::::: filters')  
+  console.log(filters)
   return gql`
   {
     paginatedArticles (
@@ -45,6 +46,7 @@ export const READ_ARTICLES = (
         categoryized:  ${ minItems.hasOwnProperty('categoryized') ? minItems.categoryized  : null },
         authored:  ${ minItems.hasOwnProperty('authored') ? minItems.authored  : null },
         userAdded:  ${ minItems.hasOwnProperty('userAdded') ? minItems.userAdded  : null },
+        bookmarked:  ${ minItems.hasOwnProperty('bookmarked') ? minItems.bookmarked  : null },
       }
         
     ) {
@@ -116,10 +118,34 @@ export const CREATE_ARTICLE = gql`
     }
 `;
 
-export const ASSIGN_ARTICLE_EXTRAS =  gql`
-  mutation articleExtrasMutation($input: ArticleExtras) {
-    articleExtras(input: $input) {
+// export const ASSIGN_ARTICLE_EXTRAS =  gql`
+//   mutation articleExtrasMutation($input: ArticleExtras) {
+//     articleExtras(input: $input) {
+//       article_id
+//     }
+// }
+// `
+
+export const CATEGORISE_ARTICLE = gql`
+  mutation setCategoriseArticle($input: ArticleCategoryMutation) {
+    setCategoriseArticle(input: $input) {
       article_id
     }
-}
+  }
 `
+
+export const WATCHLIST_ARTICLE = gql`
+  mutation setWatchlistArticle($input: ArticleWatchlistMutation) {
+    setWatchlistArticle(input: $input) {
+      article_id
+    }
+  }
+`
+export const UNWATCHLIST_ARTICLE = gql`
+  mutation deleteWatchlistArticle($input: ArticleWatchlistMutation) {
+    deleteWatchlistArticle(input: $input) {
+      article_id
+    }
+  }
+`
+

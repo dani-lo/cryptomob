@@ -6,12 +6,13 @@
 import { TagApiData } from '@/src/models/tag'
 import {  ResourceItemsCount } from '@/src/queries'
 import { ellipsys } from '@/src/helpers/ellipsys';
-import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
+import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind';
 import { CreateTagComponent } from '@/components/tag/createTag';
 import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
 import { useState } from 'react';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
+import Link from 'next/link';
  
 type TagProps = TagApiData & ResourceItemsCount
 
@@ -105,8 +106,8 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
                                         `${t.articles_count } articles`
                                     }
                     </td>
-                    <td className={ cnTable.td }>
-                        <a href="#">edit</a>
+                    <td className={ utils.cnJoin([cnTable.td, 'text-center']) }>
+                        <Link href={ `/tags?tagId=${ t.tag_id }` }>view</Link>
                     </td>
                 </tr>
             })

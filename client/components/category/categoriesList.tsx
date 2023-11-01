@@ -7,6 +7,7 @@ import { CreateCategoryComponent } from './createCategory';
 import { ResourceItemsCount } from '@/src/queries';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
+import Link from 'next/link';
  
 type CategoryProps = CategoryApiData & ResourceItemsCount
 
@@ -88,7 +89,7 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                             }
                         </td>
                         <td className={ cnTable.td }>
-                            <a href="#">edit</a>
+                            <Link href={ `/categories?categoryId=${ t.category_id }` }>view</Link>
                         </td>
                     </tr>
                 })

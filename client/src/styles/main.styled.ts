@@ -34,7 +34,7 @@ export const StyledPaginationContainer = styled.div`
 
 export const StyledContainedBar = styled.div`
     position: absolute;
-    top: 0;
+    top: 4px;
     left: 0;
     width: 100%;
     padding: 0.5rem 1rem;

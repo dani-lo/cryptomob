@@ -8,6 +8,7 @@ import { ResourceItemsCount } from '@/src/queries';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
 import { AuthorApiData } from '@/src/models/author';
+import Link from 'next/link';
  
 type AuthorProps = AuthorApiData & ResourceItemsCount
 
@@ -94,7 +95,7 @@ export const AuthorsListComponent = ({ authors }: { authors: AuthorProps[]}) => 
                             }
                         </td>
                         <td className={ cnTable.td }>
-                            <a href="#">edit</a>
+                            <Link href={ `/authors?authorId=${ t.author_id }` }>view</Link>
                         </td>
                     </tr>
                 })

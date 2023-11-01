@@ -26,12 +26,13 @@ export const cnLabel = 'text-sm text-gray-700'
 
 
 export const cnTitle = 'mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white'
-export const cnLogo = 'mb-8 text-3xl text-white text-center italic'
-export const cnSectionTitle= 'my-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'
-export const cnSectionSmallTitle= 'my-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white'
-export const cnCardTitle= `${ cnSectionSmallTitle } my-3`
+export const cnLogo = 'mb-8 text-2xl text-white text-center italic'
 
-export const cnSectionSubTitle= 'font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-200'
+export const cnSectionTitle= 'my-8 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'
+export const cnSectionSubTitle= 'my-6 text-xl font-light text-gray-900 lg:mb-16 sm:text-xl dark:text-gray-200'
+export const cnSectionSmallTitle= 'my-3 text-lg font-bold tracking-tight text-gray-900 dark:text-white'
+
+export const cnCardTitle= `${ cnSectionSmallTitle } my-3`
 
 export const cnTag = 'm-2 m-y-0 ml-0 text-white bg-gray-600 cursor-pointer px-3 py-2.5 font-normal text-xs leading-3 rounded'
 
@@ -78,4 +79,10 @@ export const cnTable  = {
     th: 'bg-cyan-950 px-4 py-3   text-white text-sm underline font-bold',
     thContent: 'flex items-center justify-between cursor-pointer',
     td: 'text-sm px-4 py-3 bg-gray-50 text-gray-900'
+}
+
+export const cnActionablesList = {
+    div: 'my-4 max-w-md border border-solid border-gray-400 p-4 pt-2 rounded',
+    ul: '',
+    li: 'inline-block py-2 flex items-center justify-between',
 }

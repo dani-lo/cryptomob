@@ -1,0 +1,1 @@
+export const hasNamedProp = (obj: any, prop: string) => obj[prop] !== undefined

@@ -32,7 +32,7 @@ export default function RootLayout({
                     {children}
                 </ApiParamsContextProvider>
             </Providers>
-            <script async type="text/javascript" src="/sticky.js" />
+            {/* <script async type="text/javascript" src="/sticky.js" /> */}
         </body>
     
     </html>

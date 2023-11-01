@@ -5,7 +5,7 @@ import { GRAPHQL_ENDPOINT, READ_ARTICLES, GqlCacheKeys } from '@/src/queries'
 import { request } from 'graphql-request'
 import { ArticleAPiData } from "../models/article";
 import { dateToPostgresDateString } from "../helpers/date";
-import { ASSIGN_ARTICLE_EXTRAS, ArticlesSortby, BOOKMARK_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE } from "../queries/articleQueries";
+import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
 import { FetchParams, QueryFilterParams } from "../store/app";
 
 import { UpdateBoolInput } from ".";
@@ -137,18 +137,54 @@ export const useArticlesDomains = () => {
       })
 }
 
-export const useArticleExtras = () => {
+
+export const useCategoriseArticle = () => {
     const client = useQueryClient()
   
     return useMutation({ 
-        mutationFn: (input: { article_id: number, user_id: number, watchlist_id: number | null, category_id: number | null }) => {
+        mutationFn: (input: { article_id: number; user_id: number; category_id: number; }) => {
             return gqlClient.request(
-                ASSIGN_ARTICLE_EXTRAS,
+                CATEGORISE_ARTICLE,
                 { input }
             )
         },
         onSuccess: () => {
-            client.invalidateQueries([GqlCacheKeys.paginatedArticles, GqlCacheKeys.watchilsts, GqlCacheKeys.categories])
+            client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
       })
 }
+
+
+export const useWatchlistArticle = () => {
+    const client = useQueryClient()
+  
+    return useMutation({ 
+        mutationFn: (input: { article_id: number; user_id: number; watchlist_id: number; }) => {
+            return gqlClient.request(
+                WATCHLIST_ARTICLE,
+                { input }
+            )
+        },
+        onSuccess: () => {
+            client.invalidateQueries([GqlCacheKeys.paginatedArticles])
+        },
+      })
+}
+
+export const useUnwatchlistArticle = () => {
+
+    const client = useQueryClient()
+  
+    return useMutation({ 
+        mutationFn: (input: { article_id: number; user_id: number; watchlist_id: number; }) => {
+            return gqlClient.request(
+                UNWATCHLIST_ARTICLE,
+                { input }
+            )
+        },
+        onSuccess: () => {
+            client.invalidateQueries([GqlCacheKeys.paginatedArticles])
+        },
+      })
+}
+

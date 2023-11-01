@@ -6,6 +6,7 @@ import { CheckListComponent } from "@/components/widgets/selectablesList"
 
 import { ApiParamsContext } from "@/context/apiParams.context"
 import { useAtom } from "jotai"
+import { dateToPostgresDateString } from "@/src/helpers/date"
 
 export const CategoryFilterSelectorComponent = () => {
 
@@ -13,10 +14,14 @@ export const CategoryFilterSelectorComponent = () => {
     
     const [protectedFilters, setProtectedFilters] = useAtom(ctx?.filterParams?.articles.protect)
     const [publicFilters] = useAtom(ctx?.filterParams?.articles.pub)
+    const [fetchParams]  = useAtom(ctx.queryParams.articles)
+
+    const dateFrom = dateToPostgresDateString(fetchParams.dateFrom)
+    const dateTo = dateToPostgresDateString(fetchParams.dateTo)
 
     const {
         data: rawData
-    } = useCategoriesWithArticlesCount(publicFilters)
+    } = useCategoriesWithArticlesCount(dateFrom, dateTo, publicFilters)
 
     const [limitopts] = useState(false)
 

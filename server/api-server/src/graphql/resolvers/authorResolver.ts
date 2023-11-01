@@ -1,71 +1,84 @@
-import { Article } from '@prisma/client';
-import { PaginationQueryParams } from '.';
+// import { Article } from '@prisma/client';
+import { DatedWhereParams, PaginationQueryParams } from '.';
 import { dataSources } from '../datasources';
+import { hasNamedProp } from '../../helpers/obj';
 
 export default {
     Query: {
 
-        async authors(_parent: any, args: { params: PaginationQueryParams }) {
+        async authors(_parent: any, args: { params: DatedWhereParams }) {
+            
+            const filters = {
+                whereAuthors: args.params.whereAuthors || null,
+                whereTags: args.params.whereTags?.length ? args.params.whereTags : null,
+                whereCategories: args.params.whereCategories || null,
+                whereHashtags: args.params.whereHashtags || null, 
+                tagged : hasNamedProp(args.params, 'tagged') ? args.params.tagged  : null,
+                userTagged :hasNamedProp(args.params, 'userTagged') ? args.params.userTagged  : null,
+                commented :hasNamedProp(args.params, 'commented') ? args.params.commented  : null,
+                watchlisted :hasNamedProp(args.params, 'watchlisted') ? args.params.watchlisted  : null,
+                categoryized :hasNamedProp(args.params, 'categoryized') ? args.params.categoryized  : null,
+                authored :hasNamedProp(args.params, 'authored') ? args.params.authored  : null,
+                userAdded :hasNamedProp(args.params, 'userAdded') ? args.params.userAdded  : null,
+                bookmarked :hasNamedProp(args.params, 'bookmarked') ? args.params.bookmarked  : null,
+            }
 
-            return await dataSources.authorService.getAuthors(
-                args.params.whereTags || null, 
-                args.params.whereCategories || null
+            const authors = await dataSources.authorService.pgGetAuthors(
+                args.params.fromDate,
+                args.params.toDate,
+                filters
             )
+
+            return authors?.rows
+        }
+    },
+
+    Mutation : {
+
+        async setWatchlistAuthor (_: any, args: { input: { author_id: number, watchlist_id: number } }) {
+
+            const {
+                author_id,
+                watchlist_id
+            } = args.input
+            
+            await dataSources.watchlistService.pgWatchlistAuthor(watchlist_id, author_id)
+            
+            const result = await dataSources.authorService.pgGetAuthor(author_id)
+            
+            return  result?.rows ? result.rows[0] : []
+        },
+
+        async deleteWatchlistAuthor(_: any, args: { input: { author_id: number, watchlist_id: number } } ) {
+            
+            const {
+                author_id,
+                watchlist_id
+            } = args.input
+            
+            await dataSources.authorService.pgDeleteAuthorWatchlist(author_id, watchlist_id)
+            
+            const result = await dataSources.authorService.pgGetAuthor(author_id)
+
+
+            return  result?.rows ? result.rows[0] : []
         }
     },
 
     Author: {
-        articles(parent: { author_id:  number }) {
-            return dataSources.articleService.getAuthorArticles(parent.author_id);
+
+        async articles(parent: { author_id:  number }) {
+
+            const result = await dataSources.articleService.pgGetAuthorArticles(parent.author_id)
+
+            return result.rows
         },
-        watchlists(parent: { author_id:  number }) {
-            return dataSources.watchlistService.getWatchlistAuthors(parent.author_id);
+        
+        async watchlists(parent: { author_id:  number }) {
+
+            const result = await dataSources.authorService.pgGetAuthorWatchlists(parent.author_id);
+
+            return result.rows 
         }
     }
 };
-
-// type IsSubtypeOf<S, P> = S extends P ? true : false;
-
-// class User {
-//     username: string;
-  
-//     constructor(username: string) {
-//       this.username = username;
-//     }
-//   }
-  
-//   class Admin extends User {
-//     isSuperAdmin: boolean;
-  
-//     constructor(username: string, isSuperAdmin: boolean) {
-//       super(username);
-//       this.isSuperAdmin = isSuperAdmin;
-//     }
-//   }
-
-  
-// type f = IsSubtypeOf<Admin, User>
-
-// type SubtypeFunc = (p: string) => '1' | '2';
-// type BaseFunc = (p: '1' | '2') => string;  
-
-// type c = IsSubtypeOf<SubtypeFunc, BaseFunc>
-// type l = IsSubtypeOf<Admin, User>
-
-// type doh = IsSubtypeOf<'1' | '3', string>
-
-// const goo = (d: Admin) => console.log(d)
-// const zoo = (d: User) => console.log(d)
-
-// type dohhhhh = IsSubtypeOf<typeof zoo, typeof goo>
-
-// const h = new User('wewewe')
-// const k = new Admin('oooooooo', true)
-
-// zoo(k)
-
-// const a =  { f: 23 }
-// const b =  { f: 55, g: 9}
-// const c = { k: 8}
-
-// type R = IsSubtypeOf<typeof b, typeof a>

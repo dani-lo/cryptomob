@@ -1,7 +1,12 @@
 import { DataSource } from 'apollo-datasource'
 
-import prisma from '../../db/prisma'
-import { Article, Category, Prisma } from '@prisma/client';
+// import prisma from '../../db/prisma'
+// import { Article, Category, Prisma } from '@prisma/client';
+import { WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
+import { hasAnyFilter } from '../../helpers/has';
+import { getPool } from '../../db/pgPool';
+// import { QueryResult } from 'pg';
+import { whereArrayInValues } from '../../helpers/where';
 
 export class CategoryService extends DataSource {
 
@@ -11,96 +16,111 @@ export class CategoryService extends DataSource {
 
     initialize() {}
 
-    async getCategory (categoryId: number) {
-        return await prisma.category.findFirst({
-            where: {
-                category_id: categoryId
-            }
-        })
-    }
-    async getCategoriesOLD() {
+    async pgGetCategory (categoryId: number) {
+        
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
 
-        return await prisma.$queryRaw`
-            SELECT category_id, category_name, (
-                SELECT COUNT(category_id) as categories_count FROM categories WHERE categories.category_id = categories.category_id
-            ) FROM categories ORDER BY category_name;
-        `
-    }
+        try {
+             return pgclient.query('SELECT * FROM categories WHERE category_id = $1;', [categoryId])
+        } catch (err) {
 
-    async getCategories(tagIDs: number[] | null, authorIDs: number[] | null) {
-    
-        if (tagIDs?.length || authorIDs?.length) {
-
-            let articles = [] as Article[]
-
-            if (tagIDs?.length && authorIDs?.length) {
-
-                articles = await prisma.$queryRaw`
-                    SELECT * FROM articles, 
-                    JOIN articles_tags  
-                    ON articles_tags.article_id = articles.article_id 
-                    WHERE 
-                        articles_tags.tag_id IN (${Prisma.join(tagIDs)}) 
-                    AND 
-                        articles.category_id IN (${Prisma.join(authorIDs)}) ;
-                `
-
-            } else if (tagIDs?.length) {
-                articles = await prisma.$queryRaw`
-                    SELECT * FROM articles 
-                    JOIN articles_tags  
-                    ON articles_tags.article_id = articles.article_id 
-                    WHERE articles_tags.tag_id IN (${Prisma.join(tagIDs)});
-                `
-            } else if (authorIDs?.length) {
-
-                articles = await prisma.$queryRaw`
-                    SELECT * FROM articles 
-                    WHERE articles.category_id IN (${Prisma.join(authorIDs)}) ;
-                `
-                console.log(articles)
-            }
+            console.log(err)
             
+            return Promise.reject('Error fetching category' + categoryId)
 
-            const categoryIDs = articles.map(a => Number(a.category_id))
+        } finally {
+            pgclient.release()
+        }
+    }
 
-            if (!categoryIDs?.length) {
-                return []
+    async pgGetCategories(
+            fromDate: string,
+            toDate: string,
+            filters:WhereParameters) {
+        
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+            
+            if (hasAnyFilter(filters)) {
+
+                const articlesWhere = await articleWhere(
+                    filters, 
+                    fromDate, 
+                    toDate,
+                    pgclient
+                )
+                const strArticlesWhere = whereClauseObjToSql(articlesWhere, 'articles')
+                
+                const articles = await pgclient.query(`
+                        SELECT * FROM articles  ${ strArticlesWhere?.length ? ' WHERE ' + strArticlesWhere : '' };
+                    `
+                )
+
+                const categoryIDs = articles.rows.map(a => Number(a.category_id)) 
+
+                if (!categoryIDs?.length) {
+                    return []
+                }
+
+                return pgclient.query(`
+                        SELECT categories.category_id, categories.category_name,
+                            (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
+                        FROM categories
+                        WHERE category_id IN ${ whereArrayInValues(categoryIDs) };
+                    `
+                )
             }
 
-            return await prisma.$queryRaw`
+            return pgclient.query(`
                 SELECT categories.category_id, categories.category_name,
                     (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
-                FROM categories
-                WHERE  categories.category_id IN (${Prisma.join(categoryIDs)}) ;
-            `
-   
+                FROM categories;
+            `)
+            
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error fetching articles')
+        } finally {
+            pgclient.release()
         }
-
-        return await prisma.$queryRaw`
-            SELECT categories.category_id, categories.category_name,
-                (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
-            FROM categories;
-        `
+        
     }
 
-    async createCategory(categoryName: string, userId: number) {
+    async pgcCreateCategory(categoryName: string, userId: number) {
 
-        const category = await prisma.category.create({
-            data: {
-                category_name: categoryName,
-                user_id: userId
-            }
-        })
-    
-        return category 
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+
+            return pgclient.query('INSERT INTO categories (category_name, user_id) VALUES ($1, $2) RETURNING *', [categoryName, userId])
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error creating tag')
+        } finally {
+            pgclient.release()
+        }
     }
 
-    async getCategoryArticles (categoryId: number) {
-        return await prisma.article.findMany({
-            where: {
-                category_id: categoryId
-            }
-        })
+    async pgGetCategoryArticles (categoryId: number) {
+
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+             return pgclient.query('SELECT * FROM articles WHERE category_id = $1;', [categoryId])
+        } catch (err) {
+
+            console.log(err)
+            
+            return Promise.reject('Error fetching category' + categoryId)
+
+        } finally {
+            pgclient.release()
+        }
     }
 }

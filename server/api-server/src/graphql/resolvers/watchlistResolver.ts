@@ -1,4 +1,4 @@
-import { ArticlesTags, Tag } from '@prisma/client';
+// import { ArticlesTags, Tag } from '@prisma/client';
 import { dataSources } from '../datasources';
 import { text } from 'stream/consumers';
 // import { pubsub } from '../pubsub';
@@ -8,7 +8,9 @@ export default {
     Query: {
         async watchlists() {
 
-            return await dataSources.watchlistService.getWatchlists()
+            const result = await dataSources.watchlistService.pgGetWatchlists()
+
+            return result?.rows || []
 
         }
     },
@@ -22,22 +24,9 @@ export default {
                 user_id
             } = args.input
  
-            const watchlist = await dataSources.watchlistService.createWatchlist(watchlist_name, user_id)
+            const watchlist = await dataSources.watchlistService.pgCreateWatchlist(watchlist_name, user_id)
 
-            return watchlist
-        },
-
-        async watchlistArticle(_: any, args: { watchlist_id: number, article_id: number }) {
-
-            const {
-                watchlist_id,
-                article_id
-            } = args
- 
-            const watchlistArticle = await dataSources.watchlistService.watchlistArticle(watchlist_id, article_id)
-
-            return watchlist_id
-            
+            return watchlist.rows
         }
     },
 
@@ -49,20 +38,37 @@ export default {
 
     Watchlist: {
 
-        articles (parent: { watchlist_id: number }) {
-            return dataSources.watchlistService.getWatchlistArticles(parent.watchlist_id);
+        async articles (parent: { watchlist_id: number }) {
+
+            const result = await dataSources.watchlistService.pgGetWatchlistArticles(parent.watchlist_id)
+
+            return result.rows
         },
-        authors(parent: { watchlist_id: number }) {
-           return dataSources.watchlistService.getWatchlistAuthors(parent.watchlist_id);
+        async authors(parent: { watchlist_id: number }) {
+            
+            console.log('---- WL AUTHORS', parent.watchlist_id)
+            
+            const result = await dataSources.watchlistService.pgGetWatchlistAuthors(parent.watchlist_id)
+
+            return result.rows
         },
-        tags(parent: { watchlist_id: number }) {
-            return dataSources.watchlistService.getWatchlistTags(parent.watchlist_id);
+        async tags(parent: { watchlist_id: number }) {
+
+            const result = await dataSources.watchlistService.pgGetWatchlistTags(parent.watchlist_id);
+
+            return result.rows
         },
-        coins(parent: { watchlist_id: number }) {
-            return dataSources.watchlistService.getWatchlistCoins(parent.watchlist_id);
+        async coins(parent: { watchlist_id: number }) {
+
+            const result = await dataSources.watchlistService.pgGetWatchlistCoins(parent.watchlist_id)
+
+            return result.rows
         },
-        user(parent: { user_id: number }) {
-            return dataSources.userService.getUser(parent.user_id);
+        async user(parent: { user_id: number }) {
+
+            const result = await dataSources.userService.pgGetUser(parent.user_id)
+
+            return result.rows[0]
         }
     }
 }

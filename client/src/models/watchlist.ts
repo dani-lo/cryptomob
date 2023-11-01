@@ -1,10 +1,16 @@
 // import { User, UserApiData } from "./user";
+import { ArticleAPiData } from "./article";
+import { AuthorApiData } from "./author";
+import { TagApiData } from "./tag";
 import { UserApiData } from "./user";
 
 export interface WatchlistApiData {
     watchlist_id: number;
     watchlist_name: string;
     user: UserApiData;
+    articles ?: ArticleAPiData[],
+    tags ?: TagApiData[],
+    authors ?: AuthorApiData[],
 }
 
 export class Watchlist {

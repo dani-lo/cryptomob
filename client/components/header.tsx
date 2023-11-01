@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-  faFileArchive,
+  faNewspaper,
   faTags,
   faUserTie,
   faClone,
@@ -37,7 +37,7 @@ export const HeaderComponent = ()  => {
             <nav>
                 <ul className="hiddenX md:flexX flex-autoX space-x-2X">
                     <li  className={ cname(pathname.indexOf('articles') !== -1) }>
-                        <FontAwesomeIcon icon={faFileArchive} />
+                        <FontAwesomeIcon icon={faNewspaper} />
                         <Link href="/articles">Articles</Link>
                     </li>
                     <li className="separate"><span /></li>

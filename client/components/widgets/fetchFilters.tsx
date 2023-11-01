@@ -85,7 +85,7 @@ export const ArticlesFetchFiltersComponent = () => {
                 
             </div>
             
-            <FetchQuickSettingsComponent 
+            <FetchMinFiltersComponent 
                 vals={ protectedFilters.minItems }
                 onChange={ (k, v) => {
 
@@ -122,7 +122,7 @@ export const ArticlesFetchFiltersComponent = () => {
     </div>
 }
 
-export const FetchQuickSettingsComponent = ({
+export const FetchMinFiltersComponent = ({
     vals,
     onChange
     }: {

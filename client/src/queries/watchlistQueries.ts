@@ -17,6 +17,7 @@ export const READ_WATCHLISTS = () => {
               article_id
               article_link
               article_title
+              article_description
             }
             user {
               user_id
@@ -26,10 +27,16 @@ export const READ_WATCHLISTS = () => {
                 tag_id
                 tag_name
                 tag_origin
+                articles {
+                  article_id
+                }
             }
             authors {
                 author_id
                 author_name
+                articles {
+                  article_id
+                }
             }
             # categories {
             #     category_id

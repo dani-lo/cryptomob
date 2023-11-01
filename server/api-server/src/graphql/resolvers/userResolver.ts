@@ -1,4 +1,3 @@
-import { PaginationQueryParams } from '.'
 import { dataSources } from '../datasources'
 
 export default {
@@ -6,13 +5,11 @@ export default {
 
         async users() {
 
-            return await dataSources.userService.getUsers()
+            const usersRows = await dataSources.userService.pgGetUsers()
+
+            return usersRows.rows
         }
     },
-    Mutation: {
-        
-    },
-    User: {
-        
-    }
+    Mutation: {},
+    User: {}
 }

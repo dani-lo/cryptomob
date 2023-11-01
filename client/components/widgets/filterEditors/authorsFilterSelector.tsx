@@ -5,6 +5,7 @@ import { useAuthorsWithArticlesCount } from "@/src/hooks/useAuthors"
 import { CheckListComponent } from "@/components/widgets/selectablesList"
 import { ApiParamsContext } from "@/context/apiParams.context"
 import { useAtom } from "jotai"
+import { dateToPostgresDateString } from "@/src/helpers/date"
 
 export const AuthorFilterSelectorComponent = () => {
 
@@ -13,9 +14,16 @@ export const AuthorFilterSelectorComponent = () => {
     const [protectedFilters, setProtectedFilters] = useAtom(ctx?.filterParams?.articles.protect)
     const [publicFilters] = useAtom(ctx?.filterParams?.articles.pub)
 
+    // const ctx = useContext(ApiParamsContext)
+  
+    const [fetchParams]  = useAtom(ctx.queryParams.articles)
+
+    const dateFrom = dateToPostgresDateString(fetchParams.dateFrom)
+    const dateTo = dateToPostgresDateString(fetchParams.dateTo)
+    
     const {
         data: rawData,
-    } = useAuthorsWithArticlesCount(publicFilters)
+    } = useAuthorsWithArticlesCount(dateFrom, dateTo, publicFilters)
 
     const [limitopts] = useState(false)
  

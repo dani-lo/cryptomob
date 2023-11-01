@@ -6,8 +6,10 @@ import watchlistResolver from "./watchlistResolver"
 import coinResolver from './coinResolver'
 import categoryResolver from "./categoryResolver"
 import userResolver from './userResolver'
-import { PrismaClient } from "@prisma/client"
+// import { PrismaClient } from "@prisma/client"
 import { intersection } from "../../helpers/arr"
+import { whereArrayInValues } from "../../helpers/where"
+import { PoolClient } from "pg"
 
 export const resolvers = {
     'article': articleResolver,
@@ -22,10 +24,10 @@ export const resolvers = {
 
 export type WhereParameters = 
     {
-        authors?:number[] | null,
-        tags?: number[] | null,
-        categories?: number[] | null,
-        hashtags?: number[] | null,
+        whereAuthors?:number[] | null,
+        whereTags?: number[] | null,
+        whereCategories?: number[] | null,
+        whereHashtags?: number[] | null,
         tagged ?: boolean | null;
         userTagged?: boolean | null;
         commented?: boolean | null;
@@ -36,29 +38,34 @@ export type WhereParameters =
         bookmarked ?: boolean | null;
 }
 
+export type DatedWhereParams = {
+    fromDate: string;
+    toDate: string; 
+} & WhereParameters
+
 export type PaginationQueryParams = {
     offset: number;
     limit: number;
     sortBy: string;
     sortDirection: string;
-    fromDate: string;
-    toDate: string; 
-    whereTags?: number[];
-    whereAuthors?: number[];
-    whereCategories?: number[];
-    whereHashtag?: number[];
-    tagged ?: boolean;
-    userTagged?: boolean;
-    commented?: boolean;
-    watchlisted?: boolean;
-    categoryized?: boolean;
-    authored?: boolean;
-    userAdded?: boolean;
-}
+    // fromDate: string;
+    // toDate: string; 
+    // whereTags?: number[];
+    // whereAuthors?: number[];
+    // whereCategories?: number[];
+    // whereHashtag?: number[];
+    // tagged ?: boolean;
+    // userTagged?: boolean;
+    // commented?: boolean;
+    // watchlisted?: boolean;
+    // categoryized?: boolean;
+    // authored?: boolean;
+    // userAdded?: boolean;
+} & DatedWhereParams
 
 interface ArticleWhere {
     article_id?:  { in: number[]};
-    author_id?: { in: number[]}| { not: null };
+    author_id?: { in: number[]} | { not: null };
     category_id?: { in: number[]} | { not: null };
     article_datepub?: {
         gte: string;
@@ -69,111 +76,171 @@ interface ArticleWhere {
 
 }
 
+export const whereClauseObjToSql = (whereObj: ArticleWhere, prefix ?: string) => {
+
+    const keys = Object.keys(whereObj) as (keyof ArticleWhere)[]
+
+    const strClauses = keys.map(key => {
+
+        const expressedClause = whereObj[key]
+        const prefixedKey = `${ prefix ? (prefix + '.') : '' }${ key }`
+
+        if (expressedClause && ['string', 'boolean'].includes(typeof expressedClause)) {
+            
+            return ` ${ prefixedKey } = ${ expressedClause } `
+
+        } else if (expressedClause && expressedClause.hasOwnProperty('not')) {
+
+            return ` ${ prefixedKey } IS NOT NULL `
+
+        } else if (expressedClause && expressedClause.hasOwnProperty('in')) {
+            
+                // @ts-ignore
+            const arrayIn: number[] = expressedClause.in
+
+            return ` ${ prefixedKey } IN ${whereArrayInValues(arrayIn)} `
+
+        } else if (expressedClause && expressedClause.hasOwnProperty('lte') && expressedClause.hasOwnProperty('gte')) {
+            
+            // @ts-ignore
+            const { gte, lte }: { gte: string, lte: string } = expressedClause
+
+            return " articles.article_datepub < '2029-12-31T18:15:00.000Z' AND articles.article_datepub > '1999-12-31T18:15:00.000Z' "
+        }
+
+        return null
+    })
+
+    return (strClauses || []).filter(d => d !== null).join(' AND ')
+}
+
+// (${Prisma.join()})
+
 export const articleWhere = async (
         filters:WhereParameters, 
         fromDate: string, 
         toDate: string, 
-        prismaClient: PrismaClient
+        pgPoolClient: PoolClient,
+        existingWhereClauseObj ?: ArticleWhere
     ) => {
+        
+        const articlesWhereClause : ArticleWhere = existingWhereClauseObj || {}
+        
+        try {
 
-    const prismaWhere : ArticleWhere = {}
+            if (filters.whereTags?.length) {
 
-    if (filters.tags?.length) {
+                const articles_tags_ids = await pgPoolClient.query(`
+                    SELECT * FROM articles_tags 
+                    WHERE tag_id IN ${ whereArrayInValues(filters.whereTags) };
+                `)
 
-        const articles_tags_ids = await prismaClient.articlesTags.findMany({
-            where: {
-                'tag_id': {
-                    in: filters.tags
+                const articlesIDs = (articles_tags_ids.rows || []).map(d => d.article_id)
+                const intersected = intersection(articlesWhereClause.article_id?.in || [], articlesIDs)
+
+                articlesWhereClause.article_id = {
+                    in: intersected
                 }
             }
 
-        })
+            if (filters.whereAuthors?.length) {
+                
+                articlesWhereClause.author_id = {
+                    in: filters.whereAuthors
+                }
+            }
 
-        const articlesIDs = articles_tags_ids.map(d => d.article_id)
-        const intersected = intersection(prismaWhere.article_id?.in || [], articlesIDs)
-        
+            if (filters.whereCategories?.length) {
+                
+                articlesWhereClause.category_id = {
+                    in: filters.whereCategories
+                }
+            }
 
-        prismaWhere.article_id = {
-            in: intersected
+            if (fromDate && toDate) {
+                
+                articlesWhereClause.article_datepub = {
+                    gte: new Date(fromDate).toISOString(),
+                    lte: new Date(toDate).toISOString()
+                }
+            }
+
+            if (filters.userAdded === true) {
+                
+                articlesWhereClause.article_origin = "'user'"
+            }
+
+            if (filters.categoryized) {
+                articlesWhereClause.category_id = {
+                    not: null
+                }
+            }
+
+            if (filters.authored) {
+
+                const knownAuthors = await pgPoolClient.query(`
+                        SELECT * FROM authors WHERE author_name IS NOT NULL AND author_name != 'unknown';
+                    `
+                )
+                articlesWhereClause.author_id = {
+                    in: (knownAuthors.rows || []).map(a => a.author_id)
+                }
+            }
+
+            if (filters.tagged) {
+
+                const articlesTagIds = await pgPoolClient.query(`
+                        SELECT * FROM articles_tags;
+                    `
+                )
+
+                const articleIDs = (articlesTagIds.rows || []).map(d => d.article_id)
+                const intersected = intersection(articlesWhereClause.article_id?.in || [], articleIDs)
+
+                articlesWhereClause.article_id = {
+                    in: intersected
+                }
+            }
+
+            if (filters.commented) {
+
+                const allComments = await pgPoolClient.query(`
+                        SELECT * FROM comments;
+                    `
+                )
+
+                const articleIDs = (allComments.rows || []).map(c => c.article_id)
+                const intersected = intersection(articlesWhereClause.article_id?.in || [], articleIDs)
+
+                articlesWhereClause.article_id = {
+                    in: intersected
+                }
+            }
+
+            if (filters.watchlisted) {
+                const allWatchlistsArticles = await pgPoolClient.query(`
+                        SELECT * FROM watchlists_articles;
+                    `
+                )
+
+                const articleIDs = (allWatchlistsArticles.rows || []).map(c => c.article_id)
+                const intersected = intersection(articlesWhereClause.article_id?.in || [], articleIDs)
+
+                articlesWhereClause.article_id = {
+                    in: intersected
+                }
+            }
+
+            if (filters.bookmarked) {
+                articlesWhereClause.article_bookmark = true
+            }
+
+            return articlesWhereClause
+        } catch (err) {
+            
+            console.log('error building articles where clause')
+
+            return {}
         }
-    }
-
-    if (filters.authors?.length) {
-        
-        prismaWhere.author_id = {
-            in: filters.authors
-        }
-    }
-
-    if (filters.categories?.length) {
-        
-        prismaWhere.category_id = {
-            in: filters.categories
-        }
-    }
-
-    if (fromDate && toDate) {
-        
-        prismaWhere.article_datepub = {
-            gte: new Date(fromDate).toISOString(),
-            lte: new Date(toDate).toISOString()
-        }
-    }
-
-    if (filters.userAdded === true) {
-        
-        prismaWhere.article_origin = 'user'
-    }
-
-    if (filters.categoryized && !filters.categories?.length) {
-        prismaWhere.category_id = {
-            not: null
-        }
-    }
-
-    if (filters.authored && !filters.authors?.length) {
-        prismaWhere.author_id = {
-            not: null
-        }
-    }
-
-    if (filters.tagged && !filters.tags?.length) {
-
-        const articlesTagIds = await prismaClient.articlesTags.findMany()
-        const articleIDs = articlesTagIds.map(d => d.article_id)
-        const intersected = intersection(prismaWhere.article_id?.in || [], articleIDs)
-
-        prismaWhere.article_id = {
-            in: intersected
-        }
-    }
-
-    if (filters.commented) {
-        const allComments = await prismaClient.comment.findMany()
-        const articleIDs = allComments.map(c => c.article_id)
-
-        const intersected = intersection(prismaWhere.article_id?.in || [], articleIDs)
-
-        prismaWhere.article_id = {
-            in: intersected
-        }
-    }
-
-    if (filters.watchlisted) {
-        const allWatchlistsArticles = await prismaClient.watchlistsArticles.findMany()
-        const articleIDs = allWatchlistsArticles.map(c => c.article_id)
-
-        const intersected = intersection(prismaWhere.article_id?.in || [], articleIDs)
-
-        prismaWhere.article_id = {
-            in: intersected
-        }
-    }
-
-    if (filters.bookmarked) {
-        prismaWhere.article_bookmark = true
-    }
-
-    return prismaWhere
-
+    
 } 
