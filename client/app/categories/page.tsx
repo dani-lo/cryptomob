@@ -1,21 +1,22 @@
 "use client";
 
+import { useSearchParams, useRouter, } from 'next/navigation'
+import { useEffect } from 'react'
+import { useAtom } from 'jotai'
+
 import { LoadingComponent } from '@/components/widgets/status/loading'
 import { ErrorComponent } from '@/components/widgets/status/error'
 import { EmptyComponent } from '@/components/widgets/status/empty'
+import { CategoryDetailModalComponent } from '@/components/widgets/modal/categoryDetail';
+import { CreateCategoryComponent } from '@/components/category/createCategory'
+import { CategoriesListComponent } from '@/components/category/categoriesList'
 
 import { cnPage, utils } from '@/src/styles/classnames.tailwind';
 
 import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories';
 
-import { CreateCategoryComponent } from '@/components/category/createCategory';
-import { CategoriesListComponent } from '@/components/category/categoriesList';
 import { useUsers } from '@/src/hooks/useUsers';
-import { useAtom } from 'jotai';
 import { currUserAtom } from '@/src/store/userAtoms';
-import { useSearchParams, useRouter, } from 'next/navigation';
-import { useEffect } from 'react';
-import { CategoryDetailModalComponent } from '@/components/widgets/modal/categoryDetail';
  
 
 const TagsPage = () => {
@@ -36,7 +37,7 @@ const TagsPage = () => {
       }
   }, [udata, user, setUser])
 
-    const { data, isError, isLoading } = useCategoriesWithArticlesCount()
+    const { data, isError, isLoading, isFetching } = useCategoriesWithArticlesCount()
 
     if (isLoading) {
         return <LoadingComponent />
@@ -54,8 +55,13 @@ const TagsPage = () => {
       }
     
       const reqCategory = categoryId ? (data.categories.find(apiT => Number(apiT.category_id) === Number(categoryId)) || null) : null 
+      
+      const opacity = isFetching ? 1 : 0
 
-    return <div className={ utils.cnJoin([cnPage, 'content']) }>
+      return <div className={ utils.cnJoin([cnPage, 'content']) }>
+          <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
+            working...
+          </div> 
           {
           reqCategory ? 
             <CategoryDetailModalComponent 

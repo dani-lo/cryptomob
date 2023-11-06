@@ -3,7 +3,7 @@ import { CodegenConfig } from '@graphql-codegen/cli'
 const config: CodegenConfig = {
   schema: [
     {
-      'http://localhost:8000/graphql': {
+      'http://localhost:8080/graphql': {
         // headers: {
         //   'x-hasura-admin-secret': 'nhost-admin-secret',
         // },

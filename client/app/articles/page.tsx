@@ -114,22 +114,7 @@ const ArticlesComponent = () => {
 
 return <div className={ utils.cnJoin([cnPage, 'content']) }> 
   
-  <div style={{ 
-      position: 'fixed', 
-      opacity: opacity,
-      transition: 'opacity 0.25s',
-      zIndex: 1111111, 
-      padding: '1rem', 
-      background: 'white', 
-      top: '6px',
-      left: '6px',
-      display: 'inline-block',
-      color: 'black',
-      fontWeight: 'bold',
-      fontSize: '1rem',
-      borderRadius: '4px',
-      pointerEvents:'none'
-      }}>
+    <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
         working...
     </div> 
   

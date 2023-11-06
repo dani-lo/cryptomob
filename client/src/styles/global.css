@@ -191,7 +191,7 @@ input {
 
 .navbar ul {
   margin-top: 4rem;
-}
+}text
 
 .navbar ul li {
   /* color: white; */
@@ -221,4 +221,26 @@ input {
   font-size: 0.8rem;
   min-width: 120px;
   max-width: 300px;
+}
+
+.action-icon {
+  cursor: pointer;
+}
+.action-icon:hover {
+  opacity: 0.5;
+}
+
+.status-widget {
+  position: fixed; 
+  transition: opacity 0.25s;
+  z-index: 1111111; 
+  padding: 1rem; 
+  background: white; 
+  top: 10px;
+  left: 6px;
+  display: inline-block;
+  color: black;
+  font-weight: bold;
+  border-radius: 4px;
+  pointer-events:none;
 }

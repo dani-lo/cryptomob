@@ -20,9 +20,9 @@ import { usePathname } from 'next/navigation';
 const cname = (isActive: boolean) => {
 
     if (isActive) {
-      return 'text-red-600'
+      return 'text-red-600 text-sm py-4'
     }
-    return 'text-white'
+    return 'text-white text-sm py-4'
 }
 
 export const HeaderComponent = ()  => {

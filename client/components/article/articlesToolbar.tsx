@@ -52,7 +52,7 @@ export const  ArticlesToolbarComponent = ({
         <div>
             <div className="flex bg-cyan-950 justify-between p-5 shadow-lg items-center toolbar">
                 <div className="flex items-center ml-5">
-                    <span className={ utils.cnJoin(['mr-2', cnTextClear])}>Date Range</span>
+                    <span className={ utils.cnJoin(['mr-2', 'text-sm', cnTextClear])}>Date Range</span>
                     <div className="mr-2">
                         <DatePicker 
                             className={ utils.cnDirectDescendant('input', cnInputText) }
@@ -77,7 +77,7 @@ export const  ArticlesToolbarComponent = ({
                     </div>
                 </div>
                 <div className="flex items-center">
-                    <span className={ utils.cnJoin(['mr-2', cnTextClear])}>Records</span>
+                    <span className={ utils.cnJoin(['mr-2', 'text-sm', cnTextClear])}>Records</span>
                     <Dropdown 
                         options={ limitOptions } 
                         onChange={(opt) => {
@@ -88,7 +88,7 @@ export const  ArticlesToolbarComponent = ({
                     />
                 </div>
                 <div className="flex items-center">
-                    <span className={ utils.cnJoin(['mr-2', cnTextClear])}>Sort By</span>
+                    <span className={ utils.cnJoin(['mr-2', 'text-sm', cnTextClear])}>Sort By</span>
                     <Dropdown 
                         options={ sortOptions } 
                         onChange={(opt) => {

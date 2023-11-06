@@ -3,10 +3,10 @@ export const cnHeaderLinkClassNameUnactive = 'focus:outline-none focus:ring-2 fo
 
 export const cnMobHeaderLinkClassName = 'px-4 py-3 text-gray-600 bg-gray-50 border border-gray-50 focus:outline-none focus:bg-gray-100 hover:bg-gray-100 duration-100 cursor-pointer text-xs leading-3 text-base'
 
-export const cnButton = 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-export const cnButtonDanger = 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900'
-export const cnButtonSuccess = 'text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800'
-export const cnButtonWarning = 'text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900'
+export const cnButton = 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-4 py-2 text-center inline-flex items-center mr-2'
+export const cnButtonDanger = 'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2'
+export const cnButtonSuccess = 'text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2'
+export const cnButtonWarning = 'text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2'
 
 export const cnBigIcon = 'text-xl text-gray-200'
 export const cnBigIconDark = 'text-xl text-cyan-900'
@@ -18,19 +18,19 @@ export const cnPageLinkUnactive = 'flex items-center justify-center px-3 h-8 lea
 export const cnNavLinkActive = 'flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 '
 export const cnNavLinkUnactive = `${ cnNavLinkActive } opacity-50`
 
-export const cnParagraph = 'my-1 py-1 text-base text-gray-700'
-export const cnPostscriptum = 'text-sm text-gray-700 text-gray-800 p-0 m-0 block'
+export const cnParagraph = 'my-1 py-1 text-sm text-gray-700'
+export const cnPostscriptum = 'text-xs text-gray-700 text-gray-800 p-0 m-0 block'
 export const cnPayoff = `${ cnParagraph } font-semibold`
 
 export const cnLabel = 'text-sm text-gray-700'
 
 
-export const cnTitle = 'mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white'
-export const cnLogo = 'mb-8 text-2xl text-white text-center italic'
+export const cnTitle = 'mb-4 text-2xl tracking-tight font-extrabold text-gray-900 dark:text-white'
+export const cnLogo = 'mb-8 text-xl text-white text-center italic'
 
-export const cnSectionTitle= 'my-8 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'
-export const cnSectionSubTitle= 'my-6 text-xl font-light text-gray-900 lg:mb-16 sm:text-xl dark:text-gray-200'
-export const cnSectionSmallTitle= 'my-3 text-lg font-bold tracking-tight text-gray-900 dark:text-white'
+export const cnSectionTitle= 'my-6 text-lg font-bold tracking-tight text-gray-900 dark:text-white'
+export const cnSectionSubTitle= 'my-4 text-base font-light text-gray-900 lg:mb-16 sm:text-xl dark:text-gray-200'
+export const cnSectionSmallTitle= 'my-2 text-sm font-bold tracking-tight text-gray-900 dark:text-white'
 
 export const cnCardTitle= `${ cnSectionSmallTitle } my-3`
 
@@ -42,7 +42,7 @@ export const cnCard = ''
 
 export const cnBaloon = 'p-4 mt-4 bg-gray-100 rounded-lg dark:bg-gray-800 dark:border-gray-700'
 
-export const cnInputText = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 inline-block p-1.5'
+export const cnInputText = 'bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 inline-block p-1.5'
 
 export const cnInputSelect = ''
 
@@ -78,7 +78,7 @@ export const cnTable  = {
     thead: 'text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400',
     th: 'bg-cyan-950 px-4 py-3   text-white text-sm underline font-bold',
     thContent: 'flex items-center justify-between cursor-pointer',
-    td: 'text-sm px-4 py-3 bg-gray-50 text-gray-900'
+    td: 'text-sm px-4 py-3 bg-gray-50 text-gray-900' 
 }
 
 export const cnActionablesList = {
@@ -86,3 +86,7 @@ export const cnActionablesList = {
     ul: '',
     li: 'inline-block py-2 flex items-center justify-between',
 }
+
+export const cnItemCardActions = 'flex items-center bg-cyan-950 p-2 justify-between absolute w-full top-0 left-0  h-40'
+
+export const cnItemCard = 'pt-6 overlay-filler-parent mr-4 mb-4 pb-2 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl top-0 left-0 w-full'

@@ -11,19 +11,17 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { LoadingComponent } from '@/components/widgets/status/loading'
 import { ErrorComponent } from '@/components/widgets/status/error'
 import { EmptyComponent } from '@/components/widgets/status/empty'
+
 import { CreateCategoryComponent } from '@/components/category/createCategory'
 import { AuthorsListComponent } from '@/components/author/authorsLit'
+import { AuthorDetailModalComponent } from '@/components/widgets/modal/authorDetail';
 
 import { cnPage, utils } from '@/src/styles/classnames.tailwind';
 
 import { useAuthorsWithArticlesCount } from '@/src/hooks/useAuthors'
 import { useUsers } from '@/src/hooks/useUsers'
 
-// import { AuthorApiData } from '@/src/models/author'
-
 import { currUserAtom } from '@/src/store/userAtoms'
-import { AuthorDetailModalComponent } from '@/components/widgets/modal/authorDetail';
- 
 
 const AuthorsPage = () => {
 
@@ -43,7 +41,7 @@ const AuthorsPage = () => {
       }
   }, [udata, user, setUser])
   
-  const { data, isError, isLoading } = useAuthorsWithArticlesCount()
+  const { data, isError, isLoading, isFetching } = useAuthorsWithArticlesCount()
 
   if (isLoading) {
     return <LoadingComponent />
@@ -62,27 +60,12 @@ const AuthorsPage = () => {
 
   const reqAuthor = authorId !== null ? (data.authors.find(apiT => Number(apiT.author_id) === Number(authorId)) || null) : null
 
-//   if (
-//         activeAuthor && 
-//         reqAuthor  &&  
-//         (
-//             Number(activeAuthor.author_id) !== Number(reqAuthor.author_id) || 
-//             reqAuthor.watchlists?.length !== activeAuthor.watchlists?.length)
-//         ) {
-
-//     setActiveAuthor(reqAuthor)
-      
-//   } else if (!activeAuthor &&  reqAuthor) {
-
-//     setActiveAuthor(reqAuthor)
-      
-//   } else if (!reqAuthor) {
-//     setActiveAuthor(null)
-//   }
-
-  
+  const opacity = isFetching ? 1 : 0
 
   return <div  className={ utils.cnJoin([cnPage, 'content']) }>
+    <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
+        working...
+    </div> 
   {
     reqAuthor ? 
       <AuthorDetailModalComponent 

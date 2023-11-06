@@ -1,13 +1,21 @@
 import { Pool } from "pg"
 
-// const pgPool = new Pool()
+
+
+const connectionString = process.env.NODE_ENV == 'production' ?  process.env.DATABASE_URL_PROD : process.env.DATABASE_URL_DEV // 'postgresql://postgres:postgres@dbservice:5432/cryptomob'
+
+// console.log(process.env)
+
+// const connData = {
+//   user: "postgres",
+//   database: "cryptomob",
+//   password: "postgres",
+//   port: 5432,
+//   host: "localhost",
+// }
 
 const connData = {
-  user: "postgres",
-  database: "cryptomob",
-  password: "postgres",
-  port: 5432,
-  host: "localhost",
+  connectionString
 }
 
 // the pool will emit an error on behalf of any idle clients

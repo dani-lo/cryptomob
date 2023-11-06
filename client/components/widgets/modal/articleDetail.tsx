@@ -61,7 +61,8 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBa
 
     const description = article.article_description.replace(/(&nbsp;|<([^>]+)>)/ig, "")
 
-    return <div className="flex flex-col justify-between px-4 leading-normal">
+    return <div className="flex flex-col justify-between px-4 leading-normal" style={{ display: 'flex',flexDirection: 'column',height: '100%' }}>
+            <div>
                 <IconTitleComponent
                     text={ article.article_title }
                     link={ article.article_link }
@@ -84,23 +85,25 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBa
                         <span className={ cnPayoff }>No Tags AVaialble for this article</span>
                     }
                 </p>
-                <div className="flex">
-                    <ArticleDetailActions
-                        watchlists={ watchlists?.watchlists || [] }
-                        categories={ categories?.categories || [] }
-                        article={ article }
-                        userId={ userId }
-                    />
-                    <div className="my-4 pl-8">
-                        <h5 className={cnSectionSmallTitle }>User comments</h5>
-                        {
-                            article.comments?.length ? 
-                            <CommentBaloonsComponent comments={ article.comments } />:
-                            <p className={ cnParagraph }>No comments for this article. You can add comments from the comment button within the article card toolbar</p>
-                        }
-                    </div>
+            </div>
+            <div className="flex" style={{ overflowY: 'scroll', flex: 2 }}>
+                <ArticleDetailActions
+                    watchlists={ watchlists?.watchlists || [] }
+                    categories={ categories?.categories || [] }
+                    article={ article }
+                    userId={ userId }
+                />
+                <div className="my-4 pl-8">
+                    <h5 className={cnSectionSmallTitle }>User comments</h5>
+                    {
+                        article.comments?.length ? 
+                        <CommentBaloonsComponent comments={ article.comments } />:
+                        <p className={ cnParagraph }>No comments for this article. You can add comments from the comment button within the article card toolbar</p>
+                    }
                 </div>
             </div>
+            
+        </div>
 }
 
 const ArticleDetailActions = ({ 
@@ -171,7 +174,7 @@ const ArticleDetailActions = ({
         const wlSelected = !!wid 
         const wlChanged = wlSelected // (!!currentWatchlist && Number(currentWatchlist.watchlist_id) !== Number(wid)) || (!currentWatchlist && wlSelected)
 
-        return <div className="my-4 pr-8">
+        return <div className="my-2 pr-8">
         <div style={{ width: '300px' }}>
             <h5 className={cnSectionSmallTitle}>Watchlists: <span className={ cnBold }>{ article.watchlists?.length || 0 }</span></h5>
             <p className={ cnParagraph }>Add article to watchlist</p>
@@ -203,7 +206,7 @@ const ArticleDetailActions = ({
                 /> : null
             }
         </div>
-        <div className="my-4" style={{ width: '300px' }}>
+        <div className="my-2" style={{ width: '300px' }}>
             <h5 className={cnSectionSmallTitle}>Category: <span className={ cnBold }>{ article.category ? article.category.category_name : 'none'}</span></h5>
             <p className={ cnParagraph }>{  article.category ? 'Assign to different category' : 'Assign  category to article'}</p>
             <Dropdown 

@@ -8,7 +8,7 @@ import { timestampToDateString } from "@/src/helpers/date"
 import { ellipsys } from "@/src/helpers/ellipsys"
 
 import { StyledCard } from '@/src/styles/main.styled' 
-import { cnBold, cnCardTitle, cnParagraph, cnPayoff, cnTag } from "@/src/styles/classnames.tailwind"
+import { cnBold, cnCardTitle, cnItemCard, cnParagraph, cnPayoff, cnTag } from "@/src/styles/classnames.tailwind"
 
 import { UpdateBoolInput } from "@/src/hooks"
 
@@ -47,8 +47,8 @@ export const ArticleCardComponent = (props: Props) => {
 
     return <StyledCard 
             minw='400px' 
-            h='390px' 
-            className="overlay-filler-parent mr-4 mb-4 p-2 pt-7 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl">        
+            h='330px' 
+            className={ cnItemCard }>      
         {
             article.article_delete ? 
                 <DeleteditemOverlayComponent item={ article } onDeleteArticle={ deleteArticle } /> :

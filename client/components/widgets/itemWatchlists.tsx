@@ -25,9 +25,10 @@ export const ItemWatchlists = ({
                     return <li 
                             key={ watchlist.watchlist_id }  
                             className={ cnActionablesList.li }>
-                                <Link href={ `/watchlists/${ watchlist.watchlist_id }` }>{ watchlist.watchlist_name }</Link>
+                                <Link href={ `/watchlists?watchlistId=${ watchlist.watchlist_id }` }>{ watchlist.watchlist_name }</Link>
                                 <FontAwesomeIcon
                                     icon={ faTimes }
+                                    className="action-icon"
                                     onClick={ () => onDeleteWatchlist(watchlist.watchlist_id) }
                                 />
                     </li>

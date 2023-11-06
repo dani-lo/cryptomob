@@ -1,7 +1,7 @@
 import { READ_ARTICLES } from "./articleQueries"
 import { CREATE_COMMENT } from "./commentQueries"
 
-export const GRAPHQL_ENDPOINT = process.env.NODE_ENV === 'production' ? 'https://cryptomob.net' : 'http://localhost:8000/graphql/'
+export const GRAPHQL_ENDPOINT = process.env.NODE_ENV === 'production' ? 'https://cryptomob.net' : 'http://localhost:8080/graphql/'
 
 export {
     READ_ARTICLES,

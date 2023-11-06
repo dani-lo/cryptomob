@@ -13,6 +13,7 @@ import { ErrorComponent } from '@/components/widgets/status/error'
 import { EmptyComponent } from '@/components/widgets/status/empty'
 import { CreateTagComponent } from '@/components/tag/createTag'
 import { TagsListComponent } from '@/components/tag/tagsList'
+import { TagDetailModalComponent } from '@/components/widgets/modal/tagDetail'
 
 import { cnPage, utils } from '@/src/styles/classnames.tailwind'
 
@@ -22,7 +23,6 @@ import { useUsers } from '@/src/hooks/useUsers'
 import { currUserAtom } from '@/src/store/userAtoms'
 
 import { TagApiData } from '@/src/models/tag' 
-import { TagDetailModalComponent } from '@/components/widgets/modal/tagDetail'
 
 const TagsPage = () => {
 
@@ -42,7 +42,7 @@ const TagsPage = () => {
         }
     }, [udata, user, setUser])
 
-    const { data, isError, isLoading } = useTagsWithArticlesCount()
+    const { data, isError, isLoading, isFetching } = useTagsWithArticlesCount()
 
     if (isLoading) {
         return <LoadingComponent />
@@ -83,10 +83,12 @@ const TagsPage = () => {
         setActiveTag(null)
     }
 
-    
-    // console.log(data.tags.filter(t => !!t.watchlists?.length))
+    const opacity = isFetching ? 1 : 0
 
     return <div  className={ utils.cnJoin([cnPage, 'content']) }>
+        <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
+            working...
+          </div> 
         {
          activeTag ? 
             <TagDetailModalComponent 
