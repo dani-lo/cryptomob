@@ -21,6 +21,25 @@ body {
     background: #e9e9e9;
 }
 
+h1 {
+  font-size: 6rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  text-align: center;
+  color: #f2f2f2;
+}
+
+h1 span {
+  font-size: 1.2rem;
+}
+
+h2, h3, h4, h5 {
+  /* color: #195660 !important; */
+}
+
+h5 {
+  font-size: 1.1rem!important;
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -34,6 +53,7 @@ ul {
   margin: 0;
   padding: 0;
 }
+
 li {
   list-style: none;
   cursor: default;
@@ -51,6 +71,16 @@ a:hover {
 
 textarea {
   display: block;
+}
+
+button {
+  font-weight: bold;
+  text-transform: capitalize;
+  border-radius: 4px;
+}
+
+button:hover {
+  opacity: 0.7;
 }
 
 .disabled {
@@ -109,7 +139,7 @@ input {
 }
 
 .logoimg path {
-  fill: var(--dark)
+  fill: #f2f2f2;
 }
 
 .react-datepicker-wrapper input {
@@ -147,14 +177,11 @@ input {
 /* STICKY:END */
 
 .pagination-item {
-  background: white;
   padding: 1rem;
   cursor: pointer;
 }
 .pagination-item:hover {
   opacity: 0.5;
-  background: #083344;
-  color: white;
 }
 .page-link {
   
@@ -163,7 +190,6 @@ input {
 }
 
 .page-link-active {
-  background: #083344;
   color: white;
   cursor: default;
   pointer-events: none;
@@ -185,7 +211,6 @@ input {
 .navbar {
   position: fixed;
   height: 100%;
-  background: #083344;
   width: 210px;
 }
 
@@ -209,11 +234,16 @@ input {
 }
 
 .navbar h2 {
+  font-style: italic;
   position: absolute;
-  bottom: 77px;
+  bottom: 0;
+  left: 0;
   width: 100%;
   text-align: center;
   z-index: var(--z-3);
+  color: #f2f2f2;
+  font-size: 2rem;
+  font-style: normal;
 
 }
 .Dropdown-root {
@@ -234,13 +264,55 @@ input {
   position: fixed; 
   transition: opacity 0.25s;
   z-index: 1111111; 
+  left: 50px;
+}
+
+.status-widget p {
+ 
   padding: 1rem; 
   background: white; 
-  top: 10px;
-  left: 6px;
   display: inline-block;
   color: black;
   font-weight: bold;
   border-radius: 4px;
   pointer-events:none;
+  background: #d97706;
+  border: 2px solid #f2f2f2;
+}
+
+.icon-with-baloon {
+  position: relative;
+}
+
+.icon-with-baloon span {
+  position: absolute;
+  font-size: 11px;
+  padding: 0.2rem;
+  border-radius: 50%;
+  right: -20px;
+  top: -12px;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+}
+
+svg {
+  display: none;
+}
+
+input {
+  
+  outline: none;
+  padding: 0.5rem;
+}
+
+input:focus, input:focus-visible, input:focus-within {
+  outline: none;
+  border-color: #f2f2f2;
+}
+
+.with-border {
+  border: 1px solid #b45309;
 }

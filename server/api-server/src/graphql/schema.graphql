@@ -21,7 +21,7 @@ input PaginationParams {
 }
 
 input FilterParams {
-  appId: Int
+  appId: Int!
   fromDate: String
   toDate: String
   whereTags: [Int]
@@ -67,6 +67,11 @@ input AuthorWatchlistMutation {
   user_id: Int
 }
 
+input ArticleColorMutation {
+  article_id: Int
+  color: String
+}
+
 type Query {
   paginatedArticles(params: PaginationParams): PaginatedArticles!
   paginatedComments(params: PaginationParams): PaginatedComments!
@@ -77,11 +82,12 @@ type Query {
   category(category_id: ID!): Category!
   tags(params: FilterParams): [Tag!]!
   tag(tag_id: ID!): Tag!
-  comments: [Comment!]!
+  comments(params: FilterParams): [Comment!]!
   coins:[Coin!]!
   categories(params: FilterParams): [Category!]!
-  watchlists: [Watchlist!]!
+  watchlists(params: FilterParams): [Watchlist!]!
   users:[User!]!
+  rssSources(params:FilterParams): [Source!]!
 }
 
 type Mutation {
@@ -101,6 +107,14 @@ type Mutation {
   deleteWatchlistTag(input: TagWatchlistMutation): Tag
   setWatchlistAuthor(input: AuthorWatchlistMutation): Author
   deleteWatchlistAuthor(input: AuthorWatchlistMutation): Author
+  setArticleBg(input: ArticleColorMutation): Article!
+}
+# ---- sources
+
+type Source {
+  source_id: ID!
+  source_url: String!
+  source_type: String!
 }
 
 # ---- articles 
@@ -115,6 +129,7 @@ type Article {
   article_bookmark: Boolean
   article_delete: Boolean
   article_origin: String
+  article_bg: String
   app_id: Int
   author: Author 
   tags: [Tag]

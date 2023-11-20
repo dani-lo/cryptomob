@@ -6,11 +6,13 @@ export enum CommentsSortby {
   'user' = 'user',
 } 
 
-export const READ_COMMENTS = () => {
+export const READ_COMMENTS = (appId: number) => {
     
   return gql`
   {
-
+    comments(params: {
+        appId: ${ appId }
+      }) {
       comment_id
       comment_text
       
@@ -19,7 +21,7 @@ export const READ_COMMENTS = () => {
           article_title
       }
     }
-  
+  }
 `
 }
 

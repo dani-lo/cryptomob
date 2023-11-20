@@ -1,37 +1,39 @@
-from typing import TypedDict, Optional
-from datetime import datetime, timezone
+# from typing import TypedDict, Optional
+# from datetime import datetime, timezone
+
 from enum import Enum
 
 import psycopg2
 import psycopg2.extras
 
-Enum('TAG_ORIGIN', ['feed', 'user'])
+# Enum('TAG_ORIGIN', ['feed', 'user'])
 
-class ApiAuthor(TypedDict):
-    author_id: Optional[int]
-    author_name: str
+# class ApiAuthor(TypedDict):
+#     author_id: Optional[int]
+#     author_name: str
 
-class ApiTag(TypedDict):
-    tag_id: Optional[int]
-    tag_name: str
-    tag_origin: str
+# class ApiTag(TypedDict):
+#     tag_id: Optional[int]
+#     tag_name: str
+#     tag_origin: str
 
-class ApiCategory(TypedDict):
-    category_id: Optional[int]
-    category_name: str
+# class ApiCategory(TypedDict):
+#     category_id: Optional[int]
+#     category_name: str
 
-class ApiArticle(TypedDict):
-    article_id: Optional[int]
-    article_link: str 
-    article_description: str 
-    article_content: str
-    article_title: str 
-    article_author: Optional[int]
-    article_tag: Optional[list[ApiTag]]
-    article_datepub: str
-    article_category: Optional[ApiCategory]
+# class ApiArticle(TypedDict):
+#     article_id: Optional[int]
+#     article_link: str 
+#     article_description: str 
+#     article_content: str
+#     article_title: str 
+#     article_author: Optional[int]
+#     article_tag: Optional[list[ApiTag]]
+#     article_datepub: str
+#     article_category: Optional[ApiCategory]
+#     article_app: int
 
-def cursor_result_to_api_tags (result) -> list[ApiTag]:
+def cursor_result_to_api_tags (result) : # -> list[ApiTag]:
     
     tags = []
 
@@ -47,13 +49,13 @@ def cursor_result_to_api_tags (result) -> list[ApiTag]:
 
     return tags
 
-def cursor_result_to_api_authors (result) -> list[ApiAuthor]:
+def cursor_result_to_api_authors (result) : # -> list[ApiAuthor]:
 
     authors = []
 
     for row in result:
-        print('AUTHPR ROW')
-        print(row)
+        # print('AUTHPR ROW')
+        # print(row)
 
         author = {
             "author_id": row["author_id"],
@@ -65,14 +67,14 @@ def cursor_result_to_api_authors (result) -> list[ApiAuthor]:
     
     return authors
  
-def cursor_result_to_api_categories (result) -> list[ApiCategory]:
+def cursor_result_to_api_categories (result) : # -> list[ApiCategory]:
     
     catogories = []
 
     for row in result:
         
-        print('CATEGORY ROW')
-        print(row)
+        # print('CATEGORY ROW')
+        # print(row)
 
         category = {
             "category_id": row["category_id"],
@@ -83,7 +85,7 @@ def cursor_result_to_api_categories (result) -> list[ApiCategory]:
 
     return catogories
 
-def cursor_result_to_article_links (result) -> list[str]:
+def cursor_result_to_article_links (result) : # -> list[str]:
     
     links = []
 
@@ -96,20 +98,21 @@ def cursor_result_to_article_links (result) -> list[str]:
 class ArticlesParser:
 
     #conn: psycopg2.connection
-    tags: list[ApiTag]
-    categories: list[ApiCategory]
-    authors: list[ApiAuthor]
-    article_links: list[str]
+    # tags: list[ApiTag]
+    # categories: list[ApiCategory]
+    # authors: list[ApiAuthor]
+    # article_links: list[str]
 
-    def __init__ (self):
+    def __init__ (self, port) : # : int):
 
         try:
 
-            self.connect()
+            self.connect(port)
 
             cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             cursor.execute("SELECT tag_id, tag_name, tag_origin FROM tags")
+
             fetched_tags = cursor.fetchall()
 
             self.tags = cursor_result_to_api_tags(fetched_tags)
@@ -117,25 +120,19 @@ class ArticlesParser:
             cursor.execute("SELECT author_id, author_name FROM authors")
             fetched_authors = cursor.fetchall()
 
-            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 0')
-
             self.authors = cursor_result_to_api_authors(fetched_authors)
 
             cursor.execute("SELECT category_id, category_name FROM categories")
             fetched_categories = cursor.fetchall()
-            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 1')
+                        
             self.categories = cursor_result_to_api_categories(fetched_categories)
-
-            print('=====', self.categories)
-            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 19999')
+            
             cursor.execute("SELECT article_link FROM articles")
             fetched_article_links = cursor.fetchall()
 
-            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 2')
-
             self.article_links = cursor_result_to_article_links(fetched_article_links)
 
-            print('HEEEEEEEEEEEEEEEEEEEEEEEEEE 3')
+            self.idx = 0
 
         except (Exception, psycopg2.DatabaseError) as error:
             print('__init__ ERROR')
@@ -143,20 +140,26 @@ class ArticlesParser:
             # if hasattr(self, 'conn') and self.conn is not None:
             #     self.conn.close()            
 
-    def connect (self) :
+    def connect (self, port= 5432): # : int = 5432) :
 
         if not hasattr(self, "conn") or self.conn is None:
-            self.conn = psycopg2.connect(database="cryptomob",
-                        host="localhost",
-                        user="cryptomob_user",
-                        password="cryptomob_pass",
-                        port="5432")
+
+            try:
+                self.conn = psycopg2.connect(database="qrated",
+                        host="dbservice",
+                        user="postgres",
+                        password="postgres",
+                        port=port)
+            except (Exception, psycopg2.DatabaseError) as error:
+                print('NOT CONNECTED...')
+                print(error)            
             
     def disconnect (self) :
+
         if hasattr(self, 'conn') and self.conn is not None:
             self.conn.close()
 
-    def get_tags_or_create (self, tag_names: list[str]) -> list[ApiTag]:
+    def get_tags_or_create (self, tag_names): # : list[str]) -> list[ApiTag]:
 
         new_tags = []
         existing_tags = []
@@ -168,7 +171,13 @@ class ArticlesParser:
 
             if api_tag is None:
 
-                tag_to_save: ApiTag = {
+                # tag_to_save: ApiTag = {
+                #     "tag_id": None,
+                #     "tag_name": name,
+                #     "tag_origin": "feed"
+                # }
+
+                tag_to_save = {
                     "tag_id": None,
                     "tag_name": name,
                     "tag_origin": "feed"
@@ -200,7 +209,7 @@ class ArticlesParser:
 
             return existing_tags
     
-    def get_author_or_create (self, author: str) -> ApiAuthor | None:
+    def get_author_or_create (self, author): #: str) -> ApiAuthor | None:
         
         # print("GET AUTHOR OR ELSEEEEEEEE")
         # print(author)
@@ -213,7 +222,12 @@ class ArticlesParser:
 
         if existing_api_author is None:
             
-            author_to_save: ApiAuthor = {
+            # author_to_save: ApiAuthor = {
+            #     "author_id": None,
+            #     "author_name": author_name,
+            # }
+
+            author_to_save = {
                 "author_id": None,
                 "author_name": author_name,
             }
@@ -232,7 +246,7 @@ class ArticlesParser:
         return existing_api_author
 
 
-    def save_tags (self, tags: list[ApiTag]) -> list[ApiTag] | None :
+    def save_tags (self, tags): #: list[ApiTag]) -> list[ApiTag] | None :
 
         values = []
 
@@ -257,7 +271,8 @@ class ArticlesParser:
 
             # print(fetched_tags)
 
-            all_tags: list[ApiTag] = cursor_result_to_api_tags(fetched_tags)
+            # all_tags: list[ApiTag] = cursor_result_to_api_tags(fetched_tags)
+            all_tags = cursor_result_to_api_tags(fetched_tags)
 
             return all_tags
 
@@ -269,7 +284,7 @@ class ArticlesParser:
 
             return None
         
-    def save_author (self, author: ApiAuthor) -> list[ApiAuthor] | None :
+    def save_author (self, author): #: ApiAuthor) -> list[ApiAuthor] | None :
 
         # print("-- save author")
 
@@ -278,7 +293,7 @@ class ArticlesParser:
         sql = """INSERT INTO authors(author_name)
             VALUES(%s);"""
         
-        print(author_name)
+        # print(author_name)
 
         try:
 
@@ -293,7 +308,8 @@ class ArticlesParser:
             
             fetched_authors = cursor.fetchall()
             
-            all_authors:list[ApiAuthor] = cursor_result_to_api_authors(fetched_authors)
+            # all_authors:list[ApiAuthor] = cursor_result_to_api_authors(fetched_authors)
+            all_authors = cursor_result_to_api_authors(fetched_authors)
  
             return all_authors
 
@@ -321,27 +337,36 @@ class ArticlesParser:
     # def get_categories (self) -> None:
     #     pass
 
-    def save_article (self, article: ApiArticle) -> int | None : 
+    def save_article (self, article): #: ApiArticle) -> int | None: 
+        
+        # print('===== SAVE ARTICLE::::::::::::;')
+        
+        # print(article)
 
-        print(article)
         if article["article_link"] in self.article_links:
             return 
+        
+        self.idx = self.idx + 1
         
         try:
             self.connect()
 
             article_author = article["article_author"] if article["article_author"] != 0 else None
 
-            values = (
+            # print(values)
+
+            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            # print(cursor.connection.info)
+
+            values = [
                 article["article_title"],
                 article["article_link"],
                 article["article_content"],
                 article["article_description"],
                 article["article_datepub"],
-                article["article_author"]
-            )
-
-            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+                article_author,
+                article["article_app"]
+            ]
 
             cursor.execute("""INSERT INTO articles(
                         article_title,
@@ -349,10 +374,14 @@ class ArticlesParser:
                         article_content,
                         article_description,
                         article_datepub,
-                        author_id) 
-                        VALUES(%s, %s, %s, %s, %s, %s)
-                        ON CONFLICT ON CONSTRAINT articles_article_link_key DO NOTHING
+                        author_id,
+                        app_id) 
+                        VALUES(%s, %s, %s, %s, %s, %s, %s)
                         RETURNING article_id;""", values)
+
+            # values = [2]
+
+            # cursor.execute("""INSERT INTO articles(app_id) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING article_id;""", values)
 
             article_id_row = cursor.fetchone()
             article_id = article_id_row["article_id"]
@@ -372,13 +401,13 @@ class ArticlesParser:
             # if self.conn is not None:
             #     self.conn.close()  
 
+
             return None
 
         # saved_article =
+    def save_article_tags (self, article_id, tag_names): #: ApiArticle, : list[str]):
 
-    def save_article_tags (self, article_id: ApiArticle, tag_names: list[str]):
-
-        print("-------- save_article_tags ------ passed tags VS self.tags")
+        # print("-------- save_article_tags ------ passed tags VS self.tags")
 
         sql = """INSERT INTO articles_tags(article_id, tag_id) VALUES(%s, %s);"""
 
@@ -391,15 +420,15 @@ class ArticlesParser:
 
         values = []
 
-        print(">> FOUND API TAGS:::")
-        print(tag_ids)
+        # print(">> FOUND API TAGS:::")
+        # print(tag_ids)
 
         for tag_id in tag_ids:
             if not (article_id, tag_id) in values:
                 values.append((article_id, tag_id))
         
-        print("SAVE THESE")
-        print(values)
+        # print("SAVE THESE TAGSSSSSS")
+        # print(values)
         
         try:
 

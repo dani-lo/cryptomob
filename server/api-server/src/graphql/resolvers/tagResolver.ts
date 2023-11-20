@@ -8,8 +8,9 @@ export default {
     Query: {
 
         async tags(_parent: any, args: { params: DatedWhereParams }) {
-            
+            console.log(args)
             const filters = {
+                appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,
                 whereTags: args.params.whereTags?.length ? args.params.whereTags : null,
                 whereCategories: args.params.whereCategories || null,

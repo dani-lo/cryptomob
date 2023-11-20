@@ -23,7 +23,7 @@ export const InlineSearchComponent = ({ onSearch } : { onSearch: (term: string) 
         </div>
         <input 
             type="search" 
-            className={ utils.cnJoin([cnInputText, 'pl-8 my-4']) } 
+            className={ utils.cnJoin([cnInputText, 'pl-2 my-4']) } 
             value={ searchval }
             placeholder="Refine items by label" 
             onChange={ (e) => setSearchval(e.target.value )}

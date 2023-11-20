@@ -6,11 +6,12 @@ export enum WatchlistSortby {
   'user' = 'user',
 } 
 
-export const READ_WATCHLISTS = () => {
+export const READ_WATCHLISTS = (appId: number) => {
     
     return gql`
     {
-        watchlists {
+        watchlists(params: {
+        appId: ${ appId }}) {
             watchlist_id
             watchlist_name,
             articles {

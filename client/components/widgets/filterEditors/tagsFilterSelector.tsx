@@ -7,6 +7,7 @@ import { CheckListComponent } from "@/components/widgets/selectablesList"
 import { ApiParamsContext } from "@/context/apiParams.context"
 import { useAtom } from "jotai"
 import { dateToPostgresDateString } from "@/src/helpers/date"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 export const TagsFilterSelectorComponent = () => {
 
@@ -21,9 +22,10 @@ export const TagsFilterSelectorComponent = () => {
     const dateFrom = dateToPostgresDateString(fetchParams.dateFrom)
     const dateTo = dateToPostgresDateString(fetchParams.dateTo)
 
+    const appId = getAppStaticSettings().appId
     const {
         data: rawData
-    } = useTagsWithArticlesCount(dateFrom, dateTo, publicFilters)
+    } = useTagsWithArticlesCount(appId, dateFrom, dateTo, publicFilters)
 
     const data = rawData || { tags: []}
 

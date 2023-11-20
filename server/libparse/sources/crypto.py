@@ -1,3 +1,5 @@
+app_id = 1
+
 rss_sources = [
     "https://thedefiant.io/feed/",
     "https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml",
@@ -11,5 +13,3 @@ rss_sources = [
     "https://time.com/nextadvisor/feed/",
     "https://benjaminion.xyz/newineth2/rss_feed.xml",
 ]
-
-app_id = 1

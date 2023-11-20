@@ -13,6 +13,7 @@ import { SortIconComponent } from '@/components/widgets/sortIcon';
 import { ellipsys } from '@/src/helpers/ellipsys'
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort'
 import Link from 'next/link';
+import { getAppStaticSettings } from '@/src/store/settingAtoms';
  
 type WatchlistProp = WatchlistApiData & ResourceItemsCount
 
@@ -49,13 +50,16 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
 
     const sorted = sortItemsArray<WatchlistProp>(watchlists, sortby[0], sortby[1], sortby[0] !== 'watchlist_name' ? sorter : null) 
 
+    const appStaticSettings = getAppStaticSettings()
+    const cnTableFull = cnTable(appStaticSettings.bg)
+
     return <div>
         <div className="flex items-center justify-between">
             <div style={{ flex: 1, padding: '1rem' }}>
                 <InlineSearchComponent onSearch={ (term: string) => {
-                    if (term === '') {
+                    // if (term === '') {
                         setSearchterm(term)
-                    }
+                    // }
                 }} />
             </div>
             <div style={{ flex: 1 }}>
@@ -63,44 +67,44 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
             </div>
         </div>
         
-            <table className={ cnTable.table }>
-                <thead className={ cnTable.thead}>
+            <table className={ cnTableFull.table }>
+                <thead className={ cnTableFull.thead}>
                     <tr>
-                        <th scope="col" className={ cnTable.th } onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('watchlist_name')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Watchlist name
                                 { sortby[0] === 'watchlist_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                             
                         </th>
-                        <th scope="col" className={ cnTable.th }onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th }onClick={ () => {
                             onSortBy('articles_count')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Articles count
                                 { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
-                        <th scope="col" className={ cnTable.th } onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('tags_count')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Tags Count
                                 { sortby[0] === 'tags_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
                         
-                        <th scope="col" className={ cnTable.th }onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th }onClick={ () => {
                             onSortBy('authors_count')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Authors count
                                 { sortby[0] === 'authors_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
-                        <th scope="col" className={ cnTable.th }>
+                        <th scope="col" className={ cnTableFull.th }>
                             <span className="sr-only" />
                         </th>
                     </tr>
@@ -114,7 +118,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                         }
 
                         return <tr  key={ w.watchlist_id }>
-                            <td className={ cnTable.td }>
+                            <td className={ cnTableFull.td }>
                  
                                 <span className={ cnBold }>
                                     {
@@ -122,27 +126,27 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                                     }        
                                 </span> 
                             </td>
-                            <td className={ cnTable.td }>
+                            <td className={ cnTableFull.td }>
                                 {
                                     `${ w.articles?.length || 0 }`
                                 }
                             </td>
-                            <td className={ cnTable.td }>
+                            <td className={ cnTableFull.td }>
                                 {
                                     `${ w.tags?.length || 0 }`
                                 }
                             </td>
-                            {/* <td className={ cnTable.td }>
+                            {/* <td className={ cnTableFull.td }>
                                 {
                                     `${ w.categories_count || 0 }`
                                 }
                             </td> */}
-                            <td className={ cnTable.td }>
+                            <td className={ cnTableFull.td }>
                                 {
                                     `${ w.authors?.length || 0 }`
                                 }
                             </td>
-                            <td className={ cnTable.td }>
+                            <td className={ cnTableFull.tdAction }>
                                 <Link href={ `/watchlists?watchlistId=${ w.watchlist_id }` }>view</Link>
                             </td>
                         </tr>

@@ -21,6 +21,8 @@ export const StyledCardContainer = styled.div<{ minw?: string}>`
 export const StyledCard = styled.div<{ w?: string, h?: string, minw?: string}>`
     // float: left;
     position: relative;
+    borderRadius: 0.25rem;
+
     ${ props => props.h ? 'height: ' + props.h + ';': '' }
     ${ props => props.w ? 'width: ' + props.w + ';': '' }
     ${ props => props.minw ? 'min-width: ' + props.minw + ';': '' }

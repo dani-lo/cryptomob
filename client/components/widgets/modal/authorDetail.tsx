@@ -1,15 +1,16 @@
 import { useState } from "react"
 import Dropdown from 'react-dropdown'
+import { faTags } from "@fortawesome/free-solid-svg-icons"
 
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { CloseIconButtonComponent } from "../iconButtons/closeIconButton"
 import { cnButton, cnParagraph, cnSectionSmallTitle, utils } from "@/src/styles/classnames.tailwind"
 import { IconTitleComponent } from "../iconed"
-import { faTags } from "@fortawesome/free-solid-svg-icons"
 import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
 import { ItemWatchlists } from "../itemWatchlists"
 import { AuthorApiData } from "@/src/models/author"
 import { useUnwatchlistAuthor, useWatchlistAuthor } from "@/src/hooks/useAuthors"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 export const AuthorDetailModalComponent = ({
         author, 
@@ -21,7 +22,8 @@ export const AuthorDetailModalComponent = ({
         userId: number;
     }) => {
     
-    const { data: watchlistsData } = useWatchlistsWIthItemsCount()
+    const appId = getAppStaticSettings().appId
+    const { data: watchlistsData } = useWatchlistsWIthItemsCount(appId)
 
     const [wid, setWid] = useState<string | undefined>(undefined)
     
@@ -61,35 +63,38 @@ export const AuthorDetailModalComponent = ({
                 text={ author.author_name }
                 icon={ faTags }
             />
-            { 
-                author.watchlists?.length ? <ItemWatchlists
-                    watchlists={ author.watchlists || [] }
-                    title="Member of watchlists"
-                    onDeleteWatchlist={ onDeleteWatchlist }
-                /> : null
-            }
-            <div className="my-4" style={{ borderBottom: '1px dotted black' }}>
-                <p className={ cnParagraph }>Add to Watchlist</p>
-                <Dropdown 
-                    options={ watchlistOpts } 
-                    onChange={(opt) =>  setWid(`${ opt.value }`) } 
-                    value={watchlistOpts.find(wopt => wopt.value === wid) } 
-                    placeholder="Select a watchlist" 
-                />
-                <div className="my-4 flex">
-                    <div>
-                        <button 
-                            className={ !wid ? utils.disabled(cnButton) :  cnButton }
-                            onClick={ () => setWid(undefined) }
-                        >Discard</button>
-                    </div>
-                    <div>
-                        <button 
-                            className={ !wid ? utils.disabled(cnButton) :  cnButton }
-                            onClick={ onSetWatchlist }
-                        >Save</button>
+            
+            <div className="flex">
+                <div style={{ width: '400px' }}>
+                    <p className={ cnParagraph }>Add to Watchlist</p>
+                    <Dropdown 
+                        options={ watchlistOpts } 
+                        onChange={(opt) =>  setWid(`${ opt.value }`) } 
+                        value={watchlistOpts.find(wopt => wopt.value === wid) } 
+                        placeholder="Select a watchlist" 
+                    />
+                    <div className="my-4 flex">
+                        <div>
+                            <button 
+                                className={ !wid ? utils.disabled(cnButton) :  cnButton }
+                                onClick={ () => setWid(undefined) }
+                            >Discard</button>
+                        </div>
+                        <div>
+                            <button 
+                                className={ !wid ? utils.disabled(cnButton) :  cnButton }
+                                onClick={ onSetWatchlist }
+                            >Save</button>
+                        </div>
                     </div>
                 </div>
+                { 
+                    author.watchlists?.length ? <ItemWatchlists
+                        watchlists={ author.watchlists || [] }
+                        title="Member of watchlists"
+                        onDeleteWatchlist={ onDeleteWatchlist }
+                    /> : null
+                }
             </div>
             {
                 author.articles ? 
@@ -106,6 +111,6 @@ export const AuthorDetailModalComponent = ({
                         </div>
                     </div> : null
             }
-            </div>
+        </div>
     </div>
 }

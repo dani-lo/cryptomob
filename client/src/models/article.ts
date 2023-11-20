@@ -1,3 +1,4 @@
+import { AppColor } from "@/components/widgets/colorPicker";
 import { Model } from ".";
 import { Author, AuthorApiData } from "./author";
 import { withWatchlist } from "./base-classes/watchlistable";
@@ -20,6 +21,7 @@ export interface ArticleAPiData {
     tags: TagApiData[];
     comments: CommentApiData[];
     watchlists: WatchlistApiData[];
+    article_bg: AppColor;
 }
 
 
@@ -33,6 +35,7 @@ export class ArticleBase extends Model {
     public article_description: string;
     public article_bookmark: boolean;
     public article_delete: boolean;
+    public article_bg: AppColor;
 
     public author: Author | null;
     public tags:Tag[]
@@ -57,6 +60,7 @@ export class ArticleBase extends Model {
         this.tags = a.tags.map(t => new Tag(t))
         this.comments = a.comments.map(c => new Comment(c))
         this.watchlists = a.watchlists.map(w => new Watchlist(w))
+        this.article_bg = a.article_bg
     }
 
     // categorize (c: Category) {}

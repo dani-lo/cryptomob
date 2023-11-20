@@ -1,5 +1,6 @@
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 import { StyledPaginationContainer } from "@/src/styles/main.styled"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 export const PaginationComponent = ({
     paginationCtrl,
     onSelectPage,
@@ -10,6 +11,8 @@ export const PaginationComponent = ({
 
     const currPage = paginationCtrl.getCurrPage()
     const pages = paginationCtrl.pageNumbers()
+
+    const appStaticSettings = getAppStaticSettings()
 
     const onNavClickPrev = () => {
 
@@ -51,7 +54,7 @@ export const PaginationComponent = ({
                     onClick={ (e) => {
                         e.preventDefault()
                         onPageClick(page)
-                    }} key={ page } className={ page === currPage ? 'pagination-item page-link page-link-active  bg-cyan-95' : 'pagination-item page-link' }>
+                    }} key={ page } className={ page === currPage ? appStaticSettings.bgEvidence + ' pagination-item page-link page-link-active' : 'bg-white pagination-item page-link' }>
                     <span>
                         { page }
                     </span>

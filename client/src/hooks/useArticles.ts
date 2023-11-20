@@ -5,10 +5,11 @@ import { GRAPHQL_ENDPOINT, READ_ARTICLES, GqlCacheKeys } from '@/src/queries'
 import { request } from 'graphql-request'
 import { ArticleAPiData } from "../models/article";
 import { dateToPostgresDateString } from "../helpers/date";
-import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
+import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, COLOR_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
 import { FetchParams, QueryFilterParams } from "../store/app";
 
 import { UpdateBoolInput } from ".";
+import { AppColor } from "@/components/widgets/colorPicker";
 
 interface ArticleApiDataResult {
     recordsCount: number;
@@ -49,7 +50,7 @@ export const usePaginatedArticles = (
         error,
         data,
         isFetching,
-        isPreviousData 
+        // isPreviousData 
     } : UseQueryResult<{ paginatedArticles:ArticleApiDataResult }, unknown> = useQuery({
 
         queryKey: [GqlCacheKeys.paginatedArticles, cacheKey],
@@ -59,7 +60,8 @@ export const usePaginatedArticles = (
                 READ_ARTICLES(appId, offset, limit, sortBy, sortDir, fromStr, toStr, filters)
             )
         },
-        keepPreviousData: true
+        keepPreviousData: true,
+        suspense: true
     })
 
     return {
@@ -68,7 +70,7 @@ export const usePaginatedArticles = (
         error,
         data,
         isFetching,
-        isPreviousData
+        // isPreviousData
     }
 } 
 
@@ -86,7 +88,7 @@ export const useBookmarkArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
-      })
+    })
 }
 
 export const useDeleteArticle = () => {
@@ -188,3 +190,22 @@ export const useUnwatchlistArticle = () => {
       })
 }
 
+export const useColorArticle = () => {
+
+    const client = useQueryClient()
+  
+    return useMutation({ 
+        mutationFn: (input: { color: AppColor, article_id: number }) => {
+
+            console.log(input)
+            
+            return gqlClient.request(
+                COLOR_ARTICLE             ,
+                { input }
+            )
+        },
+        onSuccess: () => {
+            client.invalidateQueries([GqlCacheKeys.paginatedArticles])
+        },
+      })
+}

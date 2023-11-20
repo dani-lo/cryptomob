@@ -2,6 +2,7 @@ import express, { Application } from "express"
 import bodyParser from "body-parser"
 import 'dotenv/config'
 import cors from 'cors'
+import path from "path"
 // import { PrismaClient } from '@prisma/client'
 
 import { graphqlHTTP }from "express-graphql"
@@ -14,6 +15,9 @@ import { mergeResolvers } from '@graphql-tools/merge'
 import { resolvers } from './src/graphql/resolvers'
 const schemaAddress = './src/graphql/schema.graphql'
 
+import { acquireRss } from './src/etl/acquire'
+import { spawn } from "child_process"
+
 async function main() {
 
     const app: Application = express()
@@ -21,7 +25,7 @@ async function main() {
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
     
-    const cors_origin = true//process.env.NODE_ENV == 'development' ? true : '<https://cryptomob.net>'
+    const cors_origin = true//process.env.NODE_ENV == 'development' ? true : '<https://qrated.net>'
     
     app.use(cors({ origin: cors_origin }))
     
@@ -34,7 +38,8 @@ async function main() {
       resolvers.watchlist, 
       resolvers.coin, 
       resolvers.category,
-      resolvers.user
+      resolvers.user,
+      resolvers.etl
     ]
     const schemaWithResolvers = addResolversToSchema({ schema, resolvers: mergeResolvers(appResolvers) })
     const root = {
@@ -51,6 +56,60 @@ async function main() {
           graphiql: true,
         })
     )
+
+    app.use(
+      "/etl/:appId",
+      async (req, res, next)=>{
+        
+        const result = acquireRss(Number(req.params.appId))
+
+        const parseScript = `${ path.resolve('..') }/libparse/main.py`
+        
+        let stdoutChunks: Uint8Array[] = []
+
+        console.log(parseScript)
+
+        try {
+
+          const etl_proc = spawn('python3', [parseScript, '--app-id', '2'])//, ['--app-id', '2'])
+
+          etl_proc.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`)
+            stdoutChunks = stdoutChunks.concat(data)
+          });
+
+          etl_proc.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`)
+          });
+
+
+          etl_proc.on('close', (code) => {
+
+            const stdoutContent = Buffer.concat(stdoutChunks).toString();
+            
+            console.log(`child process exited with code ${code}`);
+            
+            const result = JSON.parse(stdoutContent)
+            console.log(result)
+
+            res.send({
+              status: 200,
+              result: result
+            }) 
+          }); 
+        } catch(err) {
+          console.log('!!CALL TO LIBPARSE ERRORED!!')
+          console.log(err)
+        }
+        
+        
+
+        // res.send({
+        //   status: 200,
+        //   result
+        // }) 
+      }
+  )
 
     // app.get('/datestget', (req, res) => {
     //   res.send({str: 'Hello Get!'})

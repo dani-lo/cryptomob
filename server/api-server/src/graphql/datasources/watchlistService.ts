@@ -12,13 +12,13 @@ export class WatchlistService extends DataSource {
 
     initialize() {}
 
-    async pgGetWatchlists () {
+    async pgGetWatchlists (appId: number) {
         
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 
         try {
-             return pgclient.query('SELECT * FROM watchlists;')
+             return pgclient.query(`SELECT * FROM watchlists WHERE app_id = ${ appId }`)
         } catch (err) {
 
             console.log(err)
@@ -37,9 +37,6 @@ export class WatchlistService extends DataSource {
 
         try {
             const authorsIDsResult = await pgclient.query(`SELECT * FROM watchlists_authors WHERE watchlist_id = ${ watchlistId }`)
-
-            console.log(`SELECT * FROM watchlists_authors WHERE watchlist_id = ${ watchlistId }`)
-            console.log(authorsIDsResult)
             const authorsIDs = authorsIDsResult.rows.map(r => r.author_id)
 
             if (!authorsIDs?.length) {

@@ -2,11 +2,12 @@ import { DataSource } from 'apollo-datasource'
 
 // import prisma from '../../db/prisma'
 // import { Article, Category, Prisma } from '@prisma/client';
-import { WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
+import { ArticleWhere, WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
 import { hasAnyFilter } from '../../helpers/has';
 import { getPool } from '../../db/pgPool';
 // import { QueryResult } from 'pg';
 import { whereArrayInValues } from '../../helpers/where';
+import { error } from 'console';
 
 export class CategoryService extends DataSource {
 
@@ -43,42 +44,60 @@ export class CategoryService extends DataSource {
         const pgclient = await pgPool.connect()
 
         try {
-            
+            console.log(filters)
             if (hasAnyFilter(filters)) {
 
-                const articlesWhere = await articleWhere(
-                    filters, 
-                    fromDate, 
-                    toDate,
-                    pgclient
-                )
-                const strArticlesWhere = whereClauseObjToSql(articlesWhere, 'articles')
+                // const articlesWhere = await articleWhere(
+                //     filters, 
+                //     fromDate, 
+                //     toDate,
+                //     pgclient
+                // ) as ArticleWhere
+
+                // const strArticlesWhere = whereClauseObjToSql(articlesWhere, 'articles')
                 
-                const articles = await pgclient.query(`
-                        SELECT * FROM articles  ${ strArticlesWhere?.length ? ' WHERE ' + strArticlesWhere : '' };
-                    `
-                )
+                // const articles = await pgclient.query(`
+                //         SELECT * FROM articles  ${ strArticlesWhere?.length ? ' WHERE ' + strArticlesWhere : '' };
+                //     `
+                // )
 
-                const categoryIDs = articles.rows.map(a => Number(a.category_id)) 
+                // const categoryIDs = articles.rows.map(a => Number(a.category_id)) 
 
-                if (!categoryIDs?.length) {
-                    return []
-                }
+                // if (!categoryIDs?.length) {
+                //     return []
+                // }
+
+                // return pgclient.query(`
+                //         SELECT categories.category_id, categories.category_name,
+                //             (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
+                //         FROM categories
+                //         WHERE category_id IN ${ whereArrayInValues(categoryIDs) };
+                //     `
+                // )
+                
+                console.log(`
+                    SELECT categories.category_id, categories.category_name,
+                        (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
+                    FROM categories
+                    WHERE categories.app_id = ${ filters.appId };
+                `)
 
                 return pgclient.query(`
                         SELECT categories.category_id, categories.category_name,
                             (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
                         FROM categories
-                        WHERE category_id IN ${ whereArrayInValues(categoryIDs) };
+                        WHERE categories.app_id = ${ filters.appId };
                     `
                 )
             }
 
-            return pgclient.query(`
-                SELECT categories.category_id, categories.category_name,
-                    (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
-                FROM categories;
-            `)
+            throw new Error('Must pass an app id to get categories')
+
+            // return pgclient.query(`
+            //     SELECT categories.category_id, categories.category_name,
+            //         (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.category_id = categories.category_id)
+            //     FROM categories;
+            // `)
             
         } catch (error) {
             console.log(error)

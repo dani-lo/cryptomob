@@ -12,6 +12,7 @@ export default {
         async paginatedArticles(_parent: any, args: { params: PaginationQueryParams }) {
             
             const filters = {
+                appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,
                 whereTags: args.params.whereTags?.length ? args.params.whereTags : null,
                 whereCategories: args.params.whereCategories || null,
@@ -25,6 +26,9 @@ export default {
                 userAdded :hasNamedProp(args.params, 'userAdded') ? args.params.userAdded  : null,
                 bookmarked :hasNamedProp(args.params, 'bookmarked') ? args.params.bookmarked  : null,
             }
+
+            console.log('filters:::::::::::')
+            console.log(filters)
             const result = await dataSources.articleService.pgGetPaginateArticles(
                 args.params.offset, 
                 args.params.sortBy, 
@@ -113,9 +117,20 @@ export default {
             const article = articleRows?.rows?.length ? articleRows.rows[0] : null
 
             return article
-        }
+        },
 
-        
+        async setArticleBg (_parent: any, args: { input: { color: string, article_id: number}}) {
+            const {
+                article_id,
+                color
+            } = args.input
+
+
+            const articleRows = await dataSources.articleService.pgColorArticle(article_id, color)
+            const article = articleRows?.rows?.length ? articleRows.rows[0] : null
+
+            return article
+        }
     },
 
     // Subscription: {

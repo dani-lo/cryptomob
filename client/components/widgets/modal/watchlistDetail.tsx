@@ -22,6 +22,7 @@ export const WatchlistDetailModalComponent = ({
         // userId: number;
     }) => {
     
+        
     // const { data: watchlistsData } = useWatchlistsWIthItemsCount()
 
     // const [wid, setWid] = useState<string | undefined>(undefined)

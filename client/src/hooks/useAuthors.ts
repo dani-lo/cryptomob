@@ -1,3 +1,5 @@
+/* eslint max-params: ["error", 4] */
+
 import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import request from "graphql-request";
 
@@ -9,6 +11,7 @@ import { gqlClient } from "../utils/graphqlClient";
 import { updateClientAuthorsCache } from "../helpers/reactQueryCacheUtil";
 
 export const useAuthorsWithArticlesCount = (
+        appId: number,
         dateFrom = '2000-01-01', 
         dateTo = '2030-12-31', 
         filterParams ?: Partial<QueryFilterParams>) => {
@@ -18,14 +21,15 @@ export const useAuthorsWithArticlesCount = (
         error,
         data,
         isFetching,
-        isPreviousData 
+        // isPreviousData 
     } :  UseQueryResult<{ authors: (AuthorApiData & { articles_count: number})[] }, unknown> = useQuery({
 
         queryKey: [GqlCacheKeys.authors],
         queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_AUTHORS(dateFrom, dateTo, filterParams))
+            return await request(GRAPHQL_ENDPOINT, READ_AUTHORS(appId, dateFrom, dateTo, filterParams))
         },
-        keepPreviousData: true
+        keepPreviousData: true,
+        suspense: true
     })
 
     return {
@@ -34,7 +38,7 @@ export const useAuthorsWithArticlesCount = (
         error,
         data,
         isFetching,
-        isPreviousData
+        // isPreviousData
     }
 }
 

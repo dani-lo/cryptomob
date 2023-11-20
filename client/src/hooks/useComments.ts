@@ -8,19 +8,19 @@ import { READ_COMMENTS } from "../queries/commentQueries"
 
 interface CommentInput {comment_text: string, article_id: number, user_id: number}
 
-export const useComments = () => {
+export const useComments = (appId: number) => {
     const { 
         isLoading,
         isError,
         error,
         data,
         isFetching,
-        isPreviousData 
+        // isPreviousData 
     } : UseQueryResult<{ comments: CommentApiData[]}> = useQuery({
 
-        queryKey: [GqlCacheKeys.users],
+        queryKey: [GqlCacheKeys.comments],
         queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_COMMENTS())
+            return await request(GRAPHQL_ENDPOINT, READ_COMMENTS(appId))
         },
         keepPreviousData: true
     })
@@ -31,7 +31,7 @@ export const useComments = () => {
         error,
         data,
         isFetching,
-        isPreviousData
+        // isPreviousData
     }
 }
 

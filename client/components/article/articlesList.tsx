@@ -42,7 +42,7 @@ export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles
       fetchParams.offset,
       fetchParams.limit
     ])
-    
+
     return <div>
     <StyledCardContainer className="pb-8 pt-8">
     {

@@ -1,3 +1,5 @@
+/* eslint max-params: ["error", 4] */
+
 import {  UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import request from "graphql-request";
 
@@ -11,7 +13,11 @@ import { updateClientTagsCache } from "../helpers/reactQueryCacheUtil";
 
 interface TagInput {tag_name: string, tag_origin: string}
 
-export const useTagsWithArticlesCount = (dateFrom = '2000-01-01', dateTo = '2030-12-31', filterParams ?: Partial<QueryFilterParams>) => {
+export const useTagsWithArticlesCount = (
+        appId: number, 
+        dateFrom = '2000-01-01', 
+        dateTo = '2030-12-31', 
+        filterParams ?: Partial<QueryFilterParams>) => {
 
     const { 
         isLoading,
@@ -19,14 +25,15 @@ export const useTagsWithArticlesCount = (dateFrom = '2000-01-01', dateTo = '2030
         error,
         data,
         isFetching,
-        isPreviousData 
+        // isPreviousData 
     } : UseQueryResult<{ tags: (TagApiData & { articles_count: number})[] }, unknown> = useQuery({
 
         queryKey: [GqlCacheKeys.tags],
         queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_TAGS(dateFrom, dateTo, filterParams))
+            return await request(GRAPHQL_ENDPOINT, READ_TAGS(appId, dateFrom, dateTo, filterParams))
         },
-        keepPreviousData: true
+        keepPreviousData: true,
+        suspense: true
     })
 
     return {
@@ -35,7 +42,7 @@ export const useTagsWithArticlesCount = (dateFrom = '2000-01-01', dateTo = '2030
         error,
         data,
         isFetching,
-        isPreviousData
+        // isPreviousData
     }
 }
 

@@ -10,8 +10,9 @@ export default {
     Query: {
 
         async categories(_parent: any, args: { params: DatedWhereParams }) {
-            
+            console.log('CATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT')
             const filters = {
+                appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,
                 whereTags: args.params.whereTags?.length ? args.params.whereTags : null,
                 whereCategories: args.params.whereCategories || null,
@@ -25,6 +26,7 @@ export default {
                 userAdded :hasNamedProp(args.params, 'userAdded') ? args.params.userAdded  : null,
                 bookmarked :hasNamedProp(args.params, 'bookmarked') ? args.params.bookmarked  : null,
             }
+            console.log(filters)
 
 
             // const result : any = await dataSources.categoryService.getCategories(

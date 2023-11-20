@@ -16,13 +16,17 @@ export class CommentService extends DataSource {
     //     return await prisma.comment.findMany()
     // }
 
-    async pgGetComments () {
+    async pgGetComments (appId: number) {
 
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 
         try {
-            return pgclient.query('SELECT * FROM comments')
+            return pgclient.query(`
+                SELECT * FROM comments
+                JOIN articles ON articles.article_id = comments.article_id
+                WHERE articles.app_id = ${ appId };
+            `)
         } catch (err) {
         
             console.log(err)

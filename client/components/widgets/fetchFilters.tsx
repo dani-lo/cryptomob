@@ -1,20 +1,20 @@
-import { useContext, useState } from "react"
+import { useContext } from "react"
 
-import { InfoSource } from "@/src/models/sources"
-import { TabbedHeader } from "./tabbed"
+// import { InfoSource } from "@/src/models/sources"
+// import { TabbedHeader } from "./tabbed"
 
 import {
-    faTags,
-    faUserTie,
-    faClone,
+    // faTags,
+    // faUserTie,
+    // faClone,
   } from "@fortawesome/free-solid-svg-icons"
 
 
-import { TagsFilterSelectorComponent } from "./filterEditors/tagsFilterSelector"
-import { ModelType } from "@/src/models"
+// import { TagsFilterSelectorComponent } from "./filterEditors/tagsFilterSelector"
+// import { ModelType } from "@/src/models"
 import { ApiParamsContext } from "@/context/apiParams.context"
-import { AuthorFilterSelectorComponent } from "./filterEditors/authorsFilterSelector"
-import { CategoryFilterSelectorComponent } from "./filterEditors/categoryFilterSelector"
+// import { AuthorFilterSelectorComponent } from "./filterEditors/authorsFilterSelector"
+// import { CategoryFilterSelectorComponent } from "./filterEditors/categoryFilterSelector"
 import { cnButton, utils } from "@/src/styles/classnames.tailwind"
 import { useAtom } from "jotai"
 import { QueryFilterParamsMinItems } from "@/src/store/app"
@@ -28,7 +28,7 @@ export const ArticlesFetchFiltersComponent = () => {
 
     const client = useQueryClient()
 
-    const [activetab, setActivetab] = useState(ModelType.Tag)
+    // const [activetab, setActivetab] = useState(ModelType.Tag)
 
     const ctx = useContext(ApiParamsContext)
     
@@ -37,10 +37,9 @@ export const ArticlesFetchFiltersComponent = () => {
 
     const hasChanges = JSON.stringify(protectedFilters) !== JSON.stringify(publicFilters)
 
-    return <div style={{ padding: '0 2rem 2rem', margin: '0', background: '#083344' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', background: '#083344', padding: '0 2rem 2rem', margin: '0', height: '500px' }}>
-            <div style={{ flex: 1, background: 'white', padding: '1rem', margin: '1rem', maxWidth: '500px'  }}>
-                <TabbedHeader 
+    return <div style={{ padding: '2rem 2rem', margin: '1rem 0 0', background: '#fff', borderRadius: '0.5rem' }}>
+            {/* <div style={{ flex: 1, background: 'white', padding: '1rem', margin: '1rem', maxWidth: '500px'  }}> */}
+                {/* <TabbedHeader 
                     tabitems={[
                         {
                             icon: faTags,
@@ -81,9 +80,9 @@ export const ArticlesFetchFiltersComponent = () => {
                     activetab === ModelType.Category ?
                         <CategoryFilterSelectorComponent />:
                         null
-                }
+                } */}
                 
-            </div>
+            {/* </div> */}
             
             <FetchMinFiltersComponent 
                 vals={ protectedFilters.minItems }
@@ -95,30 +94,26 @@ export const ArticlesFetchFiltersComponent = () => {
                 }}
             />
             {/* <FetchFiltersEntitiesResumeComponent /> */}
-    
-        </div>
-        
-        <div style={{ padding: '1rem', margin: '-1rem 3em 0', textAlign: 'right',  background: 'white'  }}>
-            <button 
-                    className={ utils.cnJoin([cnButton, hasChanges ? '' : 'disabled']) } 
-                    onClick={ () => {
-                        setProtectedFilters({ ...publicFilters })
-                    }}
-                >
-                    revert changes
-            </button>
-            <button 
-                className={ utils.cnJoin([cnButton,  hasChanges ? '' : 'disabled']) }
-                onClick={() => {
-                                        
-                    setPublicFilters({ ...protectedFilters })
+            <div>
+                <button 
+                        className={ utils.cnJoin([cnButton, hasChanges ? '' : 'disabled']) } 
+                        onClick={ () => {
+                            setProtectedFilters({ ...publicFilters })
+                        }}
+                    >
+                        revert changes
+                </button>
+                <button 
+                    className={ utils.cnJoin([cnButton,  hasChanges ? '' : 'disabled']) }
+                    onClick={() => {
+                                            
+                        setPublicFilters({ ...protectedFilters })
 
-                    client.invalidateQueries([GqlCacheKeys.paginatedArticles, GqlCacheKeys.tags, GqlCacheKeys.authors])
-                }}>
-                    publish changes
-            </button>
-        </div>
-        
+                        client.invalidateQueries([GqlCacheKeys.paginatedArticles, GqlCacheKeys.tags, GqlCacheKeys.authors])
+                    }}>
+                        publish changes
+                </button>
+            </div>
     </div>
 }
 
@@ -131,8 +126,8 @@ export const FetchMinFiltersComponent = ({
     }) => {
 
 
-    return <div style={{ display: 'flex', background: 'white', padding: '2rem 1rem', margin: '1rem', flex: 1 }}>
-        <div className="p-2 flex flex-wrap" style={{ maxWidth: '350px' }}>
+    return <div>
+        <div className="flex flex-wrap" style={{ maxWidth: '1000px'}}>
             {/* <div className="px-2"> */}
             <CheckboxInputComponent 
                 checked={ !!vals.authored } 

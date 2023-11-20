@@ -23,8 +23,7 @@ export const READ_ARTICLES = (
   const whereAuthors = JSON.stringify(filters?.authors || [])
   const whereCategories = JSON.stringify(filters?.categories || [])
   const minItems = filters?.minItems || {}
-  console.log('PAG ARTICLES::::::::::::::::::: filters')  
-  console.log(filters)
+  
   return gql`
   {
     paginatedArticles (
@@ -61,6 +60,7 @@ export const READ_ARTICLES = (
         article_datepub
         article_content
         article_origin
+        article_bg
         author {
             author_id
             author_name
@@ -149,3 +149,10 @@ export const UNWATCHLIST_ARTICLE = gql`
   }
 `
 
+export const COLOR_ARTICLE = gql`
+  mutation setArticleBg($input: ArticleColorMutation) {
+    setArticleBg(input: $input) {
+      article_id
+    }
+  }
+`

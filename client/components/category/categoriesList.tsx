@@ -8,6 +8,7 @@ import { ResourceItemsCount } from '@/src/queries';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
 import Link from 'next/link';
+import { getAppStaticSettings } from '@/src/store/settingAtoms';
  
 type CategoryProps = CategoryApiData & ResourceItemsCount
 
@@ -28,14 +29,17 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
 
     const sorted = sortItemsArray<CategoryProps>(categories, sortby[0], sortby[1])
 
+    const appStaticSettings = getAppStaticSettings()
+    const cnTableFull = cnTable(appStaticSettings.bg)
+
     return <div>
         <div className="flex items-center justify-between">
             <div style={{ flex: 1, padding: '1rem' }}>
                 <InlineSearchComponent 
                     onSearch={ (term: string) => {
-                        if (term === '') {
+                        // if (term !== '') {
                             setSearchterm(term)
-                        }
+                        // }
                     }} 
                 />
             </div>
@@ -43,26 +47,26 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                 <CreateCategoryComponent />
             </div>
         </div>
-        <table className={ cnTable.table }>
-            <thead className={ cnTable.thead}>
+        <table className={ cnTableFull.table }>
+            <thead className={ cnTableFull.thead}>
                 <tr>
-                    <th scope="col" className={ cnTable.th }onClick={ () => {
+                    <th scope="col" className={ cnTableFull.th }onClick={ () => {
                             onSortBy('category_name')
                     }}>
-                        <div className={ cnTable.thContent}>
+                        <div className={ cnTableFull.thContent}>
                             Category name
                                 { sortby[0] === 'category_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                          </div>
                     </th>
-                    <th scope="col" className={ cnTable.th }onClick={ () => {
+                    <th scope="col" className={ cnTableFull.th }onClick={ () => {
                             onSortBy('articles_count')
                     }}>
-                        <div className={ cnTable.thContent}>
+                        <div className={ cnTableFull.thContent}>
                                 Count in Articles
                                 { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                         </div>
                     </th>
-                    <th scope="col" className={ cnTable.th }>
+                    <th scope="col" className={ cnTableFull.th }>
                         <span className="sr-only" />
                     </th>
                 </tr>
@@ -76,19 +80,19 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                     }
 
                     return <tr key={ t.category_id }>
-                        <td className={ cnTable.td }>     
+                        <td className={ cnTableFull.td }>     
                             <span className={ cnBold }>
                             {
                                 ellipsys(t.category_name, 20)
                             }
                             </span>                 
                         </td>
-                        <td className={ cnTable.td }>
+                        <td className={ cnTableFull.td }>
                             {
                                 `${t.articles_count } articles`
                             }
                         </td>
-                        <td className={ cnTable.td }>
+                        <td className={ cnTableFull.tdAction }>
                             <Link href={ `/categories?categoryId=${ t.category_id }` }>view</Link>
                         </td>
                     </tr>

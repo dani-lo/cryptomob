@@ -1,4 +1,5 @@
 export enum ArticleModalActions {
     'AddComment' = 'AddComment',
-    'ArticleDetail' = 'ArticleDetail'
+    'ArticleDetail' = 'ArticleDetail',
+    'ArticleBg' = 'ArticleBg'
 }

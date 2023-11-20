@@ -13,21 +13,19 @@ import { ArticleBase } from "@/src/models/article"
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
 import { CloseIconButtonComponent } from "../iconButtons/closeIconButton"
-import { cnBold, cnButton, cnParagraph, cnPayoff, cnSectionSmallTitle, cnTag, utils } from "@/src/styles/classnames.tailwind"
-import { timestampToDateString } from "@/src/helpers/date"
-import { Tag } from "@/src/models/tag"
+import { cnBold, cnButton, cnParagraph, cnSectionSmallTitle, utils } from "@/src/styles/classnames.tailwind"
+// import { timestampToDateString } from "@/src/helpers/date"
+// import { Tag } from "@/src/models/tag"
 import { CommentBaloonsComponent } from "@/components/comment/commentBaloons"
 import { IconTitleComponent } from "../iconed"
 import { faNewspaper } from "@fortawesome/free-solid-svg-icons"
-import Link from "next/link"
+// import Link from "next/link"
 import { Watchlist } from "@/src/models/watchlist"
 import { Category } from "@/src/models/category"
 import { ItemWatchlists } from "../itemWatchlists"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 export const ArticleDetailModalComponent = ({ article, userId, onClose }: { article: ArticleBase, userId: number, onClose: () => void }) => {
-
-    console.log('Articl(artigeDetailModalComponent')
-    console.log(article.article_id)
 
     return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
         <div className="overlay-full-content rounded-lg shadow article-detail">
@@ -45,19 +43,23 @@ export const ArticleDetailModalComponent = ({ article, userId, onClose }: { arti
 
 export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBase, userId: number }) => {
 
-    const { data: watchlists } = useWatchlistsWIthItemsCount()
-    const { data: categories } = useCategoriesWithArticlesCount()
+    const appId = getAppStaticSettings().appId
 
-    const uniqueTags = article.tags.reduce((acc: Tag[], curr: Tag) => {
+    const { data: watchlists } = useWatchlistsWIthItemsCount(appId)
+    const { data: categories } = useCategoriesWithArticlesCount(appId)
 
-        if (acc.find(d => d.tag_id === curr.tag_id)) {
-            return acc
-        }
+    // const uniqueTags = article.tags.reduce((acc: Tag[], curr: Tag) => {
 
-        acc.push(curr)
+    //     if (acc.find(d => d.tag_id === curr.tag_id)) {
+    //         return acc
+    //     }
 
-        return acc
-    }, [])
+    //     acc.push(curr)
+
+    //     return acc
+    // }, [])
+
+    
 
     const description = article.article_description.replace(/(&nbsp;|<([^>]+)>)/ig, "")
 
@@ -73,9 +75,9 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBa
                     description
                 }
                 </p>
-                <p className={ cnParagraph }>By: <a href="">{ article.author?.author_name || 'Unknown Author' }</a>, { timestampToDateString(Number(article.article_datepub), true) }</p>
+                {/* <p className={ cnParagraph }>By: <a href="">{ article.author?.author_name || 'Unknown Author' }</a>, { timestampToDateString(Number(article.article_datepub), true) }</p> */}
                 
-                <p className="flex flex-wrap items-baseline my-4" style={{ maxHeight: '100px',  overflowY: 'scroll'}}>
+                {/* <p className="flex flex-wrap items-baseline my-4" style={{ maxHeight: '100px',  overflowY: 'scroll'}}>
                     { uniqueTags.length > 0 ?
 
                         uniqueTags.map(tag => {
@@ -84,7 +86,7 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBa
 
                         <span className={ cnPayoff }>No Tags AVaialble for this article</span>
                     }
-                </p>
+                </p> */}
             </div>
             <div className="flex" style={{ overflowY: 'scroll', flex: 2 }}>
                 <ArticleDetailActions

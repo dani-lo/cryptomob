@@ -1,3 +1,8 @@
+import { PoolClient } from "pg"
+
+import { intersection } from "../../helpers/arr"
+import { whereArrayInValues } from "../../helpers/where"
+
 import articleResolver from "./articleResolver"
 import authorResolver from "./authorResolver"
 import tagResolver from "./tagResolver"
@@ -7,9 +12,8 @@ import coinResolver from './coinResolver'
 import categoryResolver from "./categoryResolver"
 import userResolver from './userResolver'
 // import { PrismaClient } from "@prisma/client"
-import { intersection } from "../../helpers/arr"
-import { whereArrayInValues } from "../../helpers/where"
-import { PoolClient } from "pg"
+
+import etlResolver from "./etlResolver"
 
 export const resolvers = {
     'article': articleResolver,
@@ -19,11 +23,13 @@ export const resolvers = {
     'watchlist': watchlistResolver, 
     'coin': coinResolver,
     'category': categoryResolver,
-    'user': userResolver
+    'user': userResolver,
+    'etl': etlResolver
 }
 
 export type WhereParameters = 
     {
+        appId: number,
         whereAuthors?:number[] | null,
         whereTags?: number[] | null,
         whereCategories?: number[] | null,
@@ -48,22 +54,9 @@ export type PaginationQueryParams = {
     limit: number;
     sortBy: string;
     sortDirection: string;
-    // fromDate: string;
-    // toDate: string; 
-    // whereTags?: number[];
-    // whereAuthors?: number[];
-    // whereCategories?: number[];
-    // whereHashtag?: number[];
-    // tagged ?: boolean;
-    // userTagged?: boolean;
-    // commented?: boolean;
-    // watchlisted?: boolean;
-    // categoryized?: boolean;
-    // authored?: boolean;
-    // userAdded?: boolean;
 } & DatedWhereParams
 
-interface ArticleWhere {
+export interface ArticleWhere {
     article_id?:  { in: number[]};
     author_id?: { in: number[]} | { not: null };
     category_id?: { in: number[]} | { not: null };
@@ -73,7 +66,7 @@ interface ArticleWhere {
     };
     article_origin?: string;
     article_bookmark?: boolean;
-
+    app_id: number
 }
 
 export const whereClauseObjToSql = (whereObj: ArticleWhere, prefix ?: string) => {
@@ -85,7 +78,7 @@ export const whereClauseObjToSql = (whereObj: ArticleWhere, prefix ?: string) =>
         const expressedClause = whereObj[key]
         const prefixedKey = `${ prefix ? (prefix + '.') : '' }${ key }`
 
-        if (expressedClause && ['string', 'boolean'].includes(typeof expressedClause)) {
+        if (expressedClause && ['string', 'boolean', 'number'].includes(typeof expressedClause)) {
             
             return ` ${ prefixedKey } = ${ expressedClause } `
 
@@ -106,7 +99,7 @@ export const whereClauseObjToSql = (whereObj: ArticleWhere, prefix ?: string) =>
             const { gte, lte }: { gte: string, lte: string } = expressedClause
 
             return " articles.article_datepub < '2029-12-31T18:15:00.000Z' AND articles.article_datepub > '1999-12-31T18:15:00.000Z' "
-        }
+        } 
 
         return null
     })
@@ -124,8 +117,10 @@ export const articleWhere = async (
         existingWhereClauseObj ?: ArticleWhere
     ) => {
         
-        const articlesWhereClause : ArticleWhere = existingWhereClauseObj || {}
+        const articlesWhereClause : ArticleWhere = existingWhereClauseObj || { app_id: 0 }
         
+        articlesWhereClause['app_id'] = filters.appId
+
         try {
 
             if (filters.whereTags?.length) {

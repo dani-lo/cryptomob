@@ -17,7 +17,7 @@ export const ItemWatchlists = ({
         onDeleteWatchlist: (wid: number) => void; 
      }) => {
 
-    return <div className={ cnActionablesList.div }>
+    return <div className={ cnActionablesList.div } style={{ minWidth: '300px' }}>
         <h2 className={ cnSectionSmallTitle }>{ title }</h2>
         <ul className={ cnActionablesList.ul }>
             {

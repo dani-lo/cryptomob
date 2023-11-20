@@ -2,7 +2,7 @@ import { DataSource } from 'apollo-datasource'
 
 // import prisma from '../../db/prisma'
 // import { Article, Author, Prisma } from '@prisma/client';
-import { WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
+import { ArticleWhere, WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
 import { getPool } from '../../db/pgPool';
 import { hasAnyFilter } from '../../helpers/has';
 // import { QueryResult } from 'pg';
@@ -29,42 +29,55 @@ export class AuthorService extends DataSource {
 
             if (hasAnyFilter(filters)) {
                 
-                const articlesWhere = await articleWhere(
-                    filters, 
-                    fromDate, 
-                    toDate,
-                    pgclient,
-                    {})
-                const strArticlesWhere = whereClauseObjToSql(articlesWhere, 'articles')
+                // const articlesWhere = await articleWhere(
+                //     filters, 
+                //     fromDate, 
+                //     toDate,
+                //     pgclient
+                // ) as ArticleWhere
 
-                const articles = await pgclient.query(`
-                        SELECT * FROM articles  ${ strArticlesWhere?.length ? ('WHERE' + strArticlesWhere) : '' };
-                    `
-                )
+                // const strArticlesWhere = whereClauseObjToSql(articlesWhere, 'articles')
+
+                // const articles = await pgclient.query(`
+                //         SELECT * FROM articles  ${ strArticlesWhere?.length ? ('WHERE' + strArticlesWhere) : '' };
+                //     `
+                // )
     
-                const authorIDs = articles.rows.map((a: any) => Number(a.author_id))
+                // const authorIDs = articles.rows.map((a: any) => Number(a.author_id))
                 
-                if (!authorIDs?.length) {
-                    return {
-                        rows: []
-                    }
-                }
+                // if (!authorIDs?.length) {
+                //     return {
+                //         rows: []
+                //     }
+                // }
+
+                // return pgclient.query(`
+                //         SELECT *,
+                //             (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id)
+                //         FROM authors
+                //         WHERE author_id IN ${ whereArrayInValues(authorIDs) };
+                //     `
+                // )
 
                 return pgclient.query(`
-                        SELECT *,
-                            (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id)
-                        FROM authors
-                        WHERE author_id IN ${ whereArrayInValues(authorIDs) };
+                    SELECT DISTINCT authors.author_id, authors.author_name, 
+                        (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id) 
+                    FROM authors 
+                    JOIN articles ON articles.author_id = authors.author_id 
+                    WHERE articles.app_id =  ${ filters.appId };
                     `
                 )
 
             } else {
-                return pgclient.query(`
-                        SELECT *,
-                        (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id)
-                        FROM authors;
-                    `
-                )
+                
+                // return pgclient.query(`
+                //         SELECT *,
+                //         (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id)
+                //         FROM authors;
+                //     `
+                // )
+
+                throw new Error('Must pass an app id to get authors')
             }
 
         } catch (err) {
@@ -115,11 +128,6 @@ export class AuthorService extends DataSource {
         // }
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
-    
-        //     console.log(`
-    //     SELECT * FROM watchlists 
-    //     LEFT JOIN watchlists_authors ON watchlists_authors.author_id = ${ authorId };
-    // `)
 
         try {
              return pgclient.query(`

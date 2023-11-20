@@ -1,7 +1,8 @@
 import { READ_ARTICLES } from "./articleQueries"
 import { CREATE_COMMENT } from "./commentQueries"
 
-export const GRAPHQL_ENDPOINT = process.env.NODE_ENV === 'production' ? 'https://cryptomob.net' : 'http://localhost:8080/graphql/'
+export const API_BASE = 'http://localhost:8080' // process.env.NODE_ENV === 'production' ? 'https://qrated.net' : 'http://localhost:8080'
+export const GRAPHQL_ENDPOINT = `${ API_BASE }/graphql`
 
 export {
     READ_ARTICLES,
@@ -28,5 +29,7 @@ export enum GqlCacheKeys {
     'watchilsts' = 'watchilsts',
     'categories' = 'categories',
     'authors' = 'authors',
-    'users' = 'users'
+    'users' = 'users',
+    'comments' = 'comments',
+    'etl' = 'etl',
 }

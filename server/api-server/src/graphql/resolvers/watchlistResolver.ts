@@ -1,4 +1,5 @@
 // import { ArticlesTags, Tag } from '@prisma/client';
+import { DatedWhereParams } from '.';
 import { dataSources } from '../datasources';
 import { text } from 'stream/consumers';
 // import { pubsub } from '../pubsub';
@@ -6,9 +7,13 @@ import { text } from 'stream/consumers';
 export default {
     
     Query: {
-        async watchlists() {
+        async watchlists(_parent: any, args: { params: DatedWhereParams }) {
 
-            const result = await dataSources.watchlistService.pgGetWatchlists()
+            const filters = {
+                appId: args.params.appId,
+            }
+
+            const result = await dataSources.watchlistService.pgGetWatchlists(filters.appId)
 
             return result?.rows || []
 

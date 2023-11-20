@@ -1,3 +1,5 @@
+/* eslint max-params: ["error", 4] */
+
 import { gql } from "graphql-request";
 import { QueryFilterParams } from "../store/app";
 
@@ -9,6 +11,7 @@ export enum CategoySortby {
 } 
 
 export const READ_CATEGORIES = (
+    appId: number,
     fromDate = '2000-01-01', 
     toDate='2030-12-31',
     filters?: Partial<QueryFilterParams> ) => {
@@ -21,6 +24,7 @@ export const READ_CATEGORIES = (
   return gql`
   {
     categories(params: {
+        appId: ${ appId }, 
         fromDate: ${ "\"" + fromDate + "\"" },
         toDate: ${ "\"" + toDate + "\"" },
         whereTags: ${ whereTags },

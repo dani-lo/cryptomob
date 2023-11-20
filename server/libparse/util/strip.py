@@ -19,7 +19,7 @@ class MarkupStripper(HTMLParser):
     def get_data(self):
         return self.text.getvalue()
 
-def strip_tags(html: str):
+def strip_tags(html): #: str):
 
     s = MarkupStripper()
     s.feed(html)

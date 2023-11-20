@@ -25,7 +25,7 @@ export const CreateArticleComponent = () => {
                 article_title: articleData.title,
                 article_description: articleData.description,
                 article_link: articleData.link,
-                app_id: settings.appId
+                app_id: settings.appId || 0
         })
 
         setArticleData({ title: '', description: '', link: ''})

@@ -12,14 +12,15 @@ interface WatchlistInput {
   user_id: number
 }
 
-export const useWatchlistsWIthItemsCount = () => {
+export const useWatchlistsWIthItemsCount = (appId: number) => {
+    
     const { 
         isLoading,
         isError,
         error,
         data,
         isFetching,
-        isPreviousData 
+        // isPreviousData 
     } : UseQueryResult<{ 
         watchlists: (WatchlistApiData & { 
             articles_count: number; 
@@ -31,9 +32,10 @@ export const useWatchlistsWIthItemsCount = () => {
 
         queryKey: [GqlCacheKeys.watchilsts],
         queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_WATCHLISTS())
+            return await request(GRAPHQL_ENDPOINT, READ_WATCHLISTS(appId))
         },
-        keepPreviousData: true
+        keepPreviousData: true,
+        suspense: true
     })
 
     return {
@@ -42,7 +44,7 @@ export const useWatchlistsWIthItemsCount = () => {
         error,
         data,
         isFetching,
-        isPreviousData
+        // isPreviousData
     }
 }
 

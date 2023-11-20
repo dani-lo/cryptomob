@@ -11,6 +11,7 @@ import { faTags } from "@fortawesome/free-solid-svg-icons"
 import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
 import { useUnwatchlistTag, useWatchlistTag } from "@/src/hooks/useTags"
 import { ItemWatchlists } from "../itemWatchlists"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 export const TagDetailModalComponent = ({
         tag, 
@@ -22,7 +23,8 @@ export const TagDetailModalComponent = ({
         userId: number;
     }) => {
     
-    const { data: watchlistsData } = useWatchlistsWIthItemsCount()
+    const appId = getAppStaticSettings().appId
+    const { data: watchlistsData } = useWatchlistsWIthItemsCount(appId)
 
     const [wid, setWid] = useState<string | undefined>(undefined)
     
@@ -63,35 +65,37 @@ export const TagDetailModalComponent = ({
                 icon={ faTags }
             />
             <h4 className={ cnSectionSubTitle}>Added by: { tag.tag_origin === 'user' ? `User` : 'System' }</h4> 
-            { 
-                tag.watchlists?.length ? <ItemWatchlists
-                    watchlists={ tag.watchlists || [] }
-                    title="Member of watchlists"
-                    onDeleteWatchlist={ onDeleteWatchlist }
-                /> : null
-            }
-            <div className="my-4" style={{ borderBottom: '1px dotted black' }}>
-                <p className={ cnParagraph }>Add to Watchlist</p>
-                <Dropdown 
-                    options={ watchlistOpts } 
-                    onChange={(opt) =>  setWid(`${ opt.value }`) } 
-                    value={watchlistOpts.find(wopt => wopt.value === wid) } 
-                    placeholder="Select a watchlist" 
-                />
-                <div className="my-4 flex">
-                    <div>
-                        <button 
-                            className={ !wid ? utils.disabled(cnButton) :  cnButton }
-                            onClick={ () => setWid(undefined) }
-                        >Discard</button>
-                    </div>
-                    <div>
-                        <button 
-                            className={ !wid ? utils.disabled(cnButton) :  cnButton }
-                            onClick={ onSetWatchlist }
-                        >Save</button>
+            <div className="flex">
+                <div style={{ width: '400px' }}>
+                    <p className={ cnParagraph }>Add to Watchlist</p>
+                    <Dropdown 
+                        options={ watchlistOpts } 
+                        onChange={(opt) =>  setWid(`${ opt.value }`) } 
+                        value={watchlistOpts.find(wopt => wopt.value === wid) } 
+                        placeholder="Select a watchlist" 
+                    />
+                    <div className="my-4 flex">
+                        <div>
+                            <button 
+                                className={ !wid ? utils.disabled(cnButton) :  cnButton }
+                                onClick={ () => setWid(undefined) }
+                            >Discard</button>
+                        </div>
+                        <div>
+                            <button 
+                                className={ !wid ? utils.disabled(cnButton) :  cnButton }
+                                onClick={ onSetWatchlist }
+                            >Save</button>
+                        </div>
                     </div>
                 </div>
+                { 
+                    tag.watchlists?.length ? <ItemWatchlists
+                        watchlists={ tag.watchlists || [] }
+                        title="Member of watchlists"
+                        onDeleteWatchlist={ onDeleteWatchlist }
+                    /> : null
+                }
             </div>
             {
                 tag.articles ? 

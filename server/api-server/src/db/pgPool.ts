@@ -1,11 +1,10 @@
 import { Pool } from "pg"
 
 
+const connectionString = process.env.NODE_ENV == 'container' ?  process.env.DATABASE_URL_CONTAINER : process.env.DATABASE_URL_DEV_STANDALONE
 
-const connectionString = process.env.NODE_ENV == 'production' ?  process.env.DATABASE_URL_PROD : process.env.DATABASE_URL_DEV // 'postgresql://postgres:postgres@dbservice:5432/cryptomob'
-
-// console.log(process.env)
-
+console.log(process.env)
+console.log(connectionString)
 // const connData = {
 //   user: "postgres",
 //   database: "cryptomob",

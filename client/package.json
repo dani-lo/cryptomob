@@ -11,7 +11,7 @@
     "typescript"
   ],
   "scripts": {
-    "dev": "next",
+    "dev": "CURR_APP=cryptomob next",
     "build": "next build",
     "start": "next start",
     "export": "next build && next export",
@@ -30,9 +30,8 @@
     "@fortawesome/fontawesome-svg-core": "6.4.2",
     "@fortawesome/free-solid-svg-icons": "6.4.2",
     "@fortawesome/react-fontawesome": "0.2.0",
-    "@tanstack/react-query": "4.35.3",
-    "@tanstack/react-query-devtools": "4.35.3",
     "@tanstack/react-query-next-experimental": "5.0.0-alpha.80",
+    "@tanstack/react-query": "4.35.3",
     "@wojtekmaj/react-daterange-picker": "5.4.2",
     "date-fns": "2.30.0",
     "graphql": "16.8.0",
@@ -40,9 +39,7 @@
     "jotai": "2.4.3",
     "next": "13.4.19",
     "react": "18.2.0",
-    "react-date-range-ts": "1.6.1",
     "react-datepicker": "4.18.0",
-    "react-daterange-picker": "2.0.1",
     "react-dom": "18.2.0",
     "react-dropdown": "1.11.0",
     "styled-components": "6.0.8"
@@ -61,6 +58,7 @@
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
     "autoprefixer": "10.4.15",
+    "encoding": "0.1.13",
     "eslint": "8.48.0",
     "eslint-config-alloy": "5.1.1",
     "eslint-config-next": "13.4.19",

@@ -1,4 +1,5 @@
 // import { ArticlesTags, Tag } from '@prisma/client';
+import { DatedWhereParams } from '.';
 import { dataSources } from '../datasources';
 import { text } from 'stream/consumers';
 // import { pubsub } from '../pubsub';
@@ -11,8 +12,13 @@ export default {
             //return dataSources.articleService.getPaginateArticles(args.params.offset, args.params.sortBy, args.params.sortDirection, args.params.limit)
             return []
         },
-        async comments () {
-            return await dataSources.commentService.pgGetComments()
+        async comments (_parent: any, args: { params: DatedWhereParams }) {
+
+            const filters = {
+                appId: args.params.appId,
+            }
+
+            return await dataSources.commentService.pgGetComments(filters.appId)
         }
     },
 

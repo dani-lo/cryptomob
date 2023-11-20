@@ -14,14 +14,15 @@ export const useUsers = () => {
         error,
         data,
         isFetching,
-        isPreviousData 
+        // isPreviousData 
     } : UseQueryResult<{ users: UserApiData[]}> = useQuery({
 
         queryKey: [GqlCacheKeys.users],
         queryFn: async () => {
             return await request(GRAPHQL_ENDPOINT, READ_USERS())
         },
-        keepPreviousData: true
+        keepPreviousData: true,
+        suspense: true
     })
 
     return {
@@ -30,6 +31,6 @@ export const useUsers = () => {
         error,
         data,
         isFetching,
-        isPreviousData
+        // isPreviousData
     }
 }

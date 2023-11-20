@@ -11,7 +11,7 @@ export const sortItemsArray = <T>(
         byKey: keyof T, 
         sortDir: SortDirection | null, 
         sortF ?: CustomSortAccessor<T> | null
-        // eslint-disable-next-line max-params 
+        // eslint-disable-next-line max-params  
     ) : T[] => {
 
     return [...items].sort((item_a: T, item_b: T) => {

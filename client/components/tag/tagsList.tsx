@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
 import Link from 'next/link';
+import { getAppStaticSettings } from '@/src/store/settingAtoms';
  
 type TagProps = TagApiData & ResourceItemsCount
 
@@ -33,48 +34,52 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
 
     const sorted = sortItemsArray<TagProps>(tags, sortby[0], sortby[1])
 
+    const appStaticSettings = getAppStaticSettings()
+    const cnTableFull = cnTable(appStaticSettings.bg)
+
     return <div>
         <div className="flex items-center justify-between">
             <div style={{ flex: 1, padding: '1rem' }}>
                 <InlineSearchComponent onSearch={ (term: string) => {
-                        if (term === '') {
+                    console.log(term)
+                        // if (term !== '') {
                             setSearchterm(term)
-                        }
+                        // }
                 }} />
             </div>
             <div style={{ flex: 1}}>  
                 <CreateTagComponent />
             </div>
         </div>
-             <table className={ cnTable.table }>
-                <thead className={ cnTable.thead}>
+             <table className={ cnTableFull.table }>
+                <thead className={ cnTableFull.thead}>
                     <tr>
-                        <th scope="col" className={ cnTable.th } onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('tag_name')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Tag name
                                 { sortby[0] === 'tag_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
                         
-                        <th scope="col" className={ cnTable.th } onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('tag_origin')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Tag Origin
                                 { sortby[0] === 'tag_origin' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
-                        <th scope="col" className={ cnTable.th } onClick={ () => {
+                        <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('articles_count')
                         }}>
-                            <div className={ cnTable.thContent}>
+                            <div className={ cnTableFull.thContent}>
                                 Count in Articles
                                 { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
                         </th>
-                        <th scope="col" className={ cnTable.th }>
+                        <th scope="col" className={ cnTableFull.th }>
                             <span className="sr-only" />
                         </th>
                     </tr>
@@ -88,7 +93,7 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
                 }
 
                 return <tr key={ t.tag_id }>
-                    <td className={ cnTable.td }>     
+                    <td className={ cnTableFull.td }>     
          
                         <span className={ cnBold }>
                             {
@@ -96,17 +101,17 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
                             }        
                         </span>            
                     </td>
-                    <td className={ cnTable.td }>
+                    <td className={ cnTableFull.td }>
                                     {
                                         `${t.tag_origin }`
                                     }
                     </td>
-                    <td className={ cnTable.td }>
+                    <td className={ cnTableFull.td }>
                                     {
                                         `${t.articles_count } articles`
                                     }
                     </td>
-                    <td className={ utils.cnJoin([cnTable.td, 'text-center']) }>
+                    <td className={ utils.cnJoin([cnTableFull.tdAction]) }>
                         <Link href={ `/tags?tagId=${ t.tag_id }` }>view</Link>
                     </td>
                 </tr>

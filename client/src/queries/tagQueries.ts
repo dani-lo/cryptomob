@@ -1,3 +1,5 @@
+/* eslint max-params: ["error", 4] */
+
 import { gql } from "graphql-request"
 import { QueryFilterParams } from "../store/app";
 
@@ -8,6 +10,7 @@ export enum TagsSortby {
 } 
 
 export const READ_TAGS = (
+  appId: number,
   fromDate = '2000-01-01', 
   toDate='2030-12-31',
   filters?: Partial<QueryFilterParams> ) => {
@@ -19,7 +22,8 @@ export const READ_TAGS = (
 
   return gql`
   {
-    tags(params: {
+      tags(params: {
+        appId: ${ appId }, 
         fromDate: ${ "\"" + fromDate + "\"" },
         toDate: ${ "\"" + toDate + "\"" },
         whereTags: ${ whereTags },

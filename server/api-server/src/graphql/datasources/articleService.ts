@@ -6,7 +6,7 @@ import { DataSource } from 'apollo-datasource'
 import { off } from 'process';
 // import { Article, ArticlesTags, Comment, Prisma, Tag, WatchlistsArticles } from '@prisma/client';
 
-import { WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
+import { ArticleWhere, WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
 import { getPool } from '../../db/pgPool';
 // import { QueryResult } from 'pg';
 import { whereArrayInValues } from '../../helpers/where';
@@ -168,11 +168,14 @@ export class ArticleService extends DataSource {
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 
-        const whereClause = await articleWhere(filters, fromDate, toDate, pgclient)
+        const whereClause = await articleWhere(filters, fromDate, toDate, pgclient) as ArticleWhere
         const strArticlesWhere = whereClauseObjToSql(whereClause, 'articles')
         
         const strOrderBy = ` article_id ${ sortDirectionPg } `
-        
+            
+        console.log('========================= strArticlesWhere :::::::')
+        console.log(strArticlesWhere)
+
         try {
 
             const articles = await pgclient.query(`
@@ -562,7 +565,7 @@ export class ArticleService extends DataSource {
 
         } catch (error) {
             console.log(error)
-            return Promise.reject('Error categorising article')
+            return Promise.reject('Error tagging article')
         } finally {
             pgclient.release()
         }
@@ -584,7 +587,7 @@ export class ArticleService extends DataSource {
 
         } catch (error) {
             console.log(error)
-            return Promise.reject('Error categorising article')
+            return Promise.reject('Error watchlisting article')
         } finally {
             pgclient.release()
         }
@@ -605,9 +608,33 @@ export class ArticleService extends DataSource {
 
         } catch (error) {
             console.log(error)
-            return Promise.reject('Error categorising article')
+            return Promise.reject('Error un-watchlisting article')
+        } finally {
+            pgclient.release()
+        }
+    }
+
+    async pgColorArticle(articleId: number, color: string) {
+
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {   
+            await  pgclient.query(`
+                UPDATE articles
+                SET article_bg = '${ color }'
+                WHERE article_id = ${ articleId }
+                RETURNING *;
+            `) 
+
+            return this.pgGetArticle(articleId)
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error coloring article bg')
         } finally {
             pgclient.release()
         }
     }
 }
+

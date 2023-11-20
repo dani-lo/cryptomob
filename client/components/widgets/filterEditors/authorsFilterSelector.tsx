@@ -6,6 +6,7 @@ import { CheckListComponent } from "@/components/widgets/selectablesList"
 import { ApiParamsContext } from "@/context/apiParams.context"
 import { useAtom } from "jotai"
 import { dateToPostgresDateString } from "@/src/helpers/date"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 export const AuthorFilterSelectorComponent = () => {
 
@@ -21,9 +22,11 @@ export const AuthorFilterSelectorComponent = () => {
     const dateFrom = dateToPostgresDateString(fetchParams.dateFrom)
     const dateTo = dateToPostgresDateString(fetchParams.dateTo)
     
+    const appId = getAppStaticSettings().appId
+
     const {
         data: rawData,
-    } = useAuthorsWithArticlesCount(dateFrom, dateTo, publicFilters)
+    } = useAuthorsWithArticlesCount(appId, dateFrom, dateTo, publicFilters)
 
     const [limitopts] = useState(false)
  

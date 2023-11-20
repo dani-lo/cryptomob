@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { UseMutateFunction } from "@tanstack/react-query"
+import Link from "next/link"
 
 import { ArticleBase } from "@/src/models/article"
 import { Tag } from "@/src/models/tag"
@@ -15,10 +16,10 @@ import { UpdateBoolInput } from "@/src/hooks"
 import { ArticleActionsHeaderComponent } from "@/components/article/articleActionsHeader"
 import { ArticleModalActions } from "@/components/widgets/modal"
 import { ArticleDetailModalComponent } from "@/components/widgets/modal/articleDetail"
-import { ArticleCommentActionModalComponent } from "@/components/widgets/modal/articleActions"
+import { ArticleColorizeActionModalComponent, ArticleCommentActionModalComponent } from "@/components/widgets/modal/articleActions"
 import { DeleteditemOverlayComponent } from "@/components/widgets/deletedItemOverlay"
-import Link from "next/link"
 
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 interface Props {
     article: ArticleBase;
@@ -45,10 +46,14 @@ export const ArticleCardComponent = (props: Props) => {
 
     const description = article.article_description.replace(/(&nbsp;|<([^>]+)>)/ig, "")
 
+    const appStaticSettings = getAppStaticSettings()
+
     return <StyledCard 
             minw='400px' 
-            h='330px' 
-            className={ cnItemCard }>      
+            h='auto' 
+            className={ cnItemCard }
+            style={{ background: article.article_bg || 'white' }}
+            >      
         {
             article.article_delete ? 
                 <DeleteditemOverlayComponent item={ article } onDeleteArticle={ deleteArticle } /> :
@@ -57,7 +62,8 @@ export const ArticleCardComponent = (props: Props) => {
         <ArticleActionsHeaderComponent 
             article={ article } 
             onToggleComment={ () => setModalAction(modalaction === null ? ArticleModalActions.AddComment : null) }
-            onToggleExtras={ () => setModalAction(modalaction === null ? ArticleModalActions.ArticleDetail : null)}
+            onToggleExtras={ () => setModalAction(modalaction === null ? ArticleModalActions.ArticleDetail : null) }
+            onToggleColorPicker={ () => setModalAction(modalaction === null ? ArticleModalActions.ArticleBg : null) }
             onBookmarkArticle={ bookmarkArticle }
             onDeleteArticle={ deleteArticle }
         />
@@ -79,11 +85,11 @@ export const ArticleCardComponent = (props: Props) => {
                 Category: <span className={ cnBold }>{ article.category ? article.category.category_name : 'none'}</span>. 
                 Member of <span className={ cnBold }>{ article.watchlists?.length || 0 }</span> watchlists
             </p>
-            <p className="flex flex-wrap items-baseline m-0" style={{ height: '92px', overflowY: 'scroll'}}>
+            <p className="flex flex-wrap items-baseline m-0" style={{ height: uniqueTags.length > 0 ? '92px' : 'auto', overflowY: 'scroll'}}>
                 { uniqueTags.length > 0 ?
 
                     uniqueTags.map(tag => {
-                        return <span className={ cnTag } key={ tag.tag_id }><Link href={ `/tags?tagId=${ tag.tag_id }` }>{ tag.tag_name }</Link></span>
+                        return <span className={ cnTag(appStaticSettings.bg) } key={ tag.tag_id }><Link href={ `/tags?tagId=${ tag.tag_id }` }>{ tag.tag_name }</Link></span>
                     }) :
 
                     <span className={ cnPayoff }>No Tags AVaialble for this article</span>
@@ -106,7 +112,17 @@ export const ArticleCardComponent = (props: Props) => {
                         onClose={ () => setModalAction(null) }
                     /> : null 
             }
+            {
+                modalaction === ArticleModalActions.ArticleBg ? 
+                    <ArticleColorizeActionModalComponent
+                        article={ article } 
+                        userId={ 33 } 
+                        onClose={ () => setModalAction(null) }
+                    /> : null 
+            }
         </div>
 
     </StyledCard>
 }
+
+

@@ -9,6 +9,8 @@ import { ArticleBase } from "@/src/models/article"
 
 import * as cnames from "@/src/styles/classnames.tailwind" 
 import { StyledContainedBar } from "@/src/styles/main.styled"
+import { AppColor, ColorPickerComponent } from "../colorPicker"
+import { useColorArticle } from "@/src/hooks/useArticles"
 
 export const ArticleCommentActionModalComponent = ({ article, onClose }: { article: ArticleBase, userId: number, onClose: () => void }) => {
 
@@ -56,3 +58,26 @@ export const ArticleCommentActionModalComponent = ({ article, onClose }: { artic
     </div>
 }
 
+
+export const ArticleColorizeActionModalComponent = ({ article, onClose }: { article: ArticleBase, userId: number, onClose: () => void }) => {
+
+    const colorArticleMutation = useColorArticle()
+
+    const onPickColor = (color: AppColor) => {
+        colorArticleMutation.mutate({
+            color,
+            article_id: Number(article.article_id)
+        })
+    }
+
+    return <div className="overlay-filler p-4 bg-white" style={{ overflowY: 'scroll' }}>
+        <StyledContainedBar>
+            <CloseIconButtonComponent onClose={ onClose } />
+        </StyledContainedBar>
+        <h5 className={ cnames.cnSectionTitle +  ' mt-4 mb-4' }>{ article.article_title }</h5>
+        <ColorPickerComponent 
+            onPick={ onPickColor } 
+            currColor={ article.article_bg || 'white' }
+        />
+    </div>
+}

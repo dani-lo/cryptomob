@@ -7,6 +7,7 @@ import { CheckListComponent } from "@/components/widgets/selectablesList"
 import { ApiParamsContext } from "@/context/apiParams.context"
 import { useAtom } from "jotai"
 import { dateToPostgresDateString } from "@/src/helpers/date"
+import { getAppStaticSettings } from "@/src/store/settingAtoms"
 
 export const CategoryFilterSelectorComponent = () => {
 
@@ -19,9 +20,11 @@ export const CategoryFilterSelectorComponent = () => {
     const dateFrom = dateToPostgresDateString(fetchParams.dateFrom)
     const dateTo = dateToPostgresDateString(fetchParams.dateTo)
 
+    const appId = getAppStaticSettings().appId
+
     const {
         data: rawData
-    } = useCategoriesWithArticlesCount(dateFrom, dateTo, publicFilters)
+    } = useCategoriesWithArticlesCount(appId, dateFrom, dateTo, publicFilters)
 
     const [limitopts] = useState(false)
 

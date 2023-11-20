@@ -9,6 +9,7 @@ export default {
         async authors(_parent: any, args: { params: DatedWhereParams }) {
             
             const filters = {
+                appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,
                 whereTags: args.params.whereTags?.length ? args.params.whereTags : null,
                 whereCategories: args.params.whereCategories || null,
@@ -29,7 +30,7 @@ export default {
                 filters
             )
 
-            return authors?.rows
+            return authors?.rows?.map(r => ({ ...r, articles_count: 12})) || []
         }
     },
 
