@@ -1,1 +1,1 @@
-# cryptomob
+# qrated
