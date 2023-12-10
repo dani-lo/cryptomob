@@ -12,12 +12,16 @@ import {
 //   faComment,
 //   faPeopleGroup,
   faRss,
-  faQ
+  faQ,
+  faLaptopCode
 } from "@fortawesome/free-solid-svg-icons"
 
-import { cnLogo } from "@/src/styles/classnames.tailwind"
+// import { cnLogo, cnLogoContainer } from "@/src/styles/classnames.tailwind"
 import { usePathname } from 'next/navigation';
-import { getAppStaticSettings } from '@/src/store/settingAtoms';
+// import { currSettingAtom } from '@/src/store/settingAtoms';
+// import { useAtom } from 'jotai';
+import { getAppStaticSettings } from '@/src/store/static';
+import { cnPostscriptum, utils } from '@/src/styles/classnames.tailwind';
 
 const cname = (isActive: boolean, activeCname: string) => {
 
@@ -31,8 +35,10 @@ export const HeaderComponent = ()  => {
     
     const pathname = usePathname()
 
+    // const [settings] = useAtom(currSettingAtom)
+
     const appStaticSettings = getAppStaticSettings()
-    const appTitle = appStaticSettings.appName
+    const appId = appStaticSettings.appId
     
     return <div className={ `${ appStaticSettings.bg } navbar` }>
         <div>
@@ -40,9 +46,29 @@ export const HeaderComponent = ()  => {
                 <FontAwesomeIcon icon={faQ} />
                 <span>rated</span>
             </h1>
-            <h2 className={ cnLogo }>{ appTitle }</h2>
+            <div className="logo-container ">
+                <ul className="">
+                    <li  className={ utils.cnJoin([
+                            cnPostscriptum, 
+                            appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txt, 
+                            appId === 1 ?  ' active py-1 ' : ' py-2 '
+                        ]) } >
+                        <FontAwesomeIcon icon={faLaptopCode} />
+                        <a href="#">cryptomob</a>
+                    </li>
+                    <li  className={ utils.cnJoin([
+                            cnPostscriptum, 
+                            appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txt, 
+                            appId === 2 ?  ' active py-1 ' : ' py-2 '
+                        ]) } >
+                         <FontAwesomeIcon icon={faLaptopCode} />
+                        <a href="#">fullstacked</a>
+                    </li>
+                       
+                </ul>
+            </div>
             <nav>
-                <ul className="hiddenX md:flexX flex-autoX space-x-2X px-2">
+                <ul className=" px-2">
                     <li  className={ cname(pathname.indexOf('articles') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faNewspaper} />
                         <Link href="/articles">Articles</Link>

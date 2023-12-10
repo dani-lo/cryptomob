@@ -10,7 +10,11 @@ import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
 import { ItemWatchlists } from "../itemWatchlists"
 import { AuthorApiData } from "@/src/models/author"
 import { useUnwatchlistAuthor, useWatchlistAuthor } from "@/src/hooks/useAuthors"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
+import { PaginationCtrl } from "@/src/utils/paginationCtrl"
+import { PaginationComponent } from "../pagination"
+
+const ARTICLE_PER_PAGE = 4
 
 export const AuthorDetailModalComponent = ({
         author, 
@@ -29,6 +33,20 @@ export const AuthorDetailModalComponent = ({
     
     const watchlistAuthorMuotation = useWatchlistAuthor()
     const unwatchlistAuthorMutation = useUnwatchlistAuthor()
+
+    const numArticles = author?.articles?.length || 0
+    
+    const [articlesOffset, setArticlesOffset] = useState(0)
+
+    const paginator = numArticles > ARTICLE_PER_PAGE ? new PaginationCtrl(
+        numArticles,
+        articlesOffset,
+        ARTICLE_PER_PAGE
+    ) : null
+
+    if (!author) {
+        return null
+    }
 
     const disabledWatchlist = (watchlistID: number) => author.watchlists?.some(w => w.watchlist_id === Number(watchlistID))
 
@@ -98,18 +116,31 @@ export const AuthorDetailModalComponent = ({
             </div>
             {
                 author.articles ? 
-                    <div style={{ height: '100%' }}>
-                        <div  style={{ overflowY: 'scroll', height: 'calc(100% - 200px)' }}>
-                        {
-                            author.articles.map(a => {
-                                return <div  key={ a.article_id }>
-                                <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
-                                <p className={ cnParagraph }>{ a.article_description }</p>
-                                </div>
-                            })
-                        }
-                        </div>
-                    </div> : null
+                <div className="my-8">
+                    {
+                        author.articles.map((a, i) => {
+
+                            if (paginator && !paginator.pageItemInRange(i)) {
+                                return null
+                            }
+
+                            return <div  key={ a.article_id }>
+                            <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
+                            <p className={ cnParagraph }>{ a.article_description }</p>
+                            </div>
+                        })
+                    }
+                </div> : null
+            }
+            {
+            paginator  ? 
+                <PaginationComponent 
+                    paginationCtrl={ paginator } 
+                    onSelectPage={ (nextOffset) => { 
+                        setArticlesOffset(nextOffset)
+                    }} 
+                /> 
+                : null
             }
         </div>
     </div>

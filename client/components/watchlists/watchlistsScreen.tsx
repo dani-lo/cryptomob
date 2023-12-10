@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { CreateWatchlistComponent } from '@/components/watchlists/createWatchlist';
 import { WatchlistsListComponent } from '@/components/watchlists/watchlistsList';
 
-import { getAppStaticSettings } from '@/src/store/settingAtoms'
+import { getAppStaticSettings } from '@/src/store/static'
 import { currUserAtom } from '@/src/store/userAtoms'
 
 import { LoadingComponent } from '@/components//widgets/status/loading'
@@ -35,12 +35,13 @@ export const WatchlistsScreenComponent = () => {
         }
     }, [udata, user, setUser])
     
-    const appId =  getAppStaticSettings().appId
+    const appStaticSettings = getAppStaticSettings()
+    const appId =  appStaticSettings.appId
 
     const { data, isError, isLoading } = useWatchlistsWIthItemsCount(appId)
 
     if (isLoading) {
-        return <LoadingComponent />
+        return <LoadingComponent appStaticSettings={ appStaticSettings } />
     }
 
     if (isError) {

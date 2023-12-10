@@ -1,6 +1,8 @@
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 import { StyledPaginationContainer } from "@/src/styles/main.styled"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
+import { utils } from "@/src/styles/classnames.tailwind"
+
 export const PaginationComponent = ({
     paginationCtrl,
     onSelectPage,
@@ -34,10 +36,8 @@ export const PaginationComponent = ({
         onSelectPage(paginationCtrl.nextOffset())
     }
 
-    // console.log('paginationCtrl.currPage, paginationCtrl.totalPages', paginationCtrl.currPage, paginationCtrl.totalPages)
-
     return <StyledPaginationContainer>
-        <ul className="inline-flex -space-x-px text-sm">
+        <ul className={ utils.cnJoin(['inline-flex text-sm', appStaticSettings.bg, 'p-3']) } style={{ background: 'white', border: '1px solid #aaa',  borderRadius: '0.2rem'}}>
             <li 
                     onClick={ (e) =>  {
                         e.preventDefault()
@@ -56,7 +56,7 @@ export const PaginationComponent = ({
                         onPageClick(page)
                     }} key={ page } className={ page === currPage ? appStaticSettings.bgEvidence + ' pagination-item page-link page-link-active' : 'bg-white pagination-item page-link' }>
                     <span>
-                        { page }
+                        { page + 1 }
                     </span>
                 </li>
                 })

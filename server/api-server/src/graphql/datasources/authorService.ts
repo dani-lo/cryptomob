@@ -94,13 +94,57 @@ export class AuthorService extends DataSource {
         
     }
 
-    // async getAuthor (author_id: number) {
-    //     return prisma.author.findFirst({
-    //         where: {
-    //             author_id
-    //         }
-    //     })  
-    // }
+    async pgGetPaginatedAuthors  (
+        fromDate: string,
+        toDate: string,
+        offset: number,
+        limit: number,
+        filters:WhereParameters
+    ) { 
+    
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        if (!filters.appId) {
+            throw new Error('Must pass an app id to get authors')
+        }
+
+        try {
+
+            const authors = await pgPool.query(`
+                SELECT DISTINCT authors.author_id, authors.author_name, 
+                (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id) 
+                FROM authors 
+                JOIN articles ON articles.author_id = authors.author_id 
+                WHERE articles.app_id =  ${ filters.appId }
+                ORDER BY authors.author_id
+                LIMIT ${ limit }
+                OFFSET ${ offset };
+                `
+            )
+
+            
+            
+            const authorsCount = await pgclient.query(`
+                SELECT COUNT(DISTINCT authors.author_id) as authorscount 
+                FROM authors
+                JOIN articles ON articles.author_id = authors.author_id 
+                WHERE articles.app_id =  ${ filters.appId };
+            `)
+            
+            return  Promise.resolve({
+                authors: authors.rows, 
+                authorsCount: authorsCount.rows[0].authorscount
+            })
+        
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error fetching authors')
+        } finally {
+            pgclient.release()
+        }
+    }
 
     async pgGetAuthor (authorId: number) {
 

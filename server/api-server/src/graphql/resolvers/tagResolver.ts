@@ -7,8 +7,31 @@ import { hasNamedProp } from '../../helpers/obj'
 export default {
     Query: {
 
+        async paginatedTags(_parent: any, args: { params: PaginationQueryParams }) {
+            
+            console.log(args)
+
+            const filters = {
+                appId: args.params.appId,
+            }
+
+            const result = await dataSources.tagService.pgGetPaginatedTags(
+                args.params.fromDate,
+                args.params.toDate,
+                args.params.offset,
+                args.params.limit,
+                filters
+            )
+            
+            return {
+                tags: result.tags,
+                recordsCount: result.tagsCount
+            }
+        },
+
         async tags(_parent: any, args: { params: DatedWhereParams }) {
             console.log(args)
+            
             const filters = {
                 appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,
@@ -44,14 +67,26 @@ export default {
                     articles_count: Number(r.articles_count)
                 }
             })
+        },
+
+        async tag (_parent: any, args: { params: { itemId: number} }) {
+            
+            const {
+                itemId: tagId 
+            } = args.params
+
+            const tagRows = await dataSources.tagService.pgGetTag(tagId)
+
+            return  tagRows?.rows?.length ? tagRows.rows[0] : null
         }
     },
+
     Mutation: {
         async createTag(_: any, args: { input : { tag_name: string; tag_origin: string; } }) {
 
             const newTag = await dataSources.tagService.pgcCreateTag(args.input.tag_name, args.input.tag_origin)
 
-            return newTag.rows[0]
+            return  newTag?.rows ? newTag.rows[0] : []
         },
 
         async tagArticle(_: any, args: { tag_id: number, article_id: number }) {

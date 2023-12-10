@@ -7,7 +7,7 @@
 // import { ResourceItemsCount } from '@/src/queries';
 // import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 // import { SortIconComponent } from '../widgets/sortIcon';
-// import { getAppStaticSettings } from '@/src/store/settingAtoms';
+// import { getAppStaticSettings } from '@/src/store/static';
  
 // type CommentProps = CommentApiData & ResourceItemsCount
 

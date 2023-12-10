@@ -1,21 +1,14 @@
 import { Pool } from "pg"
 
-
-const connectionString = process.env.NODE_ENV == 'container' ?  process.env.DATABASE_URL_CONTAINER : process.env.DATABASE_URL_DEV_STANDALONE
-
-console.log(process.env)
-console.log(connectionString)
-// const connData = {
-//   user: "postgres",
-//   database: "cryptomob",
-//   password: "postgres",
-//   port: 5432,
-//   host: "localhost",
-// }
+const connectionString = process.env.NODE_ENV == 'production' ?  (process.env.DATABASE_URL_PRODUCTION) : 
+  process.env.NODE_ENV == 'staging' ? process.env.DATABASE_URL_STAGING : process.env.DATABASE_URL_DEVELOPMENT
 
 const connData = {
   connectionString
 }
+
+console.log('NODE API --- connectionString ---- (process.env.NODE_ENV is::', process.env.NODE_ENV)
+console.log(connectionString)
 
 // the pool will emit an error on behalf of any idle clients
 // it contains if a backend error or network partition happens

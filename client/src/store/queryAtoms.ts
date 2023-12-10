@@ -2,13 +2,13 @@ import { atom } from 'jotai'
 import { FetchParams, QueryFilterParams } from './app'
 import { ArticlesSortby } from '../queries/articleQueries'
 import { SortDirection } from '../helpers/sort'
+import { TagsSortby } from '../queries/tagQueries'
+import { AuthorSortby } from '../queries/authorQueries'
 
 interface KeyVal {
     key: keyof QueryFilterParams,
     val: any
 }
-
-type ArticlesFatchParams = FetchParams<ArticlesSortby>
 
 export const protectedArticlesQueryFilterAtom = atom<QueryFilterParams>({
         tags: [],
@@ -44,7 +44,7 @@ export const publicArticlesQueryFilterAtom = atom<QueryFilterParams>({
     }
 })
 
-export const fetchParamsAtom = atom<ArticlesFatchParams>({
+export const fetchArticlesParamsAtom = atom<FetchParams<ArticlesSortby>>({
     offset: 0,
     limit: 12,
     sortBy: ArticlesSortby.date,
@@ -65,6 +65,25 @@ export const fetchParamsAtom = atom<ArticlesFatchParams>({
         bookmarked: false,
     }
 })
+
+export const fetchTagsParamsAtom = atom<FetchParams<TagsSortby>>({
+    offset: 0,
+    limit: 12,
+    sortBy: TagsSortby.date,
+    sortDir: SortDirection.desc,
+    dateFrom: new Date('2000-01-01'),
+    dateTo: new Date('2030-01-01')
+})
+
+export const fetchAuthorsParamsAtom = atom<FetchParams<AuthorSortby>>({
+    offset: 0,
+    limit: 12,
+    sortBy: AuthorSortby.name,
+    sortDir: SortDirection.desc,
+    dateFrom: new Date('2000-01-01'),
+    dateTo: new Date('2030-01-01'),
+})
+
 
 export const setProtectedArticlesQueryFilterAtom = atom(
     () => protectedArticlesQueryFilterAtom,

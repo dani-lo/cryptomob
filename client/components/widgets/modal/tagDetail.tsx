@@ -11,14 +11,18 @@ import { faTags } from "@fortawesome/free-solid-svg-icons"
 import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
 import { useUnwatchlistTag, useWatchlistTag } from "@/src/hooks/useTags"
 import { ItemWatchlists } from "../itemWatchlists"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
+import { PaginationCtrl } from "@/src/utils/paginationCtrl"
+import { PaginationComponent } from "../pagination"
+
+const ARTICLE_PER_PAGE = 4
 
 export const TagDetailModalComponent = ({
         tag, 
         userId,
         onClose 
     }: { 
-        tag: TagApiData; 
+        tag: TagApiData | undefined; 
         onClose: () => void; 
         userId: number;
     }) => {
@@ -31,12 +35,27 @@ export const TagDetailModalComponent = ({
     const watchlistTagMutation = useWatchlistTag()
     const unwatchlistTagMutation = useUnwatchlistTag()
 
+    const [articlesOffset, setArticlesOffset] = useState(0)
+    
+    const numArticles = tag?.articles?.length || 0
+
+    const paginator = numArticles > ARTICLE_PER_PAGE ? new PaginationCtrl(
+        numArticles,
+        articlesOffset,
+        ARTICLE_PER_PAGE
+    ) : null
+
+    if (!tag) {
+        return null
+    }
+
     const disabledWatchlist = (watchlistID: number) => tag.watchlists?.some(w => w.watchlist_id === Number(watchlistID))
 
     const watchlistOpts = watchlistsData?.watchlists ? watchlistsData.watchlists.map(w => {
         return { label: w.watchlist_name, value: `${ w.watchlist_id }`, className: disabledWatchlist(w.watchlist_id) ? 'disabled' : '' }
     }) : []
 
+    
     const onSetWatchlist = () => {
 
         watchlistTagMutation.mutate({
@@ -56,7 +75,7 @@ export const TagDetailModalComponent = ({
     }
 
     return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
-        <div className="overlay-full-content rounded-lg shadow article-detail">
+        <div className="overlay-full-content rounded-lg shadow">
             <StyledContainedBar>
                 <CloseIconButtonComponent onClose={ onClose } />
             </StyledContainedBar>
@@ -99,20 +118,33 @@ export const TagDetailModalComponent = ({
             </div>
             {
                 tag.articles ? 
-                    <div style={{ height: '100%' }}>
-                        
-                        
-                        <div  style={{ overflowY: 'scroll', height: 'calc(100% - 200px)' }}>
+                    <div className="my-8">
                         {
-                            tag.articles.map(a => {
+                            tag.articles.map((a, i) => {
+
+                                if (paginator && !paginator.pageItemInRange(i)) {
+                                    return null
+                                }
+
                                 return <div  key={ a.article_id }>
-                                <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
-                                <p className={ cnParagraph }>{ a.article_description }</p>
+                                    <h2 className={ cnSectionSmallTitle }>
+                                        <a href={ a.article_link} target="_blank">{ a.article_title }</a>
+                                    </h2>
+                                    <p className={ cnParagraph }>{ a.article_description }</p>
                                 </div>
                             })
                         }
-                        </div>
                     </div> : null
+            }
+            {
+            paginator  ? 
+                <PaginationComponent 
+                    paginationCtrl={ paginator } 
+                    onSelectPage={ (nextOffset) => { 
+                        setArticlesOffset(nextOffset)
+                    }} 
+                /> 
+                : null
             }
             </div>
     </div>

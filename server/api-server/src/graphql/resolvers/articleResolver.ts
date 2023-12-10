@@ -27,8 +27,7 @@ export default {
                 bookmarked :hasNamedProp(args.params, 'bookmarked') ? args.params.bookmarked  : null,
             }
 
-            console.log('filters:::::::::::')
-            console.log(filters)
+            
             const result = await dataSources.articleService.pgGetPaginateArticles(
                 args.params.offset, 
                 args.params.sortBy, 

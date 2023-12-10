@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  cryptomob:
+    container_name: qrated-cryptomob-client-container
+    build:
+      context: ./
+      dockerfile: Dockerfile-cryptomob
+    volumes:
+        - .:/app
+        - /app/node_modules
+        - /app/.next
+    ports:
+      - "3000:3000"
+
+  # fullstacked:
+  #   container_name: qrated-fullstacked-client-container
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile-fullstacked
+  #   volumes:
+  #       - .:/app
+  #       - /app/node_modules
+  #       - /app/.next
+  #   ports:
+  #     - "3001:3001"

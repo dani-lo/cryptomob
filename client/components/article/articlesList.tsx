@@ -12,11 +12,19 @@ import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 
 import { ArticleCardComponent } from "@/components/article/articleCard"
 import { PaginationComponent } from "@/components/widgets/pagination"
+import { useTag } from "@/src/hooks/useTags";
+import { TagDetailModalComponent } from "../widgets/modal/tagDetail";
 // import { CreateArticleComponent } from "@/components/article/createArticle"
 
 interface AtriclesProps { articles: ArticleAPiData[], recordsCount: number }
 
 export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles: AtriclesProps }) => {
+
+    const [tagId, setTagId] = useState(0)
+
+    const {
+      data: tagData
+    } = useTag(tagId)
 
     const bookmarkArticle = useBookmarkArticle()
     const deleteArticle = useDeleteArticle()
@@ -43,33 +51,39 @@ export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles
       fetchParams.limit
     ])
 
+    console.log(tagData)
+
     return <div>
-    <StyledCardContainer className="pb-8 pt-8">
-    {
-        paginatedArticles.articles.map(article => {
-          if (!article) {
-            return null
-          }
-          
-          return <ArticleCardComponent 
-            article={ new Article(article) } 
-            key={ article.article_id }
-            bookmarkArticle={ bookmarkArticle.mutate }
-            deleteArticle={ deleteArticle.mutate }
-          />
-        })
-    }
-    </StyledCardContainer>
-    {
-      paginator ? 
-        <PaginationComponent 
-        paginationCtrl={ paginator } 
-        onSelectPage={ (nextOffset) => { 
-          setFetchParams({ ...fetchParams, offset: nextOffset })
-        }} 
-      /> 
-      : null
-    }
-   
+      <TagDetailModalComponent 
+        tag={ tagData?.tag } 
+        onClose={ () => setTagId(0)} userId={ 0 } 
+      />
+      <StyledCardContainer className="pb-8 pt-8">
+      {
+          paginatedArticles.articles.map(article => {
+            if (!article) {
+              return null
+            }
+            
+            return <ArticleCardComponent 
+              article={ new Article(article) } 
+              key={ article.article_id }
+              bookmarkArticle={ bookmarkArticle.mutate }
+              deleteArticle={ deleteArticle.mutate }
+              selectTag= { (d: number) => setTagId(d)}
+            />
+          })
+      }
+      </StyledCardContainer>
+      {
+        paginator ? 
+          <PaginationComponent 
+            paginationCtrl={ paginator } 
+            onSelectPage={ (nextOffset) => { 
+              setFetchParams({ ...fetchParams, offset: nextOffset })
+            }} 
+        /> 
+        : null
+      }
     </div>
   }

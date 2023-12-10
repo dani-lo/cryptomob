@@ -7,17 +7,18 @@ export class PaginationCtrl {
     public itemsPerPage: number
     public offset: number
     public maxPagesInWidget = 7
-    
 
     public constructor (
             numItems: number, 
             offset: number, 
             itemsPerPage: number) {
-
-        this.currPage = offset > 0 ? Math.ceil(offset / itemsPerPage) : 1
+        
+        this.currPage = offset > 0 ? Math.ceil(offset / itemsPerPage) : 0
         this.itemsPerPage = itemsPerPage
         this.totalPages = Math.ceil(numItems / itemsPerPage)
         this.offset = offset
+
+        console.log('NEW PAGGGG numitems', numItems)
     }
 
     public getCurrPage () : number {
@@ -39,11 +40,11 @@ export class PaginationCtrl {
 
         if (this.totalPages <= this.maxPagesInWidget) {
             
-            return range(this.totalPages, 1) 
+            return range(this.totalPages, 0) 
 
         } else if (this.currPage < Math.ceil(this.maxPagesInWidget / 2)) {
             
-            return range(this.maxPagesInWidget, 1) 
+            return range(this.maxPagesInWidget, 0) 
 
         } else if (this.currPage < (this.totalPages - this.maxPagesInWidget)) {
 
@@ -56,28 +57,6 @@ export class PaginationCtrl {
 
             return range(this.maxPagesInWidget, startPage) 
         }
-    }
-
-    public maybeNext () : number | null {
-
-        const maybeNextPage = this.currPage + 1
-        
-        if (maybeNextPage > this.totalPages) {
-            return null
-        }
-        
-        return maybeNextPage
-    }
-
-    public maybePrev () : number | null {
-
-        const maybePrevPage = this.currPage - 1
-        
-        if (maybePrevPage < 0) {
-            return null
-        }
-        
-        return maybePrevPage
     }
 
     public next () {
@@ -98,5 +77,38 @@ export class PaginationCtrl {
             this.currPage = prevPage
         }
         
+    }
+
+    public pageItemInRange (pageItemIndex: number) : boolean {
+
+        const range = [
+            this.offset,
+            this.offset + this.itemsPerPage
+
+        ]
+      
+        return pageItemIndex >= range[0] && pageItemIndex < range[1]
+    }
+
+    public maybeNext () : number | null {
+
+        const maybeNextPage = this.currPage + 1
+        
+        if (maybeNextPage >= this.totalPages) {
+            return null
+        }
+        
+        return maybeNextPage
+    }
+
+    public maybePrev () : number | null {
+
+        const maybePrevPage = this.currPage - 1
+        
+        if (maybePrevPage < 0) {
+            return null
+        }
+        
+        return maybePrevPage
     }
 }

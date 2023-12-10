@@ -7,6 +7,7 @@ import { CategoryService } from './categoriesService'
 import { CoinService } from './coinService'
 import { AuthorService } from './authorService'
 import { EtlService } from './etlService'
+import { MetaService } from './metaService'
 
 export const dataSources = {
     articleService: new ArticleService(),
@@ -17,5 +18,6 @@ export const dataSources = {
     categoryService: new CategoryService(),
     coinService: new CoinService(),
     authorService: new AuthorService(),
-    etlService: new EtlService()
+    etlService: new EtlService(),
+    metaService: new MetaService()
 }

@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { UseMutateFunction } from "@tanstack/react-query"
-import Link from "next/link"
 
 import { ArticleBase } from "@/src/models/article"
 import { Tag } from "@/src/models/tag"
@@ -9,7 +8,7 @@ import { timestampToDateString } from "@/src/helpers/date"
 import { ellipsys } from "@/src/helpers/ellipsys"
 
 import { StyledCard } from '@/src/styles/main.styled' 
-import { cnBold, cnCardTitle, cnItemCard, cnParagraph, cnPayoff, cnTag } from "@/src/styles/classnames.tailwind"
+import { cnBold, cnCardTitle, cnItemCard, cnParagraph, cnPayoff, cnTag, cnCardContainer } from "@/src/styles/classnames.tailwind"
 
 import { UpdateBoolInput } from "@/src/hooks"
 
@@ -19,12 +18,13 @@ import { ArticleDetailModalComponent } from "@/components/widgets/modal/articleD
 import { ArticleColorizeActionModalComponent, ArticleCommentActionModalComponent } from "@/components/widgets/modal/articleActions"
 import { DeleteditemOverlayComponent } from "@/components/widgets/deletedItemOverlay"
 
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
 
 interface Props {
     article: ArticleBase;
     bookmarkArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>,
-    deleteArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>
+    deleteArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>,
+    selectTag: (tagId: number) => void,
 }
 
 export const ArticleCardComponent = (props: Props) => {
@@ -32,7 +32,6 @@ export const ArticleCardComponent = (props: Props) => {
     const { article, bookmarkArticle, deleteArticle } = props
 
     const [modalaction, setModalAction] = useState<ArticleModalActions | null>(null)
-
     const uniqueTags = article.tags.reduce((acc: Tag[], curr: Tag) => {
 
         if (acc.find(d => d.tag_id === curr.tag_id)) {
@@ -67,7 +66,7 @@ export const ArticleCardComponent = (props: Props) => {
             onBookmarkArticle={ bookmarkArticle }
             onDeleteArticle={ deleteArticle }
         />
-        <div className="flex flex-col justify-between p-4 leading-normal">
+        <div className={ cnCardContainer}>
             <h5 className={ cnCardTitle }>
                 <a target="blank" href={ article.article_link }>
                 {
@@ -85,11 +84,16 @@ export const ArticleCardComponent = (props: Props) => {
                 Category: <span className={ cnBold }>{ article.category ? article.category.category_name : 'none'}</span>. 
                 Member of <span className={ cnBold }>{ article.watchlists?.length || 0 }</span> watchlists
             </p>
-            <p className="flex flex-wrap items-baseline m-0" style={{ height: uniqueTags.length > 0 ? '92px' : 'auto', overflowY: 'scroll'}}>
+            <p className="flex flex-wrap items-baseline m-0" style={{ height: uniqueTags.length > 0 ? '50px' : 'auto', overflowY: 'scroll'}}>
                 { uniqueTags.length > 0 ?
 
                     uniqueTags.map(tag => {
-                        return <span className={ cnTag(appStaticSettings.bg) } key={ tag.tag_id }><Link href={ `/tags?tagId=${ tag.tag_id }` }>{ tag.tag_name }</Link></span>
+                        return <span 
+                            className={ cnTag(appStaticSettings.bg) } 
+                            onClick={ () => props.selectTag(tag.tag_id) }
+                            key={ tag.tag_id }>
+                            { tag.tag_name }
+                        </span>
                     }) :
 
                     <span className={ cnPayoff }>No Tags AVaialble for this article</span>
@@ -124,5 +128,3 @@ export const ArticleCardComponent = (props: Props) => {
 
     </StyledCard>
 }
-
-

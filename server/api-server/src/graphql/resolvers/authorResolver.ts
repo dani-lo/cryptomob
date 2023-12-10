@@ -31,7 +31,27 @@ export default {
             )
 
             return authors?.rows?.map(r => ({ ...r, articles_count: 12})) || []
-        }
+        },
+
+        async paginatedAuthors(_parent: any, args: { params: PaginationQueryParams }) {
+            
+            const filters = {
+                appId: args.params.appId,
+            }
+
+            const result = await dataSources.authorService.pgGetPaginatedAuthors(
+                args.params.fromDate,
+                args.params.toDate,
+                args.params.offset,
+                args.params.limit,
+                filters
+            )
+            
+            return {
+                authors: result.authors,
+                recordsCount: result.authorsCount
+            }
+        },
     },
 
     Mutation : {

@@ -2,17 +2,24 @@
 
 import React, { createContext } from "react"
 
-import { fetchParamsAtom, protectedArticlesQueryFilterAtom, publicArticlesQueryFilterAtom } from "@/src/store/queryAtoms";
-
+import { 
+  fetchArticlesParamsAtom, 
+  fetchTagsParamsAtom, 
+  fetchAuthorsParamsAtom, 
+  protectedArticlesQueryFilterAtom, 
+  publicArticlesQueryFilterAtom 
+} from "@/src/store/queryAtoms";
 
 export const initialCtx = {
   queryParams:{
-      articles: fetchParamsAtom
+      articles: fetchArticlesParamsAtom,
+      tags: fetchTagsParamsAtom,
+      authors: fetchAuthorsParamsAtom
   },
   filterParams: {
       articles: {
         pub: publicArticlesQueryFilterAtom,
-        protect: protectedArticlesQueryFilterAtom
+        protect: protectedArticlesQueryFilterAtom,
       }
   }
 }
@@ -25,7 +32,6 @@ export const ApiParamsContextProvider = ({
   children: React.ReactNode;
 }) => {
 
-  // const [apiParamsState] = useState(startState)
   return (
     <ApiParamsContext.Provider value={ initialCtx }>
       {children}

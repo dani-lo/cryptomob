@@ -1,50 +1,47 @@
 /* eslint max-params: ["error", 4] */
 
 import {  UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import request from "graphql-request";
 
 import { TagApiData } from "../models/tag";
 
 import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries";
-import { CREATE_TAG, READ_TAGS, UNWATCHLIST_TAG, WATCHLIST_TAG } from "../queries/tagQueries";
+import { CREATE_TAG, READ_TAG, UNWATCHLIST_TAG, WATCHLIST_TAG } from "../queries/tagQueries";
 import { gqlClient } from "../utils/graphqlClient";
-import { QueryFilterParams } from "../store/app";
 import { updateClientTagsCache } from "../helpers/reactQueryCacheUtil";
+import request from "graphql-request";
 
 interface TagInput {tag_name: string, tag_origin: string}
 
-export const useTagsWithArticlesCount = (
-        appId: number, 
-        dateFrom = '2000-01-01', 
-        dateTo = '2030-12-31', 
-        filterParams ?: Partial<QueryFilterParams>) => {
+// export const useTagsWithArticlesCount = (
+//         appId: number,
+//         fetchParams: FetchParams<TagsSortby>) => {
 
-    const { 
-        isLoading,
-        isError,
-        error,
-        data,
-        isFetching,
-        // isPreviousData 
-    } : UseQueryResult<{ tags: (TagApiData & { articles_count: number})[] }, unknown> = useQuery({
+//     const { 
+//         isLoading,
+//         isError,
+//         error,
+//         data,
+//         isFetching,
+//         // isPreviousData 
+//     } : UseQueryResult<{ tags: (TagApiData & { articles_count: number})[] }, unknown> = useQuery({
 
-        queryKey: [GqlCacheKeys.tags],
-        queryFn: async () => {
-            return await request(GRAPHQL_ENDPOINT, READ_TAGS(appId, dateFrom, dateTo, filterParams))
-        },
-        keepPreviousData: true,
-        suspense: true
-    })
+//         queryKey: [GqlCacheKeys.tags],
+//         queryFn: async () => {
+//             return await request(GRAPHQL_ENDPOINT, READ_TAGS(appId))
+//         },
+//         keepPreviousData: true,
+//         suspense: true
+//     })
 
-    return {
-        isLoading,
-        isError,
-        error,
-        data,
-        isFetching,
-        // isPreviousData
-    }
-}
+//     return {
+//         isLoading,
+//         isError,
+//         error,
+//         data,
+//         isFetching,
+//         // isPreviousData
+//     }
+// }
 
 export const useAddtag = () => {
     
@@ -104,4 +101,30 @@ export const useUnwatchlistTag = () => {
             updateClientTagsCache(client, returned)
         },
       })
+}
+
+export const useTag = (tagId: number) => {
+
+    const { 
+        isLoading,
+        isError,
+        error,
+        data,
+        isFetching,
+    } : UseQueryResult<{ tag: TagApiData }> = useQuery({
+
+        queryKey: [GqlCacheKeys.tag, tagId],
+        queryFn: async () => {
+            return await request(GRAPHQL_ENDPOINT, READ_TAG(tagId))
+        },
+        keepPreviousData: true
+    })
+
+    return {
+        isLoading,
+        isError,
+        error,
+        data,
+        isFetching,
+    }
 }

@@ -18,7 +18,7 @@ export const ArticleCommentActionModalComponent = ({ article, onClose }: { artic
 
     const addCommentMutation =  useAddComment()
 
-    const handleSubmit = (e: FormEvent) => {
+    const saveComment = (e: FormEvent) => {
         
         e.preventDefault()
 
@@ -38,7 +38,7 @@ export const ArticleCommentActionModalComponent = ({ article, onClose }: { artic
             <CloseIconButtonComponent onClose={ onClose } />
         </StyledContainedBar>
         <h5 className={ cnames.cnSectionTitle +  ' mt-4 mb-4' }>{ article.article_title }</h5>
-        <form method="post" onSubmit={handleSubmit}>
+        <form method="post" onSubmit={saveComment}>
             <textarea
                 name="postContent"
                 value={ text }
@@ -70,14 +70,16 @@ export const ArticleColorizeActionModalComponent = ({ article, onClose }: { arti
         })
     }
 
-    return <div className="overlay-filler p-4 bg-white" style={{ overflowY: 'scroll' }}>
+    const currColor = article.article_bg || 'white' 
+
+    return <div className="overlay-filler p-4 bg-white" style={{ overflowY: 'scroll', background: currColor }}>
         <StyledContainedBar>
             <CloseIconButtonComponent onClose={ onClose } />
         </StyledContainedBar>
         <h5 className={ cnames.cnSectionTitle +  ' mt-4 mb-4' }>{ article.article_title }</h5>
         <ColorPickerComponent 
             onPick={ onPickColor } 
-            currColor={ article.article_bg || 'white' }
+            currColor={ currColor }
         />
     </div>
 }

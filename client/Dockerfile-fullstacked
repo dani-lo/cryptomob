@@ -61,19 +61,23 @@ COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/next.config.js ./next.config.js
 
 COPY --from=builder /app/components ./components
-COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/app ./app
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/src ./src
-COPY --from=builder /app/styles ./styles
-COPY --from=builder /app/tests ./tests
 COPY --from=builder /app/next-env.d.ts ./next-env.d.ts
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+ENV PORT 3001
+ENV NEXT_PUBLIC_APP_ID 2
+ENV APP_ID 2
 
 # CMD ["npm", "start"]
-CMD ["tail", "-f", "/dev/null"]
+
+# COPY docker-entrypoint.sh /
+# RUN chmod +x /docker-entrypoint.sh
+# ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
+
+CMD ["npm", "start"]

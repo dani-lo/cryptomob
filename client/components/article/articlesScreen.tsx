@@ -21,17 +21,14 @@ import { dateToPostgresDateString } from '@/src/helpers/date'
 import { gqlCacheKey } from '@/src/helpers/gqlCacheKey'
 import { SortDirection } from '@/src/helpers/sort'
 
-// import { useTagsWithArticlesCount } from '@/src/hooks/useTags'
-// import { useAuthorsWithArticlesCount } from '@/src/hooks/useAuthors'
-// import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories'
-
 import { useUsers } from '@/src/hooks/useUsers'
 
 import { currUserAtom } from '@/src/store/userAtoms'
 // import { currSettingAtom } from '@/src/store/settingAtoms'
 import { limitOptions } from '@/src/store/app'
 
-import { getAppStaticSettings } from '@/src/store/settingAtoms'
+import { getAppStaticSettings } from '@/src/store/static'
+// import { useMeta } from '@/src/hooks'
 
 interface ArticleApiDataResult {
   recordsCount: number;
@@ -51,28 +48,13 @@ const sortOptions = [
 
 export const ArticlesScreenComponent = () => {
 
-//   const isFetching = useIsFetching()
-
   const ctx = useContext(ApiParamsContext)
 
   const [publicFilters] = useAtom(ctx.filterParams.articles.pub)
   const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.articles)
-
-  // const [settings, setSettings] = useAtom(currSettingAtom)
-
-//   useEffect(() => {
-//     if (settings.appId === null) {
-
-//       const appId = document.location.host.indexOf('fullstack') === -1 ? 1 : 2
-
-//       setSettings( {...settings, appId})
-//     }
-// }, [settings, setSettings])
-
+  const [user, setUser] = useAtom(currUserAtom)
 
   const { data: udata } = useUsers()
-
-  const [user, setUser] = useAtom(currUserAtom)
 
   useEffect(() => {
       if (udata?.users && user === null) {
@@ -80,10 +62,9 @@ export const ArticlesScreenComponent = () => {
       }
   }, [udata, user, setUser])
 
-  // const dateFrom = dateToPostgresDateString(fetchParams.dateFrom)
-  // const dateTo = dateToPostgresDateString(fetchParams.dateTo)
- 
-  const appId = getAppStaticSettings().appId
+  
+  const appStaticSettings = getAppStaticSettings()
+  const appId = appStaticSettings.appId
 
   const { 
       isLoading,
@@ -111,12 +92,8 @@ export const ArticlesScreenComponent = () => {
       suspense: true
   })
 
-  // useTagsWithArticlesCount(appId)
-  // useAuthorsWithArticlesCount(appId) 
-  // useCategoriesWithArticlesCount(appId)
-
   if (isLoading) {
-    return <LoadingComponent />
+    return <LoadingComponent appStaticSettings={ appStaticSettings } />
   }
 
   if (isError) {
@@ -124,14 +101,8 @@ export const ArticlesScreenComponent = () => {
   }
  
   const isEMpty = (!data || !data.paginatedArticles || data.paginatedArticles.articles.length === 0) 
-//   const opacity = isFetching ? 1 : 0
 
 return <div> 
-  
-    {/* <div style={{ opacity}} className={ utils.cnJoin(['status-widget']) }>
-        <p>working...</p>
-    </div>  */}
-  
     <ArticlesToolbarComponent 
       onFromDateChange={ (date) => {
         setFetchParams({ ...fetchParams, dateFrom: date})

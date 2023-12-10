@@ -14,7 +14,7 @@ import { useContext, useState } from "react"
 import { SortDirection } from "@/src/helpers/sort"
 import { useAtom } from "jotai"
 import { ApiParamsContext } from "@/context/apiParams.context"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
 
 interface Props {
     fromDate: Date,

@@ -5,7 +5,7 @@ import { ErrorComponent } from '@/components/widgets/status/error'
 import { EmptyComponent } from '@/components/widgets/status/empty'
 
 import { cnBold, cnButton, cnPage, cnParagraph, cnPostscriptum, cnSectionSmallTitle, cnTextualList, utils } from '@/src/styles/classnames.tailwind' 
-import { getAppStaticSettings } from '@/src/store/settingAtoms'
+import { getAppStaticSettings } from '@/src/store/static'
 import { useRssSources } from '@/src/hooks/useEtl'
 import { API_BASE } from '@/src/queries'
 import { dateToPostgresDateString } from '@/src/helpers/date'

@@ -2,7 +2,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import { cnBigIconDark, utils } from "@/src/styles/classnames.tailwind"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
 
 export const CloseIconButtonComponent = ({
     onClose

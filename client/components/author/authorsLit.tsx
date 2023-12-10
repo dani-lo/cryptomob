@@ -3,22 +3,37 @@
 import { ellipsys } from '@/src/helpers/ellipsys';
 import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
 import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { ResourceItemsCount } from '@/src/queries';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
 import { AuthorApiData } from '@/src/models/author';
 import Link from 'next/link';
-import { getAppStaticSettings } from '@/src/store/settingAtoms';
+import { getAppStaticSettings } from '@/src/store/static';
+import { useAtom } from 'jotai';
+import { PaginationCtrl } from '@/src/utils/paginationCtrl';
+import { AuthorsApiDataResult } from './authorsScreen';
+import { ApiParamsContext } from '@/context/apiParams.context';
+import { PaginationComponent } from '../widgets/pagination';
  
-type AuthorProps = AuthorApiData & ResourceItemsCount
-
-export const AuthorsListComponent = ({ authors }: { authors: AuthorProps[]}) => {
+export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: AuthorsApiDataResult}) => {
 
     const [searchterm, setSearchterm] = useState('')
-    const [sortby, setSortby] = useState<[keyof AuthorProps, SortDirection | null]>(['author_name', null])
 
-    const onSortBy = (newSortField : keyof AuthorProps) => {
+    // const [sortby, setSortby] = useState<[keyof AuthorProps, SortDirection | null]>(['author_name', null])
+    const [sortby, setSortby] = useState<[keyof (AuthorApiData & ResourceItemsCount), SortDirection | null]>(['author_name', null])
+    
+    const ctx = useContext(ApiParamsContext)
+
+    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.tags)
+
+    const paginator = new PaginationCtrl(
+        paginatedAuthors.recordsCount,
+        fetchParams.offset,
+        fetchParams.limit
+    )
+
+    const onSortBy = (newSortField : keyof (AuthorApiData & ResourceItemsCount)) => {
 
         const currSortDir = sortby[1]
         const currSortField = sortby[0]
@@ -28,8 +43,8 @@ export const AuthorsListComponent = ({ authors }: { authors: AuthorProps[]}) => 
         setSortby([newSortField , sortDir])
     }
 
-    const sorted = sortItemsArray<AuthorProps>(
-        authors, 
+    const sorted = sortItemsArray<AuthorApiData & ResourceItemsCount>(
+        paginatedAuthors.authors, 
         sortby[0], 
         sortby[1], 
         sortby[0] === 'articles_count' ? (t: AuthorApiData) => t.articles.length : null)
@@ -60,7 +75,7 @@ export const AuthorsListComponent = ({ authors }: { authors: AuthorProps[]}) => 
                             onSortBy('author_name')
                     }}>
                         <div className={ cnTableFull.thContent}>
-                            Autrho name
+                            Author name
                                 { sortby[0] === 'author_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                          </div>
                     </th>
@@ -107,5 +122,15 @@ export const AuthorsListComponent = ({ authors }: { authors: AuthorProps[]}) => 
             }
             </tbody>
         </table>
+        {
+        paginator ? 
+        <PaginationComponent 
+          paginationCtrl={ paginator } 
+          onSelectPage={ (nextOffset) => { 
+            setFetchParams({ ...fetchParams, offset: nextOffset })
+          }} 
+      /> 
+      : null
+    }
     </div>
 }

@@ -23,7 +23,7 @@ services:
   #   ports:
   #     - "8080:8080"
   #   environment:
-  #     - NODE_ENV=container
+  #     - NODE_ENV=staging
   #   # volumes:
   #   #   - ./:/app/
   #   #   # node_modules workaround for volumes

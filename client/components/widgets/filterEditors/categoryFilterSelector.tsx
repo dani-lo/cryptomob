@@ -7,7 +7,7 @@ import { CheckListComponent } from "@/components/widgets/selectablesList"
 import { ApiParamsContext } from "@/context/apiParams.context"
 import { useAtom } from "jotai"
 import { dateToPostgresDateString } from "@/src/helpers/date"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
 
 export const CategoryFilterSelectorComponent = () => {
 

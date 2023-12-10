@@ -140,16 +140,21 @@ export class WatchlistService extends DataSource {
         }
     }
 
-    async pgCreateWatchlist(watchlistName: string, userId: number) {
+    async pgCreateWatchlist(watchlistName: string, userId: number, appId: number) {
 
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 
+        console.log('=============== create WL ===============')
+        console.log(`
+            INSERT INTO watchlists (watchlist_name, watchlist_delete, user_id, app_id) VALUES ('${ watchlistName }', false, ${ userId }, ${ appId }) RETURNING *;
+        `)
+
         try {
 
             return pgclient.query(`
-                INSERT INTO watchlists (watchlist_name, watchlist_delete, user_id) 
-                VALUES (${ watchlistName }, false, ${ userId }) 
+                INSERT INTO watchlists (watchlist_name, watchlist_delete, user_id, app_id) 
+                VALUES ('${ watchlistName }', false, ${ userId }, ${ appId })
                 RETURNING *;
             `)
 

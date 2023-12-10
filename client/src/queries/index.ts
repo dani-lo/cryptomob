@@ -1,7 +1,8 @@
 import { READ_ARTICLES } from "./articleQueries"
 import { CREATE_COMMENT } from "./commentQueries"
 
-export const API_BASE = 'http://localhost:8080' // process.env.NODE_ENV === 'production' ? 'https://qrated.net' : 'http://localhost:8080'
+export const API_BASE = process.env.NODE_ENV === 'production' ? 'http://35.179.90.228:8080' : 'http://localhost:8080'
+
 export const GRAPHQL_ENDPOINT = `${ API_BASE }/graphql`
 
 export {
@@ -19,17 +20,23 @@ export interface ResourceItemsCount {
     authors_count ?: number;
     articles_count ?: number;
     watchlists_count ?: number;
+    
   }
 
 export type PaginatedTypeResult<T> = PaginatedResult & T;
 
 export enum GqlCacheKeys {
     'paginatedArticles' = 'paginatedArticles',
+    'paginatedTags' = 'paginatedTags',
+    'paginatedAuthors' = 'paginatedAuthors',
     'tags' = 'tags',
+    'tag' = 'tag',
     'watchilsts' = 'watchilsts',
     'categories' = 'categories',
     'authors' = 'authors',
     'users' = 'users',
     'comments' = 'comments',
     'etl' = 'etl',
+    'meta' = 'meta'
 }
+

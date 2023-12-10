@@ -138,10 +138,6 @@ input {
   width: 300px;
 }
 
-.logoimg path {
-  fill: #f2f2f2;
-}
-
 .react-datepicker-wrapper input {
   width: 120px;
 }
@@ -160,6 +156,7 @@ input {
 /* Page content */
 .content {
   padding: 16px;
+  position: relative;
 }
 
 .sticky {
@@ -176,16 +173,20 @@ input {
 
 /* STICKY:END */
 
+/* PAGINATION:START */
+
 .pagination-item {
-  padding: 1rem;
+  /* padding: 1rem; */
   cursor: pointer;
+  margin: 0 0.2rem;
+  padding: 0.2rem 0.5rem;
 }
 .pagination-item:hover {
   opacity: 0.5;
 }
 .page-link {
   
-  width: 50px;
+  width: 38px;
   text-align: center;
 }
 
@@ -197,12 +198,16 @@ input {
 
 .nav-link {
   background: white;
-  padding: 1rem;
+  /* padding: 0.25rem; */
 }
 
 .nav-link-disabled {
   opacity: 0.5;
+  cursor: defualt;
+  pointer-events: none;
 }
+
+/* PAGINATION:END */
 
 .content {
   margin-left: 210px;
@@ -233,18 +238,38 @@ input {
   border-bottom: 1px dotted white;
 }
 
-.navbar h2 {
-  font-style: italic;
+.navbar div.logo-container {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-  text-align: center;
+  width: 164px;
   z-index: var(--z-3);
-  color: #f2f2f2;
-  font-size: 2rem;
-  font-style: normal;
+  padding: 0.5rem;
+  background: white;
+  margin: 0 0 16px 21px;
+  border-radius: 0.2rem;
 
+}
+
+.navbar div.logo-container  li {
+  font-style: italic;
+  text-align: left;
+  padding-left: 0.25rem 0;
+  font-style: normal;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.navbar div.logo-container  li:hover {
+  opacity: 0.5;
+}
+
+.navbar div.logo-container  li.active {
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none;
+}
+.navbar div.logo-container  ul {
+  margin-top: 0;
 }
 .Dropdown-root {
   position: relative;

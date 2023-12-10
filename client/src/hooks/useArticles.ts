@@ -196,8 +196,6 @@ export const useColorArticle = () => {
   
     return useMutation({ 
         mutationFn: (input: { color: AppColor, article_id: number }) => {
-
-            console.log(input)
             
             return gqlClient.request(
                 COLOR_ARTICLE             ,

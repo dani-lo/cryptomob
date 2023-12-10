@@ -17,7 +17,7 @@ import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories';
 
 import { useUsers } from '@/src/hooks/useUsers';
 import { currUserAtom } from '@/src/store/userAtoms';
-import { getAppStaticSettings } from '@/src/store/settingAtoms';
+import { getAppStaticSettings } from '@/src/store/static';
  
 
 export const CategoriesScreenComponent = () => {
@@ -38,11 +38,12 @@ export const CategoriesScreenComponent = () => {
       }
   }, [udata, user, setUser])
 
-  const appId = getAppStaticSettings().appId
+  const appStaticSettings = getAppStaticSettings()
+  const appId = appStaticSettings.appId
   const { data, isError, isLoading } = useCategoriesWithArticlesCount(appId)
 
   if (isLoading) {
-      return <LoadingComponent />
+      return <LoadingComponent appStaticSettings={ appStaticSettings } />
     }
   
     if (isError) {

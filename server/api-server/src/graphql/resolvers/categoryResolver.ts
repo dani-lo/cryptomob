@@ -10,7 +10,6 @@ export default {
     Query: {
 
         async categories(_parent: any, args: { params: DatedWhereParams }) {
-            console.log('CATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT')
             const filters = {
                 appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,

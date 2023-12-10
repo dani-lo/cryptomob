@@ -13,7 +13,7 @@ import { SortIconComponent } from '@/components/widgets/sortIcon';
 import { ellipsys } from '@/src/helpers/ellipsys'
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort'
 import Link from 'next/link';
-import { getAppStaticSettings } from '@/src/store/settingAtoms';
+import { getAppStaticSettings } from '@/src/store/static';
  
 type WatchlistProp = WatchlistApiData & ResourceItemsCount
 

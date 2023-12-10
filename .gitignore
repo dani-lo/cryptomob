@@ -5,3 +5,7 @@ node_modules/
 backups/
 src.bak/
 cryptomob-db
+memo
+pgvolumes
+.terraform/
+.husky/

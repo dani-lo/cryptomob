@@ -22,18 +22,19 @@ export const cnNavLinkActive = 'flex items-center justify-center px-3 h-8 ml-0 l
 export const cnNavLinkUnactive = `${ cnNavLinkActive } opacity-50`
 
 export const cnParagraph = 'my-1 py-1 text-sm text-gray-700'
-export const cnPostscriptum = 'text-xs text-gray-700 text-gray-800 p-0 m-0 block'
+export const cnPostscriptum = 'text-xs p-0 m-0 block'
 export const cnPayoff = `${ cnParagraph } font-semibold`
 
 export const cnLabel = 'text-sm text-gray-700'
 
 export const cnTitle = 'mb-4 text-2xl tracking-tight font-extrabold text-gray-900 dark:text-white'
 export const cnLogo = 'mb-8 text-xl text-white text-center italic'
-
+export const cnLogoContainer = ''
 export const cnSectionTitle= 'my-4 text-lg font-bold tracking-tight text-gray-900 dark:text-white'
 export const cnSectionSubTitle= 'my-3 text-base font-light text-gray-900 lg:mb-16 sm:text-xl dark:text-gray-200'
-export const cnSectionSmallTitle= 'my-2 text-sm font-bold tracking-tight text-gray-900 dark:text-white'
+export const cnSectionSmallTitle= 'my-2 text-sm font-bold tracking-tight'
 
+export const cnCardContainer = 'flex flex-col justify-between px-4 py-2 leading-normal'
 export const cnCardTitle= `${ cnSectionSmallTitle } my-3`
 
 export const cnTag = (bg: string) =>  'm-2 m-y-0 ml-0 text-white cursor-pointer px-3 py-2.5 font-normal text-xs leading-3 rounded ' + bg
@@ -60,6 +61,8 @@ export const cnPage = "p-6"
 
 export const cnBold = 'font-bold'
 
+export const border = (borderCol: string) => 'border border-solid ' + borderCol
+
 export const utils = {
     disabled: (cname: string) => `${ cname } disabled` ,
     activeText: (cname: string) => `${ cname } text-red-600` ,
@@ -78,9 +81,9 @@ export const cnTabItemSvgIcon = 'w-4 h-4 mr-2 text-gray-400 group-hover:text-gra
 export const cnTable  = (bg: string) =>  {
 
     return {
-        table: 'w-full text-sm text-left text-gray-500 dark:text-gray-400',
+        table: 'w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-6',
         thead: 'text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400',
-        th: 'px-4 py-3   text-white text-sm underline font-bold ' + bg,
+        th: 'px-4 py-3   text-white text-sm underline font-lld ' + bg,
         thContent: 'flex items-center justify-between cursor-pointer',
         td: 'text-sm px-4 py-3 bg-gray-50 text-gray-900' ,
         tdAction: 'text-sm px-4 py-3 bg-gray-50 text-gray-900 text-center' ,
@@ -107,3 +110,5 @@ export const cnColorPicker = {
     ul: 'my-6 p-0 flex flex-wrap',
     li: 'm-0 p-1 mr-6 text-sm w-30px h-30px cursor-pointer hover:opacity-50'
 }
+
+export const cnPaginateContainer = 'flex '

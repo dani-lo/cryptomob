@@ -23,7 +23,7 @@ import { faNewspaper } from "@fortawesome/free-solid-svg-icons"
 import { Watchlist } from "@/src/models/watchlist"
 import { Category } from "@/src/models/category"
 import { ItemWatchlists } from "../itemWatchlists"
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
 
 export const ArticleDetailModalComponent = ({ article, userId, onClose }: { article: ArticleBase, userId: number, onClose: () => void }) => {
 

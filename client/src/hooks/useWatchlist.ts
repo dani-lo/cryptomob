@@ -10,6 +10,7 @@ interface WatchlistInput {
   watchlist_id?: number, 
   watchlist_name: string,
   user_id: number
+    app_id: number
 }
 
 export const useWatchlistsWIthItemsCount = (appId: number) => {

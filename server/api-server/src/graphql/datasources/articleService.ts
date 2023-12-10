@@ -172,9 +172,6 @@ export class ArticleService extends DataSource {
         const strArticlesWhere = whereClauseObjToSql(whereClause, 'articles')
         
         const strOrderBy = ` article_id ${ sortDirectionPg } `
-            
-        console.log('========================= strArticlesWhere :::::::')
-        console.log(strArticlesWhere)
 
         try {
 

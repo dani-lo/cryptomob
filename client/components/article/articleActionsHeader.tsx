@@ -12,7 +12,7 @@ import { UpdateBoolInput } from "@/src/hooks"
 
 import { ArticleBase } from "@/src/models/article"
 
-import { getAppStaticSettings } from "@/src/store/settingAtoms"
+import { getAppStaticSettings } from "@/src/store/static"
 
 import { cnBigIconActive, utils, cnBigIcon, cnItemCardActions } from "@/src/styles/classnames.tailwind"
 

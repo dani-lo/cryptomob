@@ -22,16 +22,17 @@ export default {
 
     Mutation: {
         
-        async createWatchlist(_: any, args: { input : { watchlist_name: string; user_id: number} }) { 
+        async createWatchlist(_: any, args: { input : { watchlist_name: string; user_id: number, app_id: number,} }) { 
 
             const {
                 watchlist_name,
-                user_id
+                user_id,
+                app_id
             } = args.input
- 
-            const watchlist = await dataSources.watchlistService.pgCreateWatchlist(watchlist_name, user_id)
 
-            return watchlist.rows
+            const result = await dataSources.watchlistService.pgCreateWatchlist(watchlist_name, user_id, app_id)
+
+            return  result?.rows ? result.rows[0] : []
         }
     },
 
@@ -51,7 +52,7 @@ export default {
         },
         async authors(parent: { watchlist_id: number }) {
             
-            console.log('---- WL AUTHORS', parent.watchlist_id)
+            // console.log('---- WL AUTHORS', parent.watchlist_id)
             
             const result = await dataSources.watchlistService.pgGetWatchlistAuthors(parent.watchlist_id)
 
@@ -73,7 +74,7 @@ export default {
 
             const result = await dataSources.userService.pgGetUser(parent.user_id)
 
-            return result.rows[0]
+            return  result?.rows ? result.rows[0] : []
         }
     }
 }

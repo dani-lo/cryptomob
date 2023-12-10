@@ -2,6 +2,7 @@
 
 import { gql } from "graphql-request"
 import { QueryFilterParams } from "../store/app";
+import { SortDirection } from "../helpers/sort";
 
 export enum TagsSortby {
   'date' = 'date',
@@ -54,6 +55,50 @@ export const READ_TAGS = (
         }
     }
   }
+`
+}
+
+export const READ_PAGINATED_TAGS = (
+  appId: number,
+  offset: number, 
+  limit: number,
+  sortby: TagsSortby, 
+  sortdir: SortDirection,
+  fromDate = '2000-01-01', 
+  toDate ='2030-12-31'
+  // eslint-disable-next-line max-params 
+) => {
+
+return gql`
+{
+    paginatedTags(params: {
+      appId: ${ appId }, 
+      offset: ${ offset }, 
+      limit: ${ limit }, 
+      sortBy: ${ "\"" + sortby + "\"" },
+      sortDirection:  ${ "\"" + sortdir + "\"" },
+      fromDate: ${ "\"" + fromDate + "\"" },
+      toDate: ${ "\"" + toDate + "\"" },
+  }) {
+    recordsCount,
+    tags {
+      tag_id
+      tag_name,
+      tag_origin,
+      articles_count,
+      articles {
+        article_id,
+        article_title,
+        article_description,
+        article_link
+      }
+      watchlists {
+        watchlist_id,
+        watchlist_name,
+      }
+    }
+  }
+}
 `
 }
 
@@ -209,3 +254,31 @@ export const UNWATCHLIST_TAG = gql`
 //       }
 //     }
 // `
+
+export const READ_TAG = (
+  tagId: number
+) => {
+
+  return gql`
+  {
+      tag(params: {
+        itemId: ${ tagId }
+    }) {
+        tag_id
+        tag_name,
+        tag_origin,
+        articles_count,
+        articles {
+          article_id,
+          article_title,
+          article_description,
+          article_link
+        }
+        watchlists {
+          watchlist_id,
+          watchlist_name,
+        }
+      }
+    }
+  `
+}

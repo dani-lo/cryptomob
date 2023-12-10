@@ -2,9 +2,10 @@
 
 import { gql } from "graphql-request"
 import { QueryFilterParams } from "../store/app"
+import { SortDirection } from "../helpers/sort"
 
 export enum AuthorSortby {
-  'name' = 'name',
+  'name' = 'author_name',
 } 
 
 export const READ_AUTHORS = (
@@ -50,6 +51,48 @@ export const READ_AUTHORS = (
         }
     }
   }
+`
+}
+
+export const READ_PAGINATED_AUTHORS = (
+  appId: number,
+  offset: number, 
+  limit: number,
+  sortby: AuthorSortby, 
+  sortdir: SortDirection,
+  fromDate = '2000-01-01', 
+  toDate ='2030-12-31'
+  // eslint-disable-next-line max-params 
+) => {
+
+return gql`
+{
+    paginatedAuthors(params: {
+      appId: ${ appId }, 
+      offset: ${ offset }, 
+      limit: ${ limit }, 
+      sortBy: ${ "\"" + sortby + "\"" },
+      sortDirection:  ${ "\"" + sortdir + "\"" },
+      fromDate: ${ "\"" + fromDate + "\"" },
+      toDate: ${ "\"" + toDate + "\"" },
+  }) {
+    recordsCount,
+    authors {
+      author_id
+      author_name,
+      articles {
+        article_id,
+        article_title,
+        article_description,
+        article_link
+      }
+      watchlists {
+        watchlist_id,
+        watchlist_name,
+      }
+    }
+  }
+}
 `
 }
 

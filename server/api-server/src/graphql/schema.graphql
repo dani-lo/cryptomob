@@ -38,6 +38,10 @@ input FilterParams {
   bookmarked: Boolean
 }
 
+input IdParams {
+  itemId: Int!
+}
+
 input UpdateBoolInput {
   item_id: Int!
   val: Boolean!
@@ -75,19 +79,23 @@ input ArticleColorMutation {
 type Query {
   paginatedArticles(params: PaginationParams): PaginatedArticles!
   paginatedComments(params: PaginationParams): PaginatedComments!
+  paginatedTags(params: PaginationParams):  PaginatedTags!
+  paginatedAuthors(params: PaginationParams):  PaginatedAuthors!
   articles(offset: Int!, limit: Int!): [Article!]!
   article(article_id: ID!): Article!
   authors(params: FilterParams): [Author!]!
   author(author_id: ID!): Author!
   category(category_id: ID!): Category!
   tags(params: FilterParams): [Tag!]!
-  tag(tag_id: ID!): Tag!
+  # tag(tag_id: ID!): Tag!
   comments(params: FilterParams): [Comment!]!
   coins:[Coin!]!
   categories(params: FilterParams): [Category!]!
   watchlists(params: FilterParams): [Watchlist!]!
   users:[User!]!
   rssSources(params:FilterParams): [Source!]!
+  appCounts(params:FilterParams): AppCounts!
+  tag(params: IdParams): Tag
 }
 
 type Mutation {
@@ -161,6 +169,11 @@ type Author {
   articles_count: Int
 }
 
+type PaginatedAuthors {
+  recordsCount: Int!
+  authors: [Author]!
+}
+
 # ---- categories 
 
 type Category {
@@ -169,12 +182,14 @@ type Category {
   user: User!
   articles: [Article]
   articles_count: Int
+  app_id: Int!
 }
 
 input CategoryInput {
   category_id: Int
   category_name: String!
   user_id: Int!
+  app_id: Int!
 }
 
 
@@ -189,12 +204,19 @@ type Tag {
   watchlists: [Watchlist]
   # category: Category
   articles_count: Int
+  app_id: Int!
+}
+
+type PaginatedTags {
+  recordsCount: Int!
+  tags: [Tag]!
 }
 
 input TagInput {
   tag_id: Int
   tag_name: String!
   tag_origin: String!
+  app_id: Int!
 }
 
 # ---- users
@@ -244,12 +266,14 @@ type Watchlist {
   authors: [Author]
   coins: [Coin]
   articles: [Article]
+  app_id: Int!
 }
 
 input WatchlistInput {
   watchlist_id: Int
   watchlist_name: String
   user_id: Int
+  app_id: Int!
 }
 
 
@@ -265,3 +289,7 @@ type Coin {
 # # ---- coinprices
 
 # type Coinprice {}
+
+type AppCounts {
+  tags_counts: Int
+} 

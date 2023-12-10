@@ -1,5 +1,5 @@
 module.exports = {
     reactStrictMode: true,
     experimental:{appDir: true},
-    staticPageGenerationTimeout: 200
+    staticPageGenerationTimeout: 100
 }

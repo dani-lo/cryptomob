@@ -9,7 +9,6 @@ export default {
     Query: {
         paginatedComments(_parent: any, args: { params: { limit: number, offset: number, sortBy: string, sortDirection: string, fromDate: string, toDate: string } }) {
             
-            //return dataSources.articleService.getPaginateArticles(args.params.offset, args.params.sortBy, args.params.sortDirection, args.params.limit)
             return []
         },
         async comments (_parent: any, args: { params: DatedWhereParams }) {
@@ -32,53 +31,12 @@ export default {
                 user_id
             } = args.input
  
-            const comment = await dataSources.commentService.pgCreateComment(comment_text, article_id, user_id)
-
+            const commentRows = await dataSources.commentService.pgCreateComment(comment_text, article_id, user_id)
+            const comment = commentRows?.rows?.length ? commentRows.rows[0] : {}
+            console.log(comment)
             return comment
-
-            // const { publisherId, ...rest } = args.book;
-            
-            // return dataSources.bookService
-            //     .createBook(
-                //         {
-            //             ...rest
-            //         },
-            //         publisherId
-            //     )
-            //     .then(book => {
-            //         pubsub.publish(BOOK_MUTATED, {
-            //             bookMutated: {
-            //                 mutation: 'CREATED',
-            //                 node: book
-            //             }
-            //         });
-            //         return book;
-            //     });
         },
-        // updateBook(parent, args) {
-        //     const { publisherId, ...rest } = args.book;
-        //     return dataSources.bookService
-        //         .updateBook(
-        //             args.bookId,
-        //             {
-        //                 ...rest
-        //             },
-        //             publisherId
-        //         )
-        //         .then(publishBookUpdated);
-        // },
-        // setBookAuthors(parent, args) {
-        //     return dataSources.bookService
-        //         .setBookAuthors(args.bookId, args.authorIds)
-        //         .then(publishBookUpdated);
-        // }
     },
-
-    // Subscription: {
-    //     bookMutated: {
-    //         subscribe: () => pubsub.asyncIterator(BOOK_MUTATED)
-    //     }
-    // },
 
     Comment: {
         article(parent: { article_id: number }) {
@@ -88,17 +46,7 @@ export default {
 
             const user = await dataSources.userService.pgGetUser(parent.user_id)
 
-            return user.rows[0]
+            return user?.rows?.length ? user.rows[0] : {}
         }
     }
-};
-
-// function publishBookUpdated(book) {
-//     pubsub.publish(BOOK_MUTATED, {
-//         bookMutated: {
-//             mutation: 'UPDATED',
-//             node: book
-//         }
-//     });
-//     return book;
-// }
+}

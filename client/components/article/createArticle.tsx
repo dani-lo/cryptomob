@@ -19,7 +19,7 @@ export const CreateArticleComponent = () => {
 
     const [settings] = useAtom(currSettingAtom)
 
-    const onSUbmit = () => {
+    const onSubmit = () => {
         
         addCategoryMutation.mutate({
                 article_title: articleData.title,
@@ -65,7 +65,7 @@ export const CreateArticleComponent = () => {
             <div style={{ display: 'inline-block', padding: '0 0.5rem 0 0' }}>
                 <button 
                     className={ disabled ? cnames.utils.disabled(cnames.cnButton) :  cnames.cnButton }
-                    onClick={ onSUbmit }
+                    onClick={ onSubmit }
                 >
                     Add article
                 </button>

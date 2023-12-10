@@ -7,8 +7,8 @@ export default {
     
     Query: {
         async rssSources (_parent: any, args: { params: DatedWhereParams }) {
-            console.log('RESOLVER -------------')
-            console.log(args)
+            // console.log('RESOLVER -------------')
+            // console.log(args)
 
             const filters = {
                 appId: args.params.appId,
@@ -20,13 +20,3 @@ export default {
         }
     }
 };
-
-// function publishBookUpdated(book) {
-//     pubsub.publish(BOOK_MUTATED, {
-//         bookMutated: {
-//             mutation: 'UPDATED',
-//             node: book
-//         }
-//     });
-//     return book;
-// }

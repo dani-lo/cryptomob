@@ -20,7 +20,7 @@ export const ColorPickerComponent = ({ currColor, onPick } : { currColor: AppCol
                 AppColors.map(color => {
                     return <li 
                         key={ color } 
-                        style={{ ...styles, background: color, border:  color === currColor ? '1px solid #555' : styles.border }} 
+                        style={{ ...styles, background: color, border:  color === currColor ? '2px solid black' : styles.border }} 
                         className={ cnColorPicker.li } 
                         onClick={ () => onPick(color) }
                     />

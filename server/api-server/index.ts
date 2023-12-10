@@ -13,10 +13,15 @@ import { addResolversToSchema } from '@graphql-tools/schema'
 import { mergeResolvers } from '@graphql-tools/merge'
 
 import { resolvers } from './src/graphql/resolvers'
+
+import { appUseEtl } from './src/middleware/etl'
+import { appUseFoo } from './src/middleware/tester'
+
 const schemaAddress = './src/graphql/schema.graphql'
 
-import { acquireRss } from './src/etl/acquire'
-import { spawn } from "child_process"
+
+// import { acquireRss } from './src/etl/acquire'
+// import { spawn } from "child_process"
 
 async function main() {
 
@@ -56,60 +61,62 @@ async function main() {
           graphiql: true,
         })
     )
-
-    app.use(
-      "/etl/:appId",
-      async (req, res, next)=>{
+    
+    appUseEtl(app)
+    appUseFoo(app)
+  //   app.use(
+  //     "/etl/:appId",
+  //     async (req, res, next)=>{
         
-        const result = acquireRss(Number(req.params.appId))
+  //       const result = acquireRss(Number(req.params.appId))
 
-        const parseScript = `${ path.resolve('..') }/libparse/main.py`
+  //       const parseScript = `${ path.resolve('..') }/libparse/main.py`
         
-        let stdoutChunks: Uint8Array[] = []
+  //       let stdoutChunks: Uint8Array[] = []
 
-        console.log(parseScript)
+  //       console.log(parseScript)
 
-        try {
+  //       try {
 
-          const etl_proc = spawn('python3', [parseScript, '--app-id', '2'])//, ['--app-id', '2'])
+  //         const etl_proc = spawn('python3', [parseScript, '--app-id', '2'])//, ['--app-id', '2'])
 
-          etl_proc.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`)
-            stdoutChunks = stdoutChunks.concat(data)
-          });
+  //         etl_proc.stdout.on('data', (data) => {
+  //           console.log(`stdout: ${data}`)
+  //           stdoutChunks = stdoutChunks.concat(data)
+  //         });
 
-          etl_proc.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`)
-          });
+  //         etl_proc.stderr.on('data', (data) => {
+  //           console.error(`stderr: ${data}`)
+  //         });
 
 
-          etl_proc.on('close', (code) => {
+  //         etl_proc.on('close', (code) => {
 
-            const stdoutContent = Buffer.concat(stdoutChunks).toString();
+  //           const stdoutContent = Buffer.concat(stdoutChunks).toString();
             
-            console.log(`child process exited with code ${code}`);
+  //           console.log(`child process exited with code ${code}`);
             
-            const result = JSON.parse(stdoutContent)
-            console.log(result)
+  //           const result = JSON.parse(stdoutContent)
+  //           console.log(result)
 
-            res.send({
-              status: 200,
-              result: result
-            }) 
-          }); 
-        } catch(err) {
-          console.log('!!CALL TO LIBPARSE ERRORED!!')
-          console.log(err)
-        }
+  //           res.send({
+  //             status: 200,
+  //             result: result
+  //           }) 
+  //         }); 
+  //       } catch(err) {
+  //         console.log('!!CALL TO LIBPARSE ERRORED!!')
+  //         console.log(err)
+  //       }
         
         
 
-        // res.send({
-        //   status: 200,
-        //   result
-        // }) 
-      }
-  )
+  //       // res.send({
+  //       //   status: 200,
+  //       //   result
+  //       // }) 
+  //     }
+  // )
 
     // app.get('/datestget', (req, res) => {
     //   res.send({str: 'Hello Get!'})
@@ -118,7 +125,7 @@ async function main() {
     // app.post('/datestpost', (req, res) => {
     //   res.send({str: 'Hello Post!'})
     // })
-
+      
     const PORT = process.env.PORT || 8080
 
     app.listen(PORT, () => {

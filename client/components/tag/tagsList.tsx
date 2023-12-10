@@ -1,28 +1,47 @@
 
 
+import { useContext, useState } from 'react';
+import { useAtom } from 'jotai';
+import Link from 'next/link';
 
-// "use client";
+import { SortIconComponent } from '@/components/widgets/sortIcon'
+import { CreateTagComponent } from '@/components/tag/createTag'
+import { InlineSearchComponent } from '@/components/widgets/inlineSearch'
+import { TagApiDataResult } from '@/components/tag/tagsScreen'
+
+import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort'
+import { ellipsys } from '@/src/helpers/ellipsys'
+
+import { getAppStaticSettings } from '@/src/store/static'
+
+import { PaginationCtrl } from '@/src/utils/paginationCtrl'
+
+import { ApiParamsContext } from '@/context/apiParams.context'
 
 import { TagApiData } from '@/src/models/tag'
-import {  ResourceItemsCount } from '@/src/queries'
-import { ellipsys } from '@/src/helpers/ellipsys';
-import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind';
-import { CreateTagComponent } from '@/components/tag/createTag';
-import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
-import { useState } from 'react';
-import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
-import { SortIconComponent } from '../widgets/sortIcon';
-import Link from 'next/link';
-import { getAppStaticSettings } from '@/src/store/settingAtoms';
- 
-type TagProps = TagApiData & ResourceItemsCount
 
-export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
+import { ResourceItemsCount } from '@/src/queries'
+
+import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind'
+import { PaginationComponent } from '../widgets/pagination';
+
+export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiDataResult}) => {
 
     const [searchterm, setSearchterm] = useState('')
-    const [sortby, setSortby] = useState<[keyof TagProps, SortDirection | null]>(['tag_name', null])
+    const [sortby, setSortby] = useState<[keyof (TagApiData & ResourceItemsCount), SortDirection | null]>(['tag_name', null])
+    // const [paginator, setPaginator] = useState<PaginationCtrl | null>(null)
 
-    const onSortBy = (newSortField : keyof TagProps) => {
+    const ctx = useContext(ApiParamsContext)
+    
+    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.tags)
+
+    const paginator = new PaginationCtrl(
+        paginatedTags.recordsCount,
+        fetchParams.offset,
+        fetchParams.limit
+    )
+
+    const onSortBy = (newSortField : keyof (TagApiData & ResourceItemsCount)) => {
 
         const currSortDir = sortby[1]
         const currSortField = sortby[0]
@@ -30,9 +49,10 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
         const sortDir = currSortField === newSortField ? nextSortDirection(currSortDir) : SortDirection.desc
         
         setSortby([newSortField , sortDir])
+        setFetchParams({ ...fetchParams, offset: 0 })
     }
 
-    const sorted = sortItemsArray<TagProps>(tags, sortby[0], sortby[1])
+    const sorted = sortItemsArray<TagApiData & ResourceItemsCount>(paginatedTags.tags, sortby[0], sortby[1])
 
     const appStaticSettings = getAppStaticSettings()
     const cnTableFull = cnTable(appStaticSettings.bg)
@@ -41,7 +61,6 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
         <div className="flex items-center justify-between">
             <div style={{ flex: 1, padding: '1rem' }}>
                 <InlineSearchComponent onSearch={ (term: string) => {
-                    console.log(term)
                         // if (term !== '') {
                             setSearchterm(term)
                         // }
@@ -86,9 +105,13 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
             </thead>
         <tbody>
         {
-            sorted.map(t => {
+            sorted.map((t, i) => {
 
                 if (searchterm !== '' && t.tag_name.toLowerCase().indexOf(searchterm.toLowerCase()) === -1) {
+                    return null
+                }
+
+                if (paginator && !paginator.pageItemInRange(i + fetchParams.offset)) {
                     return null
                 }
 
@@ -119,5 +142,15 @@ export const TagsListComponent = ({ tags}: { tags: TagProps[]}) => {
         }
         </tbody>
     </table>
+    {
+      paginator ? 
+        <PaginationComponent 
+          paginationCtrl={ paginator } 
+          onSelectPage={ (nextOffset) => { 
+            setFetchParams({ ...fetchParams, offset: nextOffset })
+          }} 
+      /> 
+      : null
+    }
         </div>
 }

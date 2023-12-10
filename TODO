@@ -1,0 +1,3 @@
+- order in tailwind classes, better grouping of elements, less varietiess of margin / padding / text etc etc ....//// nah >> mayb create { const appClasses = { 'gap-small': 'm-1 p-1', '' } }
+
+- paginate all variable len lists of content in detail modals > add paginated widget
