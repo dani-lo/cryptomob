@@ -6,7 +6,9 @@ import 'react-dropdown/style.css'
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import "react-datepicker/dist/react-datepicker.css"
 
+import '@/src/styles/widget.css'
 import '@/src/styles/global.css'
+import '@/src/styles/anime.css'
 
 import Providers from "@/src/utils/provider"
 
@@ -14,6 +16,8 @@ import { ApiParamsContextProvider } from '@/context/apiParams.context'
 
 import { HeaderComponent } from '@/components/header'
 import { TailwindHiddenLoaderComponent } from '@/components/tailwindHiddenLoader'
+import { LoginButtonComponent } from '@/components/widgets/account/loginButton'
+import { ToastComponent } from '@/components/widgets/modal/toast'
 
 faCssConfig.autoAddCss = false
 
@@ -24,9 +28,12 @@ export default function RootLayout({
     }) {
     
     return <html lang="en">
+        <link rel="shortcut icon" href="/favicon-16x16.png" />
         <body>
+            <LoginButtonComponent />
             <TailwindHiddenLoaderComponent />
             <HeaderComponent />
+            <ToastComponent />
             <Providers>
                 <ApiParamsContextProvider>
                     {children}

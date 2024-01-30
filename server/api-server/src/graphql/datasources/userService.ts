@@ -19,11 +19,25 @@ export class UserService extends DataSource {
 
     initialize() {}
 
-    // async getUsers() {
+    async pgGetUserByEmail(userEmail: string) {
 
-        
-    //     return await prisma.user.findMany()
-    // }
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+
+            // console.log(`SELECT * FROM users WHERE user_email = '${ userEmail }';`)
+            return pgclient.query(`SELECT * FROM users WHERE user_email = '${ userEmail }';`)
+        } catch (err) {
+
+            console.log(err)
+            
+            return Promise.reject('Error finding user')
+
+        } finally {
+            pgclient.release()
+        }
+    }
 
     async pgGetUsers () {
 
@@ -59,8 +73,6 @@ export class UserService extends DataSource {
 
         } finally {
             pgclient.release()
-        }
-        
+        }   
     }
-
 }

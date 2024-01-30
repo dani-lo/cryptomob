@@ -21,12 +21,17 @@ import { currUserAtom } from '@/src/store/userAtoms'
 import { getAppStaticSettings } from '@/src/store/static'
 import { AuthorApiData } from '@/src/models/author';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from '@/src/queries';
-import { gqlCacheKey } from '@/src/helpers/gqlCacheKey';
-import request from 'graphql-request';
-import { ApiParamsContext } from '@/context/apiParams.context';
-import { SortDirection } from '@/src/helpers/sort';
-import { AuthorSortby, READ_PAGINATED_AUTHORS } from '@/src/queries/authorQueries';
+import { GqlCacheKeys } from '@/src/queries'
+
+import { GRAPHQL_ENDPOINT } from '@/src/config'
+
+import { gqlCacheKey } from '@/src/helpers/gqlCacheKey'
+
+import request from 'graphql-request'
+
+import { ApiParamsContext } from '@/context/apiParams.context'
+import { SortDirection } from '@/src/helpers/sort'
+import { AuthorSortby, READ_PAGINATED_AUTHORS } from '@/src/queries/authorQueries'
 
 export interface AuthorsApiDataResult {
   recordsCount: number;
@@ -96,7 +101,7 @@ export const AuthorsScreenComponent = () => {
   }
 
   const reqAuthor = authorId !== null ? (data.paginatedAuthors.authors.find(apiT => Number(apiT.author_id) === Number(authorId)) || null) : null
-
+  
   return <div>
   {
     reqAuthor ? 

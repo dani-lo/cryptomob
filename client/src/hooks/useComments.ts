@@ -1,10 +1,11 @@
-import { CREATE_COMMENT, GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries"
+import { CREATE_COMMENT, GqlCacheKeys } from "../queries"
 import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { gqlClient } from "@/src/utils/graphqlClient"
 import { CommentApiData } from "../models/comment"
 import request from "graphql-request"
 import { READ_COMMENTS } from "../queries/commentQueries"
+import { GRAPHQL_ENDPOINT } from "../config"
 
 interface CommentInput {comment_text: string, article_id: number, user_id: number}
 

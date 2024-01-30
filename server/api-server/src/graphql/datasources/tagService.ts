@@ -1,8 +1,5 @@
 import { DataSource } from 'apollo-datasource'
 
-// import prisma from '../../db/prisma'
-// import { Article, Prisma, Tag } from '@prisma/client'
-
 import { ArticleWhere, WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers'
 
 import { hasAnyFilter } from '../../helpers/has'
@@ -82,27 +79,33 @@ export class TagService extends DataSource {
 
         try {
 
+            // SELECT DISTINCT tags.tag_id, tags.tag_name, tags.tag_origin, 
+            //             ( SELECT COUNT(article_id) as articles_count FROM articles_tags WHERE articles_tags.tag_id = tags.tag_id )
+            //         FROM tags
+            //         JOIN articles_tags ON  articles_tags.tag_id = tags.tag_id
+            //         JOIN articles ON articles.article_id = articles_tags.article_id
+            //         WHERE articles.app_id = ${ filters.appId } AND (articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL)
+            //         ORDER BY tags.tag_id
+            //         LIMIT ${ limit }
+            //         OFFSET ${ offset };
+
             const tags = await pgPool.query(`
                     SELECT DISTINCT tags.tag_id, tags.tag_name, tags.tag_origin, 
                         ( SELECT COUNT(article_id) as articles_count FROM articles_tags WHERE articles_tags.tag_id = tags.tag_id )
                     FROM tags
                     JOIN articles_tags ON  articles_tags.tag_id = tags.tag_id
                     JOIN articles ON articles.article_id = articles_tags.article_id
-                    WHERE articles.app_id = ${ filters.appId }
-                    ORDER BY tags.tag_id
-                    LIMIT ${ limit }
-                    OFFSET ${ offset };
+                    WHERE articles.app_id = ${ filters.appId } AND (articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL)
+                    ORDER BY tags.tag_id;
                 `
             )
 
-            
-            
             const tagsCount = await pgclient.query(`
                 SELECT COUNT(DISTINCT tags.tag_id) as tagscount 
                 FROM tags
                 JOIN articles_tags ON  articles_tags.tag_id = tags.tag_id
                 JOIN articles ON articles.article_id = articles_tags.article_id
-                WHERE articles.app_id = ${ filters.appId }
+                WHERE articles.app_id = ${ filters.appId } AND (articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL);
             `)
             
             return  Promise.resolve({
@@ -139,7 +142,7 @@ export class TagService extends DataSource {
                         FROM tags
                         JOIN articles_tags ON  articles_tags.tag_id = tags.tag_id
                         JOIN articles ON articles.article_id = articles_tags.article_id
-                        WHERE articles.app_id = ${ filters.appId };
+                        WHERE articles.app_id = ${ filters.appId } AND (articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL);
                     `
                 )
             }
@@ -161,7 +164,7 @@ export class TagService extends DataSource {
         try {
 
             return pgclient.query(`
-                    INSERT INTO tags (tag_name, tag_origin) VALUES ($1, $2) RETURNING *
+                    INSERT INTO tags (tag_name, tag_origin) VALUES ($1, $2) RETURNING *;
                 `, 
                 [
                     tagName, 

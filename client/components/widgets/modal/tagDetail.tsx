@@ -4,7 +4,7 @@ import Dropdown from 'react-dropdown'
 
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { CloseIconButtonComponent } from "../iconButtons/closeIconButton"
-import { cnButton, cnParagraph, cnSectionSmallTitle, cnSectionSubTitle, utils } from "@/src/styles/classnames.tailwind"
+import { cnButton, cnParagraph, cnSectionSmallTitle, utils } from "@/src/styles/classnames.tailwind"
 import { TagApiData } from "@/src/models/tag"
 import { IconTitleComponent } from "../iconed"
 import { faTags } from "@fortawesome/free-solid-svg-icons"
@@ -27,7 +27,8 @@ export const TagDetailModalComponent = ({
         userId: number;
     }) => {
     
-    const appId = getAppStaticSettings().appId
+    const {appId, bg } = getAppStaticSettings()
+
     const { data: watchlistsData } = useWatchlistsWIthItemsCount(appId)
 
     const [wid, setWid] = useState<string | undefined>(undefined)
@@ -82,9 +83,10 @@ export const TagDetailModalComponent = ({
             <IconTitleComponent
                 text={ tag.tag_name }
                 icon={ faTags }
+                bgColor={ bg }
             />
-            <h4 className={ cnSectionSubTitle}>Added by: { tag.tag_origin === 'user' ? `User` : 'System' }</h4> 
-            <div className="flex">
+            {/* <h4 className={ cnSectionSubTitle}>Added by: { tag.tag_origin === 'user' ? `User` : 'System' }</h4>  */}
+            <div className="flex  p-6">
                 <div style={{ width: '400px' }}>
                     <p className={ cnParagraph }>Add to Watchlist</p>
                     <Dropdown 
@@ -118,7 +120,7 @@ export const TagDetailModalComponent = ({
             </div>
             {
                 tag.articles ? 
-                    <div className="my-8">
+                    <div className="my-2  px-6">
                         {
                             tag.articles.map((a, i) => {
 

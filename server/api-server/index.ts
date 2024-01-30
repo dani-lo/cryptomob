@@ -4,7 +4,6 @@ import 'dotenv/config'
 import cors from 'cors'
 import path from "path"
 // import { PrismaClient } from '@prisma/client'
-
 import { graphqlHTTP }from "express-graphql"
 
 import { loadSchema } from '@graphql-tools/load'
@@ -15,10 +14,10 @@ import { mergeResolvers } from '@graphql-tools/merge'
 import { resolvers } from './src/graphql/resolvers'
 
 import { appUseEtl } from './src/middleware/etl'
-import { appUseFoo } from './src/middleware/tester'
+import { appUsePing } from './src/middleware/tester' 
+import { appUseLogin, authenticateToken } from './src/middleware/auth'
 
 const schemaAddress = './src/graphql/schema.graphql'
-
 
 // import { acquireRss } from './src/etl/acquire'
 // import { spawn } from "child_process"
@@ -33,6 +32,8 @@ async function main() {
     const cors_origin = true//process.env.NODE_ENV == 'development' ? true : '<https://qrated.net>'
     
     app.use(cors({ origin: cors_origin }))
+
+    app.use(authenticateToken)
     
     const schema = await loadSchema(schemaAddress, { loaders: [new GraphQLFileLoader()] })
     const appResolvers = [
@@ -49,21 +50,40 @@ async function main() {
     const schemaWithResolvers = addResolversToSchema({ schema, resolvers: mergeResolvers(appResolvers) })
     const root = {
         hello: () => {
+
             return "Hello world!"
         },
     }
 
+    app.use(authenticateToken)
+// 
     app.use(
         "/graphql",
-        graphqlHTTP({
-          schema: schemaWithResolvers,
-          rootValue: root,
-          graphiql: true,
+        graphqlHTTP((req, res, params) => {
+
+          // console.log('========================== graphqlHTTP curry run ======================')
+          // console.log(params)
+
+          // const authHeader = req.headers['authorization']
+          // const { TOKEN_SECRET } = process.env
+          
+          // const token = authHeader && authHeader.split(' ')[1]
+          // getTokenUser()
+          return {
+            schema: schemaWithResolvers,
+            rootValue: root,
+            graphiql: true,
+            context: {
+              // @ts-ignore
+              user: req.user || null
+            }
+          }
         })
     )
     
+    appUseLogin(app)
     appUseEtl(app)
-    appUseFoo(app)
+    appUsePing(app)
   //   app.use(
   //     "/etl/:appId",
   //     async (req, res, next)=>{

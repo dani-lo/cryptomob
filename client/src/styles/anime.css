@@ -1,0 +1,65 @@
+.anime-relative {
+    position: relative;
+}
+  
+.anime-fade-init {
+    opacity: 0;
+    display: none;
+}
+
+.anime-fade-node-enter {
+    opacity: 0;
+    display: block;
+    transition: opacity 250ms;
+}
+
+.anime-fade-node-enter-done {
+    opacity: 1;
+    display:block;
+    transition: opacity 250ms;
+}
+
+
+.anime-fade-node-exit {
+    opacity: 0;
+    display: block;
+    transition: opacity 250ms;
+}
+
+.anime-fade-node-exit-done {
+    display:none;
+}
+
+/**********************************/
+
+.popin {
+    transition: opacity 200ms;
+}
+
+.popin-hide {
+    opacity: 0;
+}
+
+.popin-show {
+    opacity: 1;
+}
+
+/**********************************/
+
+.widget-enter {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+.widget-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 100ms, transform 100ms;
+}
+.widget-exit {
+    opacity: 1;
+}
+.widget-exit-active {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 100ms, transform 100ms;
+}

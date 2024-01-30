@@ -12,16 +12,15 @@ import {
 //   faComment,
 //   faPeopleGroup,
   faRss,
-  faQ,
   faLaptopCode
 } from "@fortawesome/free-solid-svg-icons"
 
 // import { cnLogo, cnLogoContainer } from "@/src/styles/classnames.tailwind"
 import { usePathname } from 'next/navigation';
-// import { currSettingAtom } from '@/src/store/settingAtoms';
 // import { useAtom } from 'jotai';
 import { getAppStaticSettings } from '@/src/store/static';
-import { cnPostscriptum, utils } from '@/src/styles/classnames.tailwind';
+import { cnParagraph, utils } from '@/src/styles/classnames.tailwind';
+// import { LoginButtonComponent } from './widgets/account/loginButton';
 
 const cname = (isActive: boolean, activeCname: string) => {
 
@@ -35,34 +34,40 @@ export const HeaderComponent = ()  => {
     
     const pathname = usePathname()
 
-    // const [settings] = useAtom(currSettingAtom)
-
     const appStaticSettings = getAppStaticSettings()
     const appId = appStaticSettings.appId
     
-    return <div className={ `${ appStaticSettings.bg } navbar` }>
+    return <div className={ `${ appStaticSettings.bg } navbar pt-8` }>
+        
         <div>
             <h1 className={ appStaticSettings.txtEvidence }>
-                <FontAwesomeIcon icon={faQ} />
-                <span>rated</span>
+                {/* <FontAwesomeIcon icon={faQ} /> */}
+                {/* <span>rated</span> */}
+                { appStaticSettings.appName }
             </h1>
+            <h4>A Q-Rated list</h4>
             <div className="logo-container ">
                 <ul className="">
                     <li  className={ utils.cnJoin([
-                            cnPostscriptum, 
-                            appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txt, 
-                            appId === 1 ?  ' active py-1 ' : ' py-2 '
+                            appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear, 
+                            appId === 1 ?  ' active py-3 ' : ' py-3 '
                         ]) } >
-                        <FontAwesomeIcon icon={faLaptopCode} />
-                        <a href="#">cryptomob</a>
+                        
+                        <p className={ utils.cnJoin([cnParagraph, appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear]) }>
+                            <FontAwesomeIcon icon={faLaptopCode} />
+                            <a  className={ appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear }>yogabhavana</a>
+                        </p>
+                        <p className={ cnParagraph }>Q-Rated list of articles on yoga practice and philosophy (including Buddhist and Kashmiri Shaiva resources)</p>
                     </li>
                     <li  className={ utils.cnJoin([
-                            cnPostscriptum, 
-                            appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txt, 
-                            appId === 2 ?  ' active py-1 ' : ' py-2 '
+                            appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear, 
+                            appId === 2 ?  ' active py-3 ' : ' py-3 '
                         ]) } >
-                         <FontAwesomeIcon icon={faLaptopCode} />
-                        <a href="#">fullstacked</a>
+                        <p className={ utils.cnJoin([cnParagraph, appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear]) }>
+                            <FontAwesomeIcon className={ appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear } icon={faLaptopCode} />
+                            <a  className={ appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear }>fullstacked</a>
+                        </p>
+                        <p className={ cnParagraph }>Q-Rated list of articles on programming and computer science</p>
                     </li>
                        
                 </ul>

@@ -14,8 +14,10 @@ import { ArticleAPiData } from "@/src/models/article";
 
 import { ApiParamsContext } from '@/context/apiParams.context'
 
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from '@/src/queries'
+import { GqlCacheKeys } from '@/src/queries'
 import { ArticlesSortby, READ_ARTICLES } from '@/src/queries/articleQueries'
+
+import { GRAPHQL_ENDPOINT } from '@/src/config'
 
 import { dateToPostgresDateString } from '@/src/helpers/date'
 import { gqlCacheKey } from '@/src/helpers/gqlCacheKey'
@@ -24,7 +26,6 @@ import { SortDirection } from '@/src/helpers/sort'
 import { useUsers } from '@/src/hooks/useUsers'
 
 import { currUserAtom } from '@/src/store/userAtoms'
-// import { currSettingAtom } from '@/src/store/settingAtoms'
 import { limitOptions } from '@/src/store/app'
 
 import { getAppStaticSettings } from '@/src/store/static'

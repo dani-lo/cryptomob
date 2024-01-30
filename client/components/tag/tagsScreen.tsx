@@ -19,7 +19,9 @@ import { TagsListComponent } from '@/components/tag/tagsList'
 import { TagDetailModalComponent } from '@/components/widgets/modal/tagDetail'
 
 import { READ_PAGINATED_TAGS, TagsSortby } from '@/src/queries/tagQueries'
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from '@/src/queries'
+import { GqlCacheKeys } from '@/src/queries'
+
+import { GRAPHQL_ENDPOINT } from '@/src/config'
 
 import { currUserAtom } from '@/src/store/userAtoms'
 import { getAppStaticSettings } from '@/src/store/static'

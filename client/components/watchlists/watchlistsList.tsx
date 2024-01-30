@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { ResourceItemsCount } from '@/src/queries'
 
@@ -53,14 +53,14 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
     const appStaticSettings = getAppStaticSettings()
     const cnTableFull = cnTable(appStaticSettings.bg)
 
+    const onSearchCb = useCallback((term: string) => {
+        setSearchterm(term)
+    }, [])
+
     return <div>
         <div className="flex items-center justify-between">
-            <div style={{ flex: 1, padding: '1rem' }}>
-                <InlineSearchComponent onSearch={ (term: string) => {
-                    // if (term === '') {
-                        setSearchterm(term)
-                    // }
-                }} />
+        <div style={{ flex: 1 }} className='pb-4'>
+                <InlineSearchComponent currTerm={searchterm} onSearch={ onSearchCb } />
             </div>
             <div style={{ flex: 1 }}>
                 <CreateWatchlistComponent />

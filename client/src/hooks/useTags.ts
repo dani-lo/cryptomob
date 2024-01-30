@@ -4,44 +4,69 @@ import {  UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstac
 
 import { TagApiData } from "../models/tag";
 
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries";
-import { CREATE_TAG, READ_TAG, UNWATCHLIST_TAG, WATCHLIST_TAG } from "../queries/tagQueries";
+import { GqlCacheKeys } from "../queries";
+import { CREATE_TAG, READ_TAG, READ_TAGS, UNWATCHLIST_TAG, WATCHLIST_TAG } from "../queries/tagQueries";
 import { gqlClient } from "../utils/graphqlClient";
 import { updateClientTagsCache } from "../helpers/reactQueryCacheUtil";
 import request from "graphql-request";
+import { GRAPHQL_ENDPOINT } from "../config";
+// import { FetchParams } from "../store/app";
 
 interface TagInput {tag_name: string, tag_origin: string}
 
-// export const useTagsWithArticlesCount = (
-//         appId: number,
-//         fetchParams: FetchParams<TagsSortby>) => {
+export const useTagsWithArticlesCount = (
+        appId: number) => {
 
-//     const { 
-//         isLoading,
-//         isError,
-//         error,
-//         data,
-//         isFetching,
-//         // isPreviousData 
-//     } : UseQueryResult<{ tags: (TagApiData & { articles_count: number})[] }, unknown> = useQuery({
+    const { 
+        isLoading,
+        isError,
+        error,
+        data,
+        isFetching,
+        // isPreviousData 
+    } : UseQueryResult<{ tags: (TagApiData & { articles_count: number})[] }, unknown> = useQuery({
 
-//         queryKey: [GqlCacheKeys.tags],
-//         queryFn: async () => {
-//             return await request(GRAPHQL_ENDPOINT, READ_TAGS(appId))
-//         },
-//         keepPreviousData: true,
-//         suspense: true
-//     })
+        queryKey: [GqlCacheKeys.tags],
+        queryFn: async () => {
+            return await request(GRAPHQL_ENDPOINT, READ_TAGS(appId))
+        },
+        keepPreviousData: true,
+        suspense: true
+    })
 
-//     return {
-//         isLoading,
-//         isError,
-//         error,
-//         data,
-//         isFetching,
-//         // isPreviousData
-//     }
-// }
+    return {
+        isLoading,
+        isError,
+        error,
+        data,
+        isFetching,
+        // isPreviousData
+    }
+}
+
+// export const usePaginatedTags = ()
+// const { 
+//     isLoading,
+//     isError,
+//     data,
+// } : UseQueryResult<{ paginatedTags: TagApiDataResult }, unknown> = useQuery({
+
+//     queryKey: [GqlCacheKeys.paginatedTags, gqlCacheKey([fetchParams])],
+//     queryFn: async () => {
+//         return await request(
+//             GRAPHQL_ENDPOINT, 
+//             READ_PAGINATED_TAGS(
+//               appId,
+//               fetchParams.offset, 
+//               fetchParams.limit,
+//               TagsSortby.date,
+//               SortDirection.desc
+//             )
+//         )
+//     },
+//     keepPreviousData: true,
+//     suspense: true
+// })
 
 export const useAddtag = () => {
     

@@ -33,7 +33,7 @@ export interface QueryFilterParams {
     minItems: QueryFilterParamsMinItems
 }
 
-export const limitOptions = [12, 18, 24, 30, 36, 42, 48].map(n => {
+export const limitOptions = [6, 12, 18].map(n => {
     return { value: `${ n }`, label: `${ n } per page`}
 })
 

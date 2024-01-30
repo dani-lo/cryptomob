@@ -35,21 +35,4 @@ export class MetaService extends DataSource {
             pgclient.release()
         }
     }
-    
-    // async pgCreateComment(text: string, articleId: number, userId: number) {
-
-    //     const pgPool = getPool()
-    //     const pgclient = await pgPool.connect()
-
-    //     try {
-
-    //         return pgclient.query('INSERT INTO comments (comment_text, article_id, user_id) VALUES ($1, $2, $3) RETURNING *', [text, articleId, userId])
-
-    //     } catch (error) {
-    //         console.log(error)
-    //         return Promise.reject('Error creating comment')
-    //     } finally {
-    //         pgclient.release()
-    //     }
-    // }   
 }

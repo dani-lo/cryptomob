@@ -26,7 +26,8 @@ export const AuthorDetailModalComponent = ({
         userId: number;
     }) => {
     
-    const appId = getAppStaticSettings().appId
+    const { appId, bg } = getAppStaticSettings()
+
     const { data: watchlistsData } = useWatchlistsWIthItemsCount(appId)
 
     const [wid, setWid] = useState<string | undefined>(undefined)
@@ -80,9 +81,10 @@ export const AuthorDetailModalComponent = ({
             <IconTitleComponent
                 text={ author.author_name }
                 icon={ faTags }
+                bgColor={ bg }
             />
             
-            <div className="flex">
+            <div className="flex  p-6">
                 <div style={{ width: '400px' }}>
                     <p className={ cnParagraph }>Add to Watchlist</p>
                     <Dropdown 
@@ -116,7 +118,7 @@ export const AuthorDetailModalComponent = ({
             </div>
             {
                 author.articles ? 
-                <div className="my-8">
+                <div className="p-6">
                     {
                         author.articles.map((a, i) => {
 

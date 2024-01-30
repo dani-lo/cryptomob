@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { GRAPHQL_ENDPOINT } from '../queries'
+import { GRAPHQL_ENDPOINT } from '@/src/config'
 
 
 export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {

@@ -9,6 +9,7 @@ import { faClone } from "@fortawesome/free-solid-svg-icons"
 // import { useCategorysWIthItemsCount } from "@/src/hooks/useCategory"
 // import { ItemCategorys } from "../itemCategorys"
 import { CategoryApiData } from "@/src/models/category"
+import { getAppStaticSettings } from "@/src/store/static"
 // import Link from "next/link"
 // import { useUncategoryAuthor, useCategoryAuthor } from "@/src/hooks/useAuthors"
 
@@ -52,32 +53,38 @@ export const CategoryDetailModalComponent = ({
     //         category_id: categoryId,
     //     })
     // }
+    
+    // if (category === null) {
+    //     return null
+    // }
+    const {bg } = getAppStaticSettings()
 
     return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
-        <div className="overlay-full-content rounded-lg shadow article-detail">
+        <div className="overlay-full-content rounded-lg shadow">
             <StyledContainedBar>
                 <CloseIconButtonComponent onClose={ onClose } />
             </StyledContainedBar>
             <IconTitleComponent
-                text={ category.category_name }
+                text={ category?.category_name || ''}
                 icon={ faClone }
+                bgColor={ bg }
             />
-            <div style={{ height: '100%' }}>
+             <div className="flex  p-6">
                 <div  style={{ overflowY: 'scroll', height: 'calc(100% - 200px)' }}>
+                <h3 className={ cnSectionTitle }>Articles</h3>
                 {
-                    category.articles ? 
-                        <div>
-                            <h3 className={ cnSectionTitle }>Articles</h3>
-                            {
-                                category.articles.map(a => {
-                                    return <div  key={ a.article_id }>
-                                    
-                                    <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
-                                    <p className={ cnParagraph }>{ a.article_description }</p>
-                                    </div>
-                                })
-                            }
-                        </div> : null
+                    category?.articles?.length ? 
+                          
+                        category.articles.map(a => {
+                            return <div  key={ a.article_id }>
+                            
+                            <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
+                            <p className={ cnParagraph }>{ a.article_description }</p>
+                            </div>
+                        })
+                            
+                        : 
+                        <p className={ cnParagraph }>No articles found</p>
                 }
                 
                 </div>

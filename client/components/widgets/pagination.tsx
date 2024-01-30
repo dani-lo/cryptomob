@@ -1,7 +1,6 @@
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
-import { StyledPaginationContainer } from "@/src/styles/main.styled"
 import { getAppStaticSettings } from "@/src/store/static"
-import { utils } from "@/src/styles/classnames.tailwind"
+import { utils, cnPaginationContainer } from "@/src/styles/classnames.tailwind"
 
 export const PaginationComponent = ({
     paginationCtrl,
@@ -36,8 +35,8 @@ export const PaginationComponent = ({
         onSelectPage(paginationCtrl.nextOffset())
     }
 
-    return <StyledPaginationContainer>
-        <ul className={ utils.cnJoin(['inline-flex text-sm', appStaticSettings.bg, 'p-3']) } style={{ background: 'white', border: '1px solid #aaa',  borderRadius: '0.2rem'}}>
+    return <div className={ cnPaginationContainer }>
+        <ul className={ utils.cnJoin(['inline-flex text-sm', appStaticSettings.bg, 'p-3']) } style={{ background: 'white'}}>
             <li 
                     onClick={ (e) =>  {
                         e.preventDefault()
@@ -54,7 +53,10 @@ export const PaginationComponent = ({
                     onClick={ (e) => {
                         e.preventDefault()
                         onPageClick(page)
-                    }} key={ page } className={ page === currPage ? appStaticSettings.bgEvidence + ' pagination-item page-link page-link-active' : 'bg-white pagination-item page-link' }>
+                    }} key={ page } className={ 
+                        page === currPage ? 
+                            appStaticSettings.bgUnactive + ' pagination-item page-link page-link-active' : 
+                            'pagination-item page-link' }>
                     <span>
                         { page + 1 }
                     </span>
@@ -71,5 +73,5 @@ export const PaginationComponent = ({
                 </span>
             </li>
         </ul>
-    </StyledPaginationContainer>
+    </div>
 }

@@ -8,6 +8,8 @@ export class PaginationCtrl {
     public offset: number
     public maxPagesInWidget = 7
 
+    // static
+
     public constructor (
             numItems: number, 
             offset: number, 
@@ -17,8 +19,10 @@ export class PaginationCtrl {
         this.itemsPerPage = itemsPerPage
         this.totalPages = Math.ceil(numItems / itemsPerPage)
         this.offset = offset
+    }
 
-        console.log('NEW PAGGGG numitems', numItems)
+    public displaySelf <T>(items: T[]) {
+        return items.length > this.itemsPerPage
     }
 
     public getCurrPage () : number {
@@ -76,7 +80,6 @@ export class PaginationCtrl {
         if (prevPage !== null) {
             this.currPage = prevPage
         }
-        
     }
 
     public pageItemInRange (pageItemIndex: number) : boolean {
@@ -86,7 +89,6 @@ export class PaginationCtrl {
             this.offset + this.itemsPerPage
 
         ]
-      
         return pageItemIndex >= range[0] && pageItemIndex < range[1]
     }
 
@@ -110,5 +112,10 @@ export class PaginationCtrl {
         }
         
         return maybePrevPage
+    }
+
+    public takeLocal <T>(items: T[]): T[] {
+
+        return items.filter((item, i) => this.pageItemInRange(i))
     }
 }

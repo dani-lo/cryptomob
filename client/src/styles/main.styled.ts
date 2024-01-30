@@ -28,15 +28,9 @@ export const StyledCard = styled.div<{ w?: string, h?: string, minw?: string}>`
     ${ props => props.minw ? 'min-width: ' + props.minw + ';': '' }
 `
 
-export const StyledPaginationContainer = styled.div`
-    clear: both;
-    display: flex;
-    justify-content: space-around;
-`
-
 export const StyledContainedBar = styled.div`
     position: absolute;
-    top: 4px;
+    top: 10px;
     left: 0;
     width: 100%;
     padding: 0.5rem 1rem;

@@ -44,7 +44,7 @@ export class WatchlistService extends DataSource {
             }
 
             return pgclient.query(
-                `SELECT * FROM authors WHERE author_id IN (${ whereArrayInValues(authorsIDs) })`)
+                `SELECT * FROM authors WHERE author_id IN ${ whereArrayInValues(authorsIDs) }`)
             
         } catch (err) {
         
@@ -127,7 +127,7 @@ export class WatchlistService extends DataSource {
             }
 
             return pgclient.query(
-                `SELECT * FROM articles WHERE article_id IN ${ whereArrayInValues(articlesIDs) };`)
+                `SELECT * FROM articles WHERE article_id IN ${ whereArrayInValues(articlesIDs) }  AND (articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL);`)
             
         } catch (err) {
         
@@ -144,11 +144,6 @@ export class WatchlistService extends DataSource {
 
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
-
-        console.log('=============== create WL ===============')
-        console.log(`
-            INSERT INTO watchlists (watchlist_name, watchlist_delete, user_id, app_id) VALUES ('${ watchlistName }', false, ${ userId }, ${ appId }) RETURNING *;
-        `)
 
         try {
 

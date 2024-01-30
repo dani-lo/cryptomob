@@ -3,12 +3,16 @@
 import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import request from "graphql-request";
 
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries";
-import { READ_AUTHORS, UNWATCHLIST_AUHTOR, WATCHLIST_AUHTOR } from "../queries/authorQueries";
+import { GqlCacheKeys } from "../queries"
+
+import { CREATE_AUTHOR, READ_AUTHORS, UNWATCHLIST_AUHTOR, WATCHLIST_AUHTOR } from "../queries/authorQueries";
 import { AuthorApiData } from "../models/author";
 import { QueryFilterParams } from "../store/app";
 import { gqlClient } from "../utils/graphqlClient";
 import { updateClientAuthorsCache } from "../helpers/reactQueryCacheUtil";
+import { GRAPHQL_ENDPOINT } from "@/src/config"
+
+interface AuthorInput { author_name: string }
 
 export const useAuthorsWithArticlesCount = (
         appId: number,
@@ -82,4 +86,25 @@ export const useUnwatchlistAuthor = () => {
             updateClientAuthorsCache(client, returned)
         },
       })
+}
+
+
+export const useAddAuthor = (onCreate: (newAuthor: number) => void) => {
+    
+    const client = useQueryClient()
+
+    return useMutation({
+        mutationFn: (input: AuthorInput) => {
+            return gqlClient.request(
+                CREATE_AUTHOR,
+                {input}
+            )
+        },
+        onSuccess: (f: any) => {
+            // console.log(f)
+            onCreate(Number(f.createAuthor.author_id))
+            client.invalidateQueries([GqlCacheKeys.authors])
+        },
+    })
+    
 }

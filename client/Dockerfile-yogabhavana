@@ -4,7 +4,7 @@ FROM node:18-alpine AS base
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
-WORKDIR /app
+WORKDIR /app-yogabhavana
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
@@ -18,8 +18,8 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+WORKDIR /app-yogabhavana
+COPY --from=deps /app-yogabhavana/node_modules ./node_modules
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -31,11 +31,14 @@ COPY . .
 
 # If using npm comment out above and use below instead
 
+ENV NEXT_PUBLIC_APP_ID 1
+ENV APP_ID 1
+
 RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
-WORKDIR /app
+WORKDIR /app-yogabhavana
 
 # ENV NODE_ENV development
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -46,38 +49,34 @@ RUN adduser --system --uid 1001 nextjs
 
 # RUN set -ex && apk --no-cache add sudo
 
-COPY --from=builder /app/public ./public
+COPY --from=builder /app-yogabhavana/public ./public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 
-# COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-# COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# COPY --from=builder --chown=nextjs:nodejs /app-yogabhavana/.next/standalone ./
+# COPY --from=builder --chown=nextjs:nodejs /app-yogabhavana/.next/static ./.next/static
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
-COPY --from=builder /app/next.config.js ./next.config.js
+COPY --from=builder --chown=nextjs:nodejs /app-yogabhavana/.next ./.next
+COPY --from=builder /app-yogabhavana/node_modules ./node_modules
+COPY --from=builder /app-yogabhavana/package.json ./package.json
+COPY --from=builder /app-yogabhavana/tsconfig.json ./tsconfig.json
+COPY --from=builder /app-yogabhavana/next.config.js ./next.config.js
 
-COPY --from=builder /app/components ./components
-COPY --from=builder /app/app ./app
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/next-env.d.ts ./next-env.d.ts
+COPY --from=builder /app-yogabhavana/components ./components
+COPY --from=builder /app-yogabhavana/app ./app
+COPY --from=builder /app-yogabhavana/public ./public
+COPY --from=builder /app-yogabhavana/src ./src
+COPY --from=builder /app-yogabhavana/next-env.d.ts ./next-env.d.ts
+
+# COPY --from=builder /app-yogabhavana/.env.yogabhavana ./.env
+COPY --from=builder /app-yogabhavana/.env.local.1 ./.env.local
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
 ENV NEXT_PUBLIC_APP_ID 1
 ENV APP_ID 1
-
-# CMD ["npm", "start"]
-
-# COPY docker-entrypoint.sh /
-# RUN chmod +x /docker-entrypoint.sh
-# ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
 
 CMD ["npm", "start"]

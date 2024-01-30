@@ -150,3 +150,12 @@ export const UNWATCHLIST_AUHTOR = gql`
     }
   }
 `
+
+export const CREATE_AUTHOR = gql`
+    mutation createAuthorMutation($input: AuthorInput!) {
+      createAuthor(input: $input) {
+            author_id
+            author_name
+        }
+    }
+`;

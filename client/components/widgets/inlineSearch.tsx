@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react"
 
 import { cnInputText, utils } from "@/src/styles/classnames.tailwind"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSearch } from "@fortawesome/free-solid-svg-icons"
 
-export const InlineSearchComponent = ({ onSearch } : { onSearch: (term: string) => void }) => {
+export const InlineSearchComponent = ({ onSearch, currTerm } : { onSearch: (term: string) => void, currTerm: string }) => {
 
     const [searchval, setSearchval] = useState('')
 
+    // console.log('SEARCHYYYYY searchval, currTerm', searchval, currTerm)
     useEffect(() => {
-
+        
         const delayInputTimeoutId = setTimeout(() => {
             onSearch(searchval);
         }, 500)
         
         return () => clearTimeout(delayInputTimeoutId);
-      }, [searchval, onSearch])
+      }, [searchval, currTerm, onSearch])
 
     return <div className="relative">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-            </svg>
-        </div>
         <input 
             type="search" 
-            className={ utils.cnJoin([cnInputText, 'pl-2 my-4']) } 
+            className={ utils.cnJoin([cnInputText, 'pl-2 my-4 pr-8']) } 
             value={ searchval }
             placeholder="Refine items by label" 
             onChange={ (e) => setSearchval(e.target.value )}
         />
+        <FontAwesomeIcon icon={ faSearch } style={{ marginLeft: '-26px '}}/>
+
     </div>
 }

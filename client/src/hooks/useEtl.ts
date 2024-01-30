@@ -1,9 +1,10 @@
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries"
+import { GqlCacheKeys } from "../queries"
 import { UseQueryResult, useQuery } from "@tanstack/react-query"
 
 import request from "graphql-request"
 import { READ_RSS_SOURCES } from "../queries/etlQueries"
 
+import { GRAPHQL_ENDPOINT } from '@/src/config'
 
 export const useRssSources = (appId: number) => {
     const { 

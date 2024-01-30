@@ -1,6 +1,6 @@
 import { cnInputCheckbox,  cnPayoff, cnPostscriptum, cnSectionSmallTitle } from "@/src/styles/classnames.tailwind"
 import { InlineSearchComponent } from "./inlineSearch"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export interface SelectableItem {
     label: string,
@@ -21,11 +21,14 @@ export const CheckListComponent = ({ items, selected, onSelect }: {
         setSearched(items)
     }, [items])
 
+    const onSearchCb = useCallback((term: string) => {
+        setSearched(items.filter(item => item.label.indexOf(term) !== -1))
+    }, [setSearched, items])
+
     return <div>
         <InlineSearchComponent 
-            onSearch={ (term: string) => {
-                setSearched(items.filter(item => item.label.indexOf(term) !== -1))
-            }} 
+            currTerm=""
+            onSearch={ onSearchCb } 
         />
         
         { 

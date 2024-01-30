@@ -7,10 +7,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
+import { CSSTransition } from 'react-transition-group'
+
 import { ArticlesSortby } from "@/src/queries/articleQueries"
 import { cnBigIcon, cnInputText, cnTextClear, utils } from "@/src/styles/classnames.tailwind"
 import { ArticlesFetchFiltersComponent } from "../widgets/fetchFilters"
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import { SortDirection } from "@/src/helpers/sort"
 import { useAtom } from "jotai"
 import { ApiParamsContext } from "@/context/apiParams.context"
@@ -50,9 +52,11 @@ export const  ArticlesToolbarComponent = ({
         onLimitChange
     }: Props) => {
     
-    const [filters, setFilters] = useState(false)
-    
+    const [filters, setFilters] = useState(false) 
+
     const ctx = useContext(ApiParamsContext)
+
+    const filtersRef = useRef(null)
 
     const [protectedFilters] = useAtom(ctx?.filterParams?.articles.protect)
     const [publicFilters] = useAtom(ctx?.filterParams?.articles.pub)
@@ -67,10 +71,11 @@ export const  ArticlesToolbarComponent = ({
         return !!protectedFilters.minItems[d]
     }).length
 
-    const unappliedFiltersLen = protectedFiltersLen - publicFiltersLen 
-    const filtersBaloonCn = unappliedFiltersLen > 0 ? 'bg-yellow-600' : 'bg-gray-200'
     const staticAppSettings = getAppStaticSettings()
 
+    const unappliedFiltersLen = protectedFiltersLen - publicFiltersLen 
+    const filtersBaloonCn = unappliedFiltersLen > 0 ? staticAppSettings.bgEvidence : 'bg-gray-200'
+    
     return <div id="toolbar">
         <div>
             <div className={ `flex  justify-between p-5 shadow-lg items-center toolbar ${ staticAppSettings.bg }` } style={{ borderRadius: '0.25rem' }}>
@@ -122,7 +127,7 @@ export const  ArticlesToolbarComponent = ({
                     />
                 </div>
                 <div className="mr-5">
-                    <div className="icon-with-baloon">
+                    <div className={ utils.cnJoin(['icon-with-baloon']) }>
                         {
                         protectedFiltersLen ? <span className={ filtersBaloonCn }>
                             {
@@ -133,18 +138,34 @@ export const  ArticlesToolbarComponent = ({
                         
                         <FontAwesomeIcon
                             icon={ filters ? faFilter : faFilter }
-                            className={ utils.cnJoin([filters ?  cnBigIcon(staticAppSettings.txtEvidence) : 'text-gray-200', 'clickable-icon']) }
-                            onClick={ () => setFilters(!filters)}
+                            className={ utils.cnJoin([filters ?  cnBigIcon(staticAppSettings.txtEvidence) : 'text-gray-200 text-xl', 'clickable-icon']) }
+                            onClick={ () => setFilters((currStateFilters) => !currStateFilters)}
                         />
                     </div>
                 </div>
             </div>
-            {
+            {/* {
                 filters ? 
                     <ArticlesFetchFiltersComponent /> : 
                     null
-            }
-            
+            } */}
+            {/* <TransitionGroup className="todo-list"> */}
+
+            <CSSTransition
+                in={ filters }
+                nodeRef={filtersRef}
+                timeout={300}
+                classNames="widget"
+                unmountOnExit
+                // onEnter={() => setShowButton(false)}
+                // onExited={() => setShowButton(true)}
+            >
+            <div ref={ filtersRef }>
+             <ArticlesFetchFiltersComponent />
+            </div>
+                    
+            </CSSTransition>
+            {/* </TransitionGroup> */}
         </div>
 
     </div>

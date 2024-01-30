@@ -39,7 +39,7 @@ export const WatchlistsScreenComponent = () => {
     const appId =  appStaticSettings.appId
 
     const { data, isError, isLoading } = useWatchlistsWIthItemsCount(appId)
-
+    // return <h1>HIHIIIIIIi</h1>
     if (isLoading) {
         return <LoadingComponent appStaticSettings={ appStaticSettings } />
     }

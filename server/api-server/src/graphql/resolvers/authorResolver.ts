@@ -5,7 +5,7 @@ import { hasNamedProp } from '../../helpers/obj';
 
 export default {
     Query: {
-
+        
         async authors(_parent: any, args: { params: DatedWhereParams }) {
             
             const filters = {
@@ -27,7 +27,8 @@ export default {
             const authors = await dataSources.authorService.pgGetAuthors(
                 args.params.fromDate,
                 args.params.toDate,
-                filters
+                filters,
+                filters.appId === 100
             )
 
             return authors?.rows?.map(r => ({ ...r, articles_count: 12})) || []
@@ -55,6 +56,13 @@ export default {
     },
 
     Mutation : {
+
+        async createAuthor(_: any, args: { input : { author_name: string} }) {
+
+            const newAuthor = await dataSources.authorService.pgcCreateAuthor(args.input.author_name)
+
+            return  newAuthor?.rows ? newAuthor.rows[0] : []
+        },
 
         async setWatchlistAuthor (_: any, args: { input: { author_id: number, watchlist_id: number } }) {
 

@@ -1,84 +1,8 @@
 import { DataSource } from 'apollo-datasource'
 
-
-// import { PrismaClient } from '@prisma/client'
-// import prisma from '../../db/prisma'
-import { off } from 'process';
-// import { Article, ArticlesTags, Comment, Prisma, Tag, WatchlistsArticles } from '@prisma/client';
-
 import { ArticleWhere, WhereParameters, articleWhere, whereClauseObjToSql } from '../resolvers';
 import { getPool } from '../../db/pgPool';
-// import { QueryResult } from 'pg';
 import { whereArrayInValues } from '../../helpers/where';
-
-/*
-
-async pgcCreateTag(tagName: string, tagOrigin: string) {
-
-    const pgPool = getPool()
-    const pgclient = await pgPool.connect()
-
-    try {
-
-        return pgclient.query('INSERT INTO tags (tag_name, tag_origin) VALUES ($1, $2) RETURNING *', [tagName, tagOrigin])
-
-    } catch (error) {
-        console.log(error)
-        return Promise.reject('Error creating tag')
-    } finally {
-        pgclient.release()
-    }
-}
-
-
-async pgGetUsers () {
-
-    const pgPool = getPool()
-    const pgclient = await pgPool.connect()
-
-    try {
-         return pgclient.query('SELECT * FROM users;')
-    } catch (err) {
-
-        console.log(err)
-        
-        return Promise.reject('Error fetching users')
-
-    } finally {
-        pgclient.release()
-    }
-    
-}
-
-async pgGetWatchlistAuthors (watchlistId: number) {
-        
-    const pgPool = getPool()
-    const pgclient = await pgPool.connect()
-
-    try {
-        const authorsIDsResult = await pgclient.query('SELECT * FROM watchlists_authors WHERE watchlist_id = $1', [watchlistId])
-        const authorsIDs = authorsIDsResult.rows.map(r => r.article_id)
-
-        return pgclient.query(
-            'SELECT * FROM authors WHERE author_id IN($1)', 
-            [
-                JSON.stringify(authorsIDs).replace('[', '').replace(']', '')
-            ]
-        )
-        
-    } catch (err) {
-    
-        console.log(err)
-    
-        return Promise.reject('Error fetching watchlist authors')
-    
-    } finally {
-        pgclient.release()
-    }
-}
-
-*/
-
 
 export class ArticleService extends DataSource {
 
@@ -87,8 +11,6 @@ export class ArticleService extends DataSource {
     }
 
     initialize() {}
-
-
 
     async pgGetTagArticles (tagId: number) {
 
@@ -101,7 +23,8 @@ export class ArticleService extends DataSource {
                 SELECT * FROM articles
                 LEFT JOIN articles_tags 
                 ON articles_tags.article_id = articles.article_id
-                WHERE articles_tags.tag_id = ${ tagId };
+                WHERE articles_tags.tag_id = ${ tagId }
+                AND ( articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL );
             `)
         } catch (err) {
 
@@ -120,7 +43,7 @@ export class ArticleService extends DataSource {
         const pgclient = await pgPool.connect()
 
         try {
-            return pgclient.query('SELECT * FROM articles WHERE author_id = $1;', [authorId])
+            return pgclient.query('SELECT * FROM articles WHERE author_id = $1 AND ( articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL );', [authorId])
         } catch (err) {
 
             console.log(err)
@@ -138,7 +61,7 @@ export class ArticleService extends DataSource {
         const pgclient = await pgPool.connect()
 
         try {
-            return pgclient.query(`SELECT * FROM articles WHERE author_id IN ${ whereArrayInValues(authorIDs) };`)
+            return pgclient.query(`SELECT * FROM articles WHERE author_id IN ${ whereArrayInValues(authorIDs) } AND( articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL );`)
         } catch (err) {
 
             console.log(err)
@@ -176,15 +99,16 @@ export class ArticleService extends DataSource {
         try {
 
             const articles = await pgclient.query(`
-                SELECT * from articles
+                SELECT * FROM articles
                 WHERE ${ strArticlesWhere }
+                AND ( articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL )
                 ORDER BY ${ strOrderBy }
                 LIMIT ${ limit }
                 OFFSET ${ offset }
             `)
 
             const articlesCount = await pgclient.query(`
-                SELECT COUNT(article_id) as articlescount from articles
+                SELECT COUNT(article_id) as articlescount FROM articles
                 WHERE ${ strArticlesWhere }
             `)
             
@@ -194,24 +118,13 @@ export class ArticleService extends DataSource {
             })
         
         } catch (err) {
-            
-            // console.log(err)
-            
+                        
             return Promise.reject('Error fetching  articles')
 
         } finally {
             pgclient.release()
         }
     }
-
-    // getArticle(article_id: number) {
-        
-    //     return prisma.article.findFirst({
-    //         where: {
-    //             article_id: article_id
-    //         }
-    //     })
-    // }
 
     async pgGetArticle(articleId: number) {
 
@@ -231,39 +144,7 @@ export class ArticleService extends DataSource {
         }
     }
 
-    // async createArticle(articleTitle: string, articleDescription: string, articleLink: string, articleAPpId: number) {
-
-    //     const author = await prisma.author.findFirst({
-    //         where : {
-    //             author_name: 'user'
-    //         }
-    //     })
-
-    //     const articleData = {
-
-    //         article_title: articleTitle,
-    //         article_description: articleDescription,
-    //         article_link: articleLink,
-    //         article_datepub: new Date().toISOString(),
-    //         article_content: '',
-    //         article_bookmark: false,
-    //         article_delete: false,
-    //         article_origin: 'user',
-    //         app_id: articleAPpId,
-    //         author_id: author?.author_id || 146,
-    //     }
-
-    //     const created = await prisma.article.create({
-    //         data: { ...articleData }
-    //     })
-
-    //     return created
-    // }
-    
-
-    async pgCreateArticle(articleTitle: string, articleDescription: string, articleLink: string, articleAPpId: number) {
-
-        const authorId = 1
+    async pgCreateArticle(articleTitle: string, articleDescription: string, articleLink: string, articleAPpId: number, authorId: number) {
 
         const articleData = {
 
@@ -276,14 +157,14 @@ export class ArticleService extends DataSource {
             article_delete: false,
             article_origin: 'user',
             app_id: articleAPpId,
-            author_id: authorId// author?.author_id || 146,
+            author_id: authorId,
         }
 
             const pgPool = getPool()
         const pgclient = await pgPool.connect()
 
         try {
-
+        
             return await pgclient.query(`
                 INSERT INTO articles (
                     article_title,
@@ -294,11 +175,20 @@ export class ArticleService extends DataSource {
                     article_bookmark,
                     article_delete,
                     article_origin,
-                    app_id,,
+                    app_id,
                     author_id
                 )
                 VALUES(
-                    ${ articleData }
+                    '${ articleData.article_title }',
+                    '${ articleData.article_description }',
+                    '${ articleData.article_link }',
+                    '${ articleData.article_datepub }',
+                    '${ articleData.article_content }',
+                    ${ articleData.article_bookmark },
+                    ${ articleData.article_delete },
+                    '${ articleData.article_origin }',
+                    ${ articleData.app_id },
+                    ${ articleData.author_id }
                 )
                 RETURNING *
             `)
@@ -314,30 +204,7 @@ export class ArticleService extends DataSource {
         }
     }
 
-    // async getArticleTags(tags: ArticlesTags[]) {
-
-    //     const tagIds = tags.map(t => t.tag_id)
-    //     const articleTags = await prisma.tag.findMany({
-    //         where: {
-    //             'tag_id' : {
-    //                 in: tagIds
-    //             } 
-    //         }
-    //     })
-
-    //     return articleTags
-    // }
-
     async pgGetArticleTags(articleId: number) {
-
-        // const tagIds = tags.map(t => t.tag_id)
-        // const articleTags = await prisma.tag.findMany({
-        //     where: {
-        //         'tag_id' : {
-        //             in: tagIds
-        //         } 
-        //     }
-        // })
 
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
@@ -359,15 +226,6 @@ export class ArticleService extends DataSource {
             pgclient.release()
         }
     }
-
-    // async getArticleAuthor(author_id: number) {
-
-    //    return await prisma.author.findFirst({
-    //         where: {
-    //             author_id
-    //         }
-    //     })
-    // }
 
     async pgGetArticleAuthor(authorId: number) {
 
@@ -417,7 +275,9 @@ export class ArticleService extends DataSource {
                 SELECT * FROM watchlists
                 RIGHT JOIN watchlists_articles 
                 ON watchlists_articles.watchlist_id = watchlists.watchlist_id 
-                WHERE watchlists_articles.article_id = ${ articleId };
+                RIGHT JOIN articles 
+                ON articles.article_id = watchlists_articles.article_id
+                WHERE watchlists_articles.article_id = ${ articleId } AND( articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL );
             `
         ) 
 
@@ -428,20 +288,6 @@ export class ArticleService extends DataSource {
             pgclient.release()
         }
     }
-
-    // async addBookmarkArticle (article_id: number, val: boolean) {
-
-
-
-    //     return await prisma.article.update({
-    //         where: {
-    //           article_id
-    //         },
-    //         data: {
-    //           article_bookmark: val
-    //         },
-    //       })
-    // }
 
     async pgAddBookmarkArticle (articleId: number, val: boolean) {
 
@@ -465,18 +311,6 @@ export class ArticleService extends DataSource {
         }
     }
 
-    // async deleteArticle (article_id: number, val: boolean) {
-
-    //     return await prisma.article.update({
-    //         where: {
-    //           article_id
-    //         },
-    //         data: {
-    //             article_delete: val
-    //         },
-    //     })
-    // }
-
     async pgDeleteArticle (articleId: number, val: boolean) {
 
         const pgPool = getPool()
@@ -498,20 +332,6 @@ export class ArticleService extends DataSource {
             pgclient.release()
         }
     }
-
-    // async categoriseArticle (categoryId: number, articleId: number) {
-
-    //     const relation = await prisma.article.update({
-    //         where: {
-    //             article_id: articleId
-    //         },
-    //         data: {
-    //             category_id: categoryId
-    //         }
-    //     })
-
-    //     return relation
-    // }
 
     async pgCategoriseArticle (articleId: number, categoryId: number) {
 
@@ -535,30 +355,45 @@ export class ArticleService extends DataSource {
         }
     }
 
-    // async tagArticle (tagId: number, articleId: number) {
+    async pgTagArticle ( articleId: number, tagId: number, userId: number) {
 
-    //     const relation = await prisma.articlesTags.create({
-    //         data: {
-    //             tag_id: tagId,
-    //             article_id: articleId
-    //         }
-    //     })
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
 
-    //     return relation
-    // }
+        console.log(`
+        INSERT INTO articles_tags (article_id, tag_id, user_id)
+        VALUES(${ articleId }, ${ tagId }, ${ userId })
+        RETURNING *;
+    `)
+        try {   
+            return pgclient.query(`
+                INSERT INTO articles_tags (article_id, tag_id, user_id)
+                VALUES(${ articleId }, ${ tagId }, ${ userId })
+                RETURNING *;
+            `
+        ) 
 
-    async pgTagArticle (tagId: number, articleId: number) {
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error tagging article')
+        } finally {
+            pgclient.release()
+        }
+    }
+
+    async pgUntagArticle ( articleId: number, tagId: number,) {
 
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 
         try {   
-            return pgclient.query(`
-                INSERT INTO articles_tags (article_id, tag_id)
-                VALUES(${ articleId }, ${ tagId })
+            await pgclient.query(`
+                DELETE FROM  articles_tags
+                WHERE article_id = ${ articleId } AND tag_id = ${ tagId };
                 RETURNING *;
-            `
-        ) 
+            `)
+
+            return this.pgGetArticle(articleId)
 
         } catch (error) {
             console.log(error)

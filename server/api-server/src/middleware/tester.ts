@@ -1,38 +1,23 @@
-import express, { Application } from "express"
-import bodyParser from "body-parser"
+import { Application } from "express"
 import 'dotenv/config'
-import path from "path"
-import { spawn } from "child_process"
+import { connectionString } from "../db/pgPool"
+import { dataSources } from '../graphql/datasources';
 
-import { acquireRss } from "../etl/acquire"
-import { getPool } from "../db/pgPool"
-
-// export const populteRoutes = (app: Application) => {
-
-//     app.get("/articles", async (req, res) => {
-
-//         const articles = await prisma.articles.findMany()
-        
-//         res.json(articles)
-//     })
-// }
-
-export const appUseFoo = (app: Application) => {
+export const appUsePing = (app: Application) => {
     app.get(
-        "/foo",
+        "/ping",
         async (req, res, next) => {
-            
-            
-
             try {
-                const pgPool = getPool()
-                const pgclient = await pgPool.connect()
-
-                const authorRows = pgclient.query('SELECT * FROM authors ')
+                const author = await dataSources.authorService.pgGetAuthor(3)
 
                 res.send({
                     status: 200,
-                    result: authorRows
+                    result: {
+                        connectionString: connectionString,
+                        author: author,
+                        env: process.env
+
+                    }
                   })
 
             } catch (err) {
@@ -40,25 +25,10 @@ export const appUseFoo = (app: Application) => {
 
                 res.send({
                     status: 500,
-                    result: null
+                    result: null,
+                    err
                   })
             }
-
-            // try {
-                
-            //     const authorRows = pgclient.query('SELECT * FROM authors ')
-
-            //     res.send({
-            //         status: 200,
-            //         result: authorRows
-            //       })
-
-            // } catch (err) {
-
-            //     console.log(err)
-            // } finally {
-            //     pgclient.release()
-            // }
 
         }
     )

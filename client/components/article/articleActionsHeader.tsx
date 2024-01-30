@@ -14,7 +14,7 @@ import { ArticleBase } from "@/src/models/article"
 
 import { getAppStaticSettings } from "@/src/store/static"
 
-import { cnBigIconActive, utils, cnBigIcon, cnItemCardActions } from "@/src/styles/classnames.tailwind"
+import {  utils, cnItemCardActions, cnSmallIcon } from "@/src/styles/classnames.tailwind"
 
 interface Props { 
     article: ArticleBase;
@@ -36,36 +36,34 @@ export const ArticleActionsHeaderComponent = ({
     const staticAppSettings = getAppStaticSettings()
 
     return <div className={ cnItemCardActions } style={{ height: '40px' }}>
-        <div>
-            <FontAwesomeIcon
-                icon={ faPlus }
-                className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon'])}
-                onClick={ onToggleExtras }
-            />
-        </div>
-        <div className="flex items-center">
             <FontAwesomeIcon
                 icon={ faPalette }
-                className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon'])}
+                className={ utils.cnJoin([cnSmallIcon(staticAppSettings.txt), 'clickable-icon'])}
                 onClick={ onToggleColorPicker }
             />
             <FontAwesomeIcon
                 icon={ faBookmark }
-                className={ utils.cnJoin([article.article_bookmark ? cnBigIconActive(staticAppSettings.txtEvidence) : cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
+                className={ utils.cnJoin([article.article_bookmark ? cnSmallIcon(staticAppSettings.txtEvidence) : cnSmallIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
                 onClick={ () => onBookmarkArticle({ item_id: Number(article.article_id), val: !article.article_bookmark }) }
             />
             <div>
                 <FontAwesomeIcon
                     icon={ faComment }
-                    className={ utils.cnJoin([article.comments?.length ? cnBigIconActive(staticAppSettings.txtEvidence) : cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
+                    className={ utils.cnJoin([article.comments?.length ? cnSmallIcon(staticAppSettings.txtEvidence) : cnSmallIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
                     onClick={ onToggleComment }
                 />
             </div>
             <FontAwesomeIcon
                 icon={ faTrash }
-                className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
+                className={ utils.cnJoin([cnSmallIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
                 onClick={ () => onDeleteArticle({ item_id: Number(article.article_id), val: true }) }
             />
+            <div className="pl-8">
+                <FontAwesomeIcon
+                    icon={ faPlus }
+                    className={ utils.cnJoin([cnSmallIcon(staticAppSettings.txt), 'clickable-icon'])}
+                    onClick={ onToggleExtras }
+                />
         </div>
     </div>
 }

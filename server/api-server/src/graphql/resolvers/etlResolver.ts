@@ -7,8 +7,6 @@ export default {
     
     Query: {
         async rssSources (_parent: any, args: { params: DatedWhereParams }) {
-            // console.log('RESOLVER -------------')
-            // console.log(args)
 
             const filters = {
                 appId: args.params.appId,

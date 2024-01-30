@@ -14,6 +14,11 @@ export const cnButtonWarning = 'text-yellow-400 hover:text-white border border-y
 export const cnBigIcon = (txt: string) => 'text-xl ' + txt
 export const cnBigIconDark = (txt: string) =>  'text-xl ' + txt
 export const cnBigIconActive = (txt: string) => 'text-xl ' + txt
+export const cnBigIconClear = (txt: string) =>  'text-xl text-white ' + txt
+
+export const cnSmallIcon = (txt: string) => 'text-sm ' + txt
+// export const cnBigIconDark = (txt: string) =>  'text-xl ' + txt
+// export const cnBigIconActive = (txt: string) => 'text-xl ' + txt
 
 
 export const cnPageLinkActive = 'flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-yellow-50 hover:bg-yellow-100 hover:text-blue-700 '
@@ -21,8 +26,9 @@ export const cnPageLinkUnactive = 'flex items-center justify-center px-3 h-8 lea
 export const cnNavLinkActive = 'flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 '
 export const cnNavLinkUnactive = `${ cnNavLinkActive } opacity-50`
 
-export const cnParagraph = 'my-1 py-1 text-sm text-gray-700'
+export const cnParagraphBase = 'my-1 py-1 text-sm'
 export const cnPostscriptum = 'text-xs p-0 m-0 block'
+export const cnParagraph = `${ cnParagraphBase } text-gray-700`
 export const cnPayoff = `${ cnParagraph } font-semibold`
 
 export const cnLabel = 'text-sm text-gray-700'
@@ -34,18 +40,24 @@ export const cnSectionTitle= 'my-4 text-lg font-bold tracking-tight text-gray-90
 export const cnSectionSubTitle= 'my-3 text-base font-light text-gray-900 lg:mb-16 sm:text-xl dark:text-gray-200'
 export const cnSectionSmallTitle= 'my-2 text-sm font-bold tracking-tight'
 
+export const cnToastContainer= 'fixed'
+export const cnWarn = 'bg-amber-600'
+
 export const cnCardContainer = 'flex flex-col justify-between px-4 py-2 leading-normal'
 export const cnCardTitle= `${ cnSectionSmallTitle } my-3`
+export const cnCardSectionContainer = 'flex flex-col justify-between px-8 py-8 leading-normal mb-8 bg-gray-100'
+
+export const cnDropdownContainer = 'text-sm'
+
+export const cnPaginationContainer = 'flex items-center justify-around clear-both '
 
 export const cnTag = (bg: string) =>  'm-2 m-y-0 ml-0 text-white cursor-pointer px-3 py-2.5 font-normal text-xs leading-3 rounded ' + bg
-
-export const cnModal = ''
 
 export const cnCard = ''
 
 export const cnBaloon = 'p-4 mt-4 bg-gray-100 rounded-lg dark:bg-gray-800 dark:border-gray-700'
 
-export const cnInputText = withBorder('bg-gray-50 text-gray-900 text-xs rounded-lg inline-block')
+export const cnInputText = withBorder('bg-gray-50 text-gray-900 text-xs rounded-lg inline-block w-100px')
 
 export const cnInputSelect = ''
 
@@ -97,9 +109,9 @@ export const cnActionablesList = {
     li: 'inline-block py-2 flex items-center justify-between',
 }
 
-export const cnItemCardActions = 'flex items-center p-2 justify-between absolute w-full top-0 left-0  h-40'
+export const cnItemCardActions = 'flex items-center p-2 items-center justify-end absolute w-full top-0 left-0  h-40'
 
-export const cnItemCard = 'pt-6 overlay-filler-parent mr-4 mb-4 pb-2 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl top-0 left-0 w-full'
+export const cnItemCard = 'pt-6 overlay-filler-parent mr-4 mb-4 pb-2 rounded-lg md:flex-row md:max-w-xl'
 
 export const cnTextualList = {
     ul: 'm-0 p-0',// flex flex-wrap',
@@ -112,3 +124,12 @@ export const cnColorPicker = {
 }
 
 export const cnPaginateContainer = 'flex '
+
+export const cnInputBlock = 'pt-2 pb-2'
+
+export const cnInputLabel = 'block text-sm'
+
+export const cnModal = ''
+
+export const cnModalTitle = (bg: string) =>  'p-4 m-0 ' + bg
+export const cnModalBody = 'p-4'

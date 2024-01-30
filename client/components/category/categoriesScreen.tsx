@@ -1,8 +1,12 @@
 "use client";
 
+
+// import * as Tg from 'react-transition-group';
+
 import { useSearchParams, useRouter, } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
+import { CSSTransition } from 'react-transition-group'
 
 import { LoadingComponent } from '@/components/widgets/status/loading'
 import { ErrorComponent } from '@/components/widgets/status/error'
@@ -18,7 +22,6 @@ import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories';
 import { useUsers } from '@/src/hooks/useUsers';
 import { currUserAtom } from '@/src/store/userAtoms';
 import { getAppStaticSettings } from '@/src/store/static';
- 
 
 export const CategoriesScreenComponent = () => {
 
@@ -29,6 +32,8 @@ export const CategoriesScreenComponent = () => {
 
   const searchParams = useSearchParams()
   const router = useRouter()
+
+  const modalRef = useRef(null)
 
   const categoryId = searchParams.get('categoryId')
 
@@ -58,14 +63,34 @@ export const CategoriesScreenComponent = () => {
     }
   
     const reqCategory = categoryId ? (data.categories.find(apiT => Number(apiT.category_id) === Number(categoryId)) || null) : null 
-    
+    // const reqCategory = data.categories.find(apiT => Number(apiT.category_id) === Number(categoryId)) 
+
     // const opacity = isFetching ? 1 : 0
 
     return <div>
-      {/* <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
-        <p>working...</p>
-    </div>  */}
       {
+        reqCategory ?
+            <CSSTransition
+                in={ !!reqCategory }
+                nodeRef={modalRef}
+                timeout={1000}
+                classNames="widget"
+                unmountOnExit
+                // onEnter={() => setShowButton(false)}
+                // onExited={() => setShowButton(true)}
+            >
+            <div ref={ modalRef } style={{ background: 'red', width: '100%',  height: '100%'}}>
+              <CategoryDetailModalComponent 
+                  category={ reqCategory } 
+                  onClose={ () => router.replace('/categories') } 
+              /> 
+            </div>
+                    
+            </CSSTransition> :
+            null
+      }
+      
+      {/* {
       reqCategory ? 
         <CategoryDetailModalComponent 
             category={ reqCategory } 
@@ -75,7 +100,8 @@ export const CategoriesScreenComponent = () => {
             }} 
         /> 
         : null
-      }
+      } */}
+      
         <CategoriesListComponent categories={ data.categories } />
     </div>
 }

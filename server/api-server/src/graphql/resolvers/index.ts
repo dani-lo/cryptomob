@@ -107,8 +107,6 @@ export const whereClauseObjToSql = (whereObj: ArticleWhere, prefix ?: string) =>
     return (strClauses || []).filter(d => d !== null).join(' AND ')
 }
 
-// (${Prisma.join()})
-
 export const articleWhere = async (
         filters:WhereParameters, 
         fromDate: string, 

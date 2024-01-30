@@ -1,10 +1,11 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import request from 'graphql-request'
 
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from '@/src/queries'
+import { GqlCacheKeys } from '@/src/queries'
 import { READ_USERS } from '@/src/queries/userQueries'
 
 import { UserApiData } from '@/src/models/user'
+import { GRAPHQL_ENDPOINT } from '../config'
 
 
 export const useUsers = () => {

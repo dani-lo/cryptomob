@@ -33,7 +33,7 @@ export default {
  
             const commentRows = await dataSources.commentService.pgCreateComment(comment_text, article_id, user_id)
             const comment = commentRows?.rows?.length ? commentRows.rows[0] : {}
-            console.log(comment)
+
             return comment
         },
     },

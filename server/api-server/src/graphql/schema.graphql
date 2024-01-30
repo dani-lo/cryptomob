@@ -45,35 +45,46 @@ input IdParams {
 input UpdateBoolInput {
   item_id: Int!
   val: Boolean!
+  jwtok: String
 }
 
 input ArticleCategoryMutation {
-  article_id: Int
-  category_id: Int
-  user_id: Int
+  article_id: Int!
+  category_id: Int!
+  user_id: Int!
+  jwtok: String
 }
 
 input ArticleWatchlistMutation {
-  article_id: Int
-  watchlist_id: Int
-  user_id: Int
+  article_id: Int!
+  watchlist_id: Int!
+  user_id: Int!
+  jwtok: String
 }
 
 input TagWatchlistMutation {
-  tag_id: Int
-  watchlist_id: Int
-  user_id: Int
+  tag_id: Int!
+  watchlist_id: Int!
+  user_id: Int!
+  jwtok: String
 }
 
 input AuthorWatchlistMutation {
-  author_id: Int
-  watchlist_id: Int
-  user_id: Int
+  author_id: Int!
+  watchlist_id: Int!
+  user_id: Int!
+}
+
+input ArticleTagMutation {
+  article_id: Int!
+  tag_id: Int!
+  user_id: Int!
 }
 
 input ArticleColorMutation {
   article_id: Int
   color: String
+  jwtok: String
 }
 
 type Query {
@@ -87,7 +98,6 @@ type Query {
   author(author_id: ID!): Author!
   category(category_id: ID!): Category!
   tags(params: FilterParams): [Tag!]!
-  # tag(tag_id: ID!): Tag!
   comments(params: FilterParams): [Comment!]!
   coins:[Coin!]!
   categories(params: FilterParams): [Category!]!
@@ -107,10 +117,12 @@ type Mutation {
   createCategory(input: CategoryInput): Category
   createWatchlist(input: WatchlistInput): Watchlist
   createTag(input: TagInput): Tag
+  createAuthor(input: AuthorInput): Author
   setWatchlistArticle(input: ArticleWatchlistMutation): Article
   deleteWatchlistArticle(input: ArticleWatchlistMutation): Article
   setCategoriseArticle(input: ArticleCategoryMutation): Article
-  tagArticle(article_id: Int, tag_id: Int): Int
+  setArticleTag(input: ArticleTagMutation): Article
+  unsetArticleTag(input: ArticleTagMutation): Article
   setWatchlistTag(input: TagWatchlistMutation): Tag
   deleteWatchlistTag(input: TagWatchlistMutation): Tag
   setWatchlistAuthor(input: AuthorWatchlistMutation): Author
@@ -151,7 +163,9 @@ input ArticleInput {
   article_title: String!
   article_description: String!
   article_link: String!
+  author_id: Int!
   app_id: Int!
+  jwtok: String
 }
 
 type PaginatedArticles {
@@ -174,6 +188,12 @@ type PaginatedAuthors {
   authors: [Author]!
 }
 
+input AuthorInput {
+  author_name: String!
+  jwtok: String
+}
+
+
 # ---- categories 
 
 type Category {
@@ -189,7 +209,8 @@ input CategoryInput {
   category_id: Int
   category_name: String!
   user_id: Int!
-  app_id: Int!
+  appId: Int!
+  jwtok: String
 }
 
 
@@ -213,10 +234,10 @@ type PaginatedTags {
 }
 
 input TagInput {
-  tag_id: Int
   tag_name: String!
   tag_origin: String!
   app_id: Int!
+  jwtok: String
 }
 
 # ---- users
@@ -252,9 +273,10 @@ type PaginatedComments {
 }
 
 input CommentInput {
-  comment_text: String 
-  user_id: Int
-  article_id: Int
+  comment_text: String!
+  user_id: Int!
+  article_id: Int!
+  jwtok: String
 }
 
 type Watchlist {
@@ -272,8 +294,9 @@ type Watchlist {
 input WatchlistInput {
   watchlist_id: Int
   watchlist_name: String
-  user_id: Int
+  user_id: Int!
   app_id: Int!
+  jwtok: String
 }
 
 
@@ -293,3 +316,17 @@ type Coin {
 type AppCounts {
   tags_counts: Int
 } 
+
+
+# UpdateBoolInput
+# ArticleCategoryMutation
+# ArticleWatchlistMutation
+# TagWatchlistMutation
+# CategoryInput
+# ArticleColorMutation
+# ArticleInput
+# AuthorInput
+# CategoryInput
+# TagInput
+# CommentInput
+# WatchlistInput

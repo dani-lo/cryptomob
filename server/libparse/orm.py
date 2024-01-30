@@ -2,6 +2,10 @@
 # from datetime import datetime, timezone
 
 from enum import Enum
+from decouple import Config, RepositoryEnv
+
+DOTENV_FILE = '/home/dani/www/cryptomob/server/libparse/.env'
+env_config = Config(RepositoryEnv(DOTENV_FILE))
 
 import psycopg2
 import psycopg2.extras
@@ -48,6 +52,22 @@ def cursor_result_to_api_tags (result) : # -> list[ApiTag]:
         tags.append(tag)
 
     return tags
+
+def cursor_result_to_sources (result) : # -> list[ApiTag]:
+    
+    sources = []
+
+    for row in result:
+                
+        source = {
+            "source_id": row["source_id"],
+            "source_url": row["source_url"],
+            "app_id": row["app_id"],
+        }
+
+        sources.append(source)
+
+    return sources
 
 def cursor_result_to_api_authors (result) : # -> list[ApiAuthor]:
 
@@ -103,11 +123,14 @@ class ArticlesParser:
     # authors: list[ApiAuthor]
     # article_links: list[str]
 
-    def __init__ (self, port) : # : int):
+    def __init__ (self, port, host) : # : int):
+
+        self.db_pass = 'postgres' # env_config.get("QRATED_DB_PASSWORD")
+        self.db_user = 'postgres' # env_config.get("QRATED_DB_USER")
 
         try:
 
-            self.connect(port)
+            self.connect(port, host)
 
             cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
@@ -134,22 +157,26 @@ class ArticlesParser:
 
             self.idx = 0
 
+            
+
         except (Exception, psycopg2.DatabaseError) as error:
             print('__init__ ERROR')
             print(error)
             # if hasattr(self, 'conn') and self.conn is not None:
             #     self.conn.close()            
 
-    def connect (self, port= 5432): # : int = 5432) :
+    def connect (self, port= 5432, host='localhost'):
 
         if not hasattr(self, "conn") or self.conn is None:
 
             try:
-                self.conn = psycopg2.connect(database="qrated",
-                        host="dbservice",
-                        user="postgres",
-                        password="postgres",
-                        port=port)
+                self.conn = psycopg2.connect(
+                    database="qrated",
+                    host=host,
+                    user=self.db_user,
+                    password=self.db_pass,
+                    port=port
+                )
             except (Exception, psycopg2.DatabaseError) as error:
                 print('NOT CONNECTED...')
                 print(error)            
@@ -158,6 +185,32 @@ class ArticlesParser:
 
         if hasattr(self, 'conn') and self.conn is not None:
             self.conn.close()
+
+    def get_sources (self, app_id):
+
+        sql = "SELECT source_id, source_url, app_id  FROM sources  WHERE app_id =  " + str(app_id)
+
+        try:
+            
+            self.connect()
+
+            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+            cursor.execute(sql)
+
+            fetched_sources = cursor.fetchall()
+
+            # print(fetched_tags)
+
+            # all_tags: list[ApiTag] = cursor_result_to_api_tags(fetched_tags)
+            all_sources = cursor_result_to_sources(fetched_sources)
+
+            return all_sources
+        
+        except (Exception, psycopg2.DatabaseError) as error:
+            print('fetch sources errored')
+            print(error)
+
 
     def get_tags_or_create (self, tag_names): # : list[str]) -> list[ApiTag]:
 

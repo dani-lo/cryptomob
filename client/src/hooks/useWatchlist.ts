@@ -1,4 +1,6 @@
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries"
+import { GqlCacheKeys } from "../queries"
+import { GRAPHQL_ENDPOINT } from '@/src/config'
+
 import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { gqlClient } from "@/src/utils/graphqlClient"

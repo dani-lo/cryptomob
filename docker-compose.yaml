@@ -10,27 +10,25 @@ services:
     volumes:
       - ./pgvolumes/qrated/:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=qrated
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
     networks:
       - qrated-network
-  # nodeapi:
-  #   build: ./server
-  #   container_name: qrated-nodeapi-container
-  #   depends_on:
-  #     - dbservice
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - NODE_ENV=staging
-  #   # volumes:
-  #   #   - ./:/app/
-  #   #   # node_modules workaround for volumes
-  #   #   # https://stackoverflow.com/a/32785014
-  #   #   - /app/node_modules
-  #   networks:
-  #     - qrated-network
+  nodeapi:
+    build: ./server
+    container_name: qrated-nodeapi-container
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+    # volumes:
+    #   - ./:/app/
+    #   # node_modules workaround for volumes
+    #   # https://stackoverflow.com/a/32785014
+    #   - /app/node_modules
+    networks:
+      - qrated-network
   # nextjs:
   #   build: ./client
   #   container_name: qrated-nextjs-container

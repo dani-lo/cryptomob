@@ -1,11 +1,13 @@
 *.localdata
 *.code-workspace
 cryptobits-env/
+nginx/
 node_modules/
 backups/
 src.bak/
 cryptomob-db
 memo
 pgvolumes
+scripts
 .terraform/
 .husky/

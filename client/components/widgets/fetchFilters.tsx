@@ -10,6 +10,7 @@ import {
   } from "@fortawesome/free-solid-svg-icons"
 
 
+
 // import { TagsFilterSelectorComponent } from "./filterEditors/tagsFilterSelector"
 // import { ModelType } from "@/src/models"
 import { ApiParamsContext } from "@/context/apiParams.context"
@@ -21,12 +22,15 @@ import { QueryFilterParamsMinItems } from "@/src/store/app"
 import { CheckboxInputComponent } from "./inputs"
 import { GqlCacheKeys } from "@/src/queries"
 import { useQueryClient } from "@tanstack/react-query"
+// import { usePopin } from "@/src/hooks/usePopin"
 
 // const numOptions = [0, 1,2,3,4,5,10,15,20].map(n => ({ label: `${ n }`, value: `${ n }\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`}))
 
 export const ArticlesFetchFiltersComponent = () => {
 
     const client = useQueryClient()
+
+    // const [cnamePopin] = usePopin()
 
     // const [activetab, setActivetab] = useState(ModelType.Tag)
 
@@ -37,7 +41,8 @@ export const ArticlesFetchFiltersComponent = () => {
 
     const hasChanges = JSON.stringify(protectedFilters) !== JSON.stringify(publicFilters)
 
-    return <div style={{ padding: '2rem 2rem', margin: '1rem 0 0', background: '#fff', borderRadius: '0.5rem' }}>
+    return <div 
+                style={{ padding: '2rem 2rem', margin: '1rem 0 0', background: '#f1f1f1', borderRadius: '0.5rem' }}>
             {/* <div style={{ flex: 1, background: 'white', padding: '1rem', margin: '1rem', maxWidth: '500px'  }}> */}
                 {/* <TabbedHeader 
                     tabitems={[

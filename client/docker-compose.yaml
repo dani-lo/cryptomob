@@ -1,25 +1,32 @@
 version: '3.8'
 services:
-  cryptomob:
-    container_name: qrated-cryptomob-client-container
+  yogabhavana:
+    container_name: qrated-yogabhavana-client-container
     build:
       context: ./
-      dockerfile: Dockerfile-cryptomob
+      dockerfile: Dockerfile-yogabhavana
     volumes:
-        - .:/app
-        - /app/node_modules
-        - /app/.next
+        - .:/app-yogabhavana
+        - /app-yogabhavana/node_modules
+        - /app-yogabhavana/.next
     ports:
       - "3000:3000"
-
-  # fullstacked:
-  #   container_name: qrated-fullstacked-client-container
-  #   build:
-  #     context: ./
-  #     dockerfile: Dockerfile-fullstacked
-  #   volumes:
-  #       - .:/app
-  #       - /app/node_modules
-  #       - /app/.next
-  #   ports:
-  #     - "3001:3001"
+    environment:
+      - PORT=3000
+      - APP_ID=1
+      - NEXT_PUBLIC_APP_ID=1
+  fullstacked:
+    container_name: qrated-fullstacked-client-container
+    build:
+      context: ./
+      dockerfile: Dockerfile-fullstacked
+    volumes:
+        - .:/app-fullstacked
+        - /app-fullstacked/node_modules
+        - /app-fullstacked/.next
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - APP_ID=2
+      - NEXT_PUBLIC_APP_ID=2

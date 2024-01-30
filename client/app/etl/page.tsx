@@ -4,14 +4,29 @@ import { useEffect, useState } from 'react'
 import { ErrorComponent } from '@/components/widgets/status/error'
 import { EmptyComponent } from '@/components/widgets/status/empty'
 
-import { cnBold, cnButton, cnPage, cnParagraph, cnPostscriptum, cnSectionSmallTitle, cnTextualList, utils } from '@/src/styles/classnames.tailwind' 
+import { cnBold, cnButton, cnPage, cnPostscriptum, cnSectionSmallTitle, cnTextualList, utils } from '@/src/styles/classnames.tailwind' 
 import { getAppStaticSettings } from '@/src/store/static'
 import { useRssSources } from '@/src/hooks/useEtl'
-import { API_BASE } from '@/src/queries'
+import { API_BASE } from '@/src/config'
 import { dateToPostgresDateString } from '@/src/helpers/date'
+import { CreateArticleComponent } from '@/components/article/createArticle'
+// import { AuthorsApiDataResult } from '@/components/author/authorsScreen'
+// import { UseQueryResult, useQuery } from '@tanstack/react-query'
+// import { gqlCacheKey } from '@/src/helpers/gqlCacheKey'
+// import { GqlCacheKeys } from '@/src/queries'
+// import request from 'graphql-request'
+// import { AuthorSortby, READ_AUTHORS, READ_PAGINATED_AUTHORS } from '@/src/queries/authorQueries'
+// import { SortDirection } from '@/src/helpers/sort'
+// import { ApiParamsContext } from '@/context/apiParams.context'
+// import { useAtom } from 'jotai'
+import { useAuthorsWithArticlesCount } from '@/src/hooks/useAuthors'
 
 const EtlPage = () => {
     
+    // const ctx = useContext(ApiParamsContext)
+
+    // const [fetchParams] = useAtom(ctx.queryParams.tags)
+
     const [populating, setPopulating] = useState(false)
     const [result, setResult] = useState<any>(null)
 
@@ -21,6 +36,14 @@ const EtlPage = () => {
     const onPopulate = async () => {
         setPopulating(true)
     }
+// 
+    // const appId = appStaticSettings.appId
+
+    const { 
+        // authorsIsLoading,
+        // authorsIsError,
+        data: authorsData,
+    } = useAuthorsWithArticlesCount(100, '', '')
 
     useEffect( () => {
 
@@ -57,15 +80,23 @@ const EtlPage = () => {
     // @ts-ignore
     const yesterday = new Date() - (1000 * 60 * 60 * 24 * 2)
 
-    return <div  className={ utils.cnJoin([cnPage, 'content']) }>
+    const vizCn = process.env.NODE_ENV
+
+    return <div  className={ utils.cnJoin([vizCn, cnPage, 'content']) }>
         <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
             <p>working...</p>
         </div> 
         {
         isLoading ? null : <div>
-            <p className={ utils.cnJoin([cnParagraph, 'my-6']) }>
+            {/* <p className={ utils.cnJoin([cnParagraph, 'my-6']) }>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, tation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-            </p>
+            </p> */}
+
+            
+
+            <CreateArticleComponent 
+                authorsData={ authorsData?.authors }  
+            />
             <p className={ cnBold }>Needs admin access</p>
             <button 
                    className={ populating || !populating ? utils.disabled(cnButton) :  cnButton }

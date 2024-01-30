@@ -2,11 +2,14 @@ import {  useState } from "react"
 
 import * as cnames from "@/src/styles/classnames.tailwind"
 import { useAddCategory } from "@/src/hooks/useCategories"
+import { getAppStaticSettings } from "@/src/store/static"
 
 export const CreateCategoryComponent = () => {
 
     const [text, setText] = useState('')
 
+    const appId = getAppStaticSettings().appId
+    
     const addCategoryMutation =  useAddCategory()
 
     const handleSubmit = () => {
@@ -14,6 +17,7 @@ export const CreateCategoryComponent = () => {
         addCategoryMutation.mutate({
             category_name: text,
             user_id: 1,
+            appId
         })
 
         setText('')

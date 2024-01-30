@@ -20,12 +20,12 @@ export class Tag {
     public tag_origin:  Tag_Origin
     public articles ?: ArticleBase[]
 
-    public constructor (t: TagApiData) {
+    public constructor (t: TagApiData, nest = false) {
         this.tag_id = t.tag_id
         this.tag_name = t.tag_name
         this.tag_origin = Tag_Origin[t.tag_origin]
 
-        if (t.articles) {
+        if (nest && t.articles) {
             this.articles = t.articles.map(a => new Article(a))
         }
     }

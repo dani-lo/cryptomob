@@ -3,7 +3,7 @@
 import { ellipsys } from '@/src/helpers/ellipsys';
 import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
 import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { ResourceItemsCount } from '@/src/queries';
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort';
 import { SortIconComponent } from '../widgets/sortIcon';
@@ -25,13 +25,9 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
     
     const ctx = useContext(ApiParamsContext)
 
-    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.tags)
+    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.authors)
 
-    const paginator = new PaginationCtrl(
-        paginatedAuthors.recordsCount,
-        fetchParams.offset,
-        fetchParams.limit
-    )
+    // console.log(fetchParams)
 
     const onSortBy = (newSortField : keyof (AuthorApiData & ResourceItemsCount)) => {
 
@@ -48,23 +44,37 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
         sortby[0], 
         sortby[1], 
         sortby[0] === 'articles_count' ? (t: AuthorApiData) => t.articles.length : null)
-    
+
+    const filtered = sorted.filter(t => {
+        if (searchterm !== '' && t.author_name.toLowerCase().indexOf(searchterm.toLowerCase()) === -1) {
+            return false
+        }
+        return true
+    })
+
+    const paginator = new PaginationCtrl(
+        filtered.length,
+        fetchParams.offset,
+        fetchParams.limit
+    )
+
+    const paginated = paginator.takeLocal(filtered)
     
     const appStaticSettings = getAppStaticSettings()
     const cnTableFull = cnTable(appStaticSettings.bg)
 
+    const onSearchCb = useCallback((term: string) => {
+        setSearchterm(term)
+        setFetchParams({ ...fetchParams, offset: 0 })
+    }, [])
+    
     return <div>
         <div className="flex items-center justify-between">
-            {/* <div style={{ flex: 1 }}>
-                <CreateCategoryComponent />
-            </div> */}
-            <div style={{ flex: 1, padding: '1rem' }}>
+
+            <div style={{ flex: 1 }} className='pb-4'>
                 <InlineSearchComponent 
-                    onSearch={ (term: string) => {
-                        // if (term !== '') {
-                            setSearchterm(term)
-                        // }
-                    }} 
+                    currTerm={ searchterm }
+                    onSearch={ onSearchCb } 
                 />
             </div>
         </div>
@@ -94,11 +104,7 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
             </thead>
             <tbody>
             {
-                sorted.map(t => {
-
-                    if (searchterm !== '' && t.author_name.toLowerCase().indexOf(searchterm.toLowerCase()) === -1) {
-                        return null
-                    }
+                paginated.map(t => {
 
                     return <tr key={ t.author_name }>
                         <td className={ cnTableFull.td }>     
@@ -123,14 +129,14 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
             </tbody>
         </table>
         {
-        paginator ? 
-        <PaginationComponent 
-          paginationCtrl={ paginator } 
-          onSelectPage={ (nextOffset) => { 
-            setFetchParams({ ...fetchParams, offset: nextOffset })
-          }} 
-      /> 
-      : null
-    }
+            paginator.displaySelf(filtered) ? 
+                <PaginationComponent 
+                    paginationCtrl={ paginator } 
+                    onSelectPage={ (nextOffset) => { 
+                        setFetchParams({ ...fetchParams, offset: nextOffset })
+                    }} 
+                /> 
+                : null
+        }
     </div>
 }

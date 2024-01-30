@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 
 import { ArticleAPiData, Article } from "@/src/models/article"
 
-import { StyledCardContainer } from "@/src/styles/main.styled"
+// import { StyledCardContainer } from "@/src/styles/main.styled"
 
 import { useBookmarkArticle, useDeleteArticle } from "@/src/hooks/useArticles"
 
@@ -14,6 +14,7 @@ import { ArticleCardComponent } from "@/components/article/articleCard"
 import { PaginationComponent } from "@/components/widgets/pagination"
 import { useTag } from "@/src/hooks/useTags";
 import { TagDetailModalComponent } from "../widgets/modal/tagDetail";
+import { currUserAtom } from "@/src/store/userAtoms";
 // import { CreateArticleComponent } from "@/components/article/createArticle"
 
 interface AtriclesProps { articles: ArticleAPiData[], recordsCount: number }
@@ -21,6 +22,9 @@ interface AtriclesProps { articles: ArticleAPiData[], recordsCount: number }
 export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles: AtriclesProps }) => {
 
     const [tagId, setTagId] = useState(0)
+    const [user] = useAtom(currUserAtom)
+
+    console.log(user)
 
     const {
       data: tagData
@@ -51,14 +55,12 @@ export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles
       fetchParams.limit
     ])
 
-    console.log(tagData)
-
     return <div>
       <TagDetailModalComponent 
         tag={ tagData?.tag } 
-        onClose={ () => setTagId(0)} userId={ 0 } 
+        onClose={ () => setTagId(0)} userId={ user?.user_id || 0 } 
       />
-      <StyledCardContainer className="pb-8 pt-8">
+      <div className="pb-8 pt-8 StyledCardContainer">
       {
           paginatedArticles.articles.map(article => {
             if (!article) {
@@ -71,10 +73,11 @@ export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles
               bookmarkArticle={ bookmarkArticle.mutate }
               deleteArticle={ deleteArticle.mutate }
               selectTag= { (d: number) => setTagId(d)}
+              userId={ user?.user_id || 0 }
             />
           })
       }
-      </StyledCardContainer>
+      </div>
       {
         paginator ? 
           <PaginationComponent 

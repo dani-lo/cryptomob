@@ -9,8 +9,6 @@ export default {
 
         async paginatedTags(_parent: any, args: { params: PaginationQueryParams }) {
             
-            console.log(args)
-
             const filters = {
                 appId: args.params.appId,
             }
@@ -30,7 +28,6 @@ export default {
         },
 
         async tags(_parent: any, args: { params: DatedWhereParams }) {
-            console.log(args)
             
             const filters = {
                 appId: args.params.appId,
@@ -47,12 +44,6 @@ export default {
                 userAdded :hasNamedProp(args.params, 'userAdded') ? args.params.userAdded  : null,
                 bookmarked :hasNamedProp(args.params, 'bookmarked') ? args.params.bookmarked  : null,
             }
-
-            // const result = await dataSources.tagService.getTags(
-            //     args.params.fromDate,
-            //     args.params.toDate,
-            //     filters
-            // )
 
             const result = await dataSources.tagService.pgGetTags(
                 args.params.fromDate,
@@ -89,17 +80,7 @@ export default {
             return  newTag?.rows ? newTag.rows[0] : []
         },
 
-        async tagArticle(_: any, args: { tag_id: number, article_id: number }) {
-
-            const {
-                tag_id,
-                article_id
-            } = args
- 
-            await dataSources.articleService.pgTagArticle(tag_id, article_id)
-
-            return tag_id
-        },
+       
 
         async setWatchlistTag(_: any, args: { input: { tag_id: number, watchlist_id: number } }) {
 

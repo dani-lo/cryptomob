@@ -156,3 +156,11 @@ export const COLOR_ARTICLE = gql`
     }
   }
 `
+
+export const TAG_ARTICLE = gql`
+  mutation setArticleTag($input: ArticleTagMutation) {
+    setArticleTag(input: $input) {
+      article_id
+    }
+  }
+`

@@ -11,11 +11,6 @@ export class CommentService extends DataSource {
 
     initialize() {}
 
-    // async getComments () {
-        
-    //     return await prisma.comment.findMany()
-    // }
-
     async pgGetComments (appId: number) {
 
         const pgPool = getPool()
@@ -38,19 +33,6 @@ export class CommentService extends DataSource {
         }
 
     }
-
-    // async createComment(text: string, articleId: number, userId: number) {
-
-    //     const comment = await prisma.comment.create({
-    //         data: {
-    //             comment_text: text,
-    //             article_id: articleId,
-    //             user_id: userId
-    //         }
-    //     })
-
-    //     return comment 
-    // }
 
     async pgCreateComment(text: string, articleId: number, userId: number) {
 

@@ -1,15 +1,20 @@
 import { UseQueryResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { gqlClient } from "../utils/graphqlClient";
-
-import { GRAPHQL_ENDPOINT, READ_ARTICLES, GqlCacheKeys } from '@/src/queries'
 import { request } from 'graphql-request'
+
+import { READ_ARTICLES, GqlCacheKeys } from '@/src/queries'
+
+import { GRAPHQL_ENDPOINT } from '@/src/config'
+
 import { ArticleAPiData } from "../models/article";
 import { dateToPostgresDateString } from "../helpers/date";
-import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, COLOR_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
+import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, COLOR_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, TAG_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
 import { FetchParams, QueryFilterParams } from "../store/app";
 
 import { UpdateBoolInput } from ".";
 import { AppColor } from "@/components/widgets/colorPicker";
+import { useAtom } from "jotai";
+import { toastAtom, toastWarning } from "../store/userAtoms";
 
 interface ArticleApiDataResult {
     recordsCount: number;
@@ -21,7 +26,8 @@ interface ArticleInput {
     article_title: string;
     article_link: string;
     article_description: string; 
-    app_id: number; 
+    app_id: number;
+    author_id: number;
 }
 
 export const usePaginatedArticles = (
@@ -76,10 +82,15 @@ export const usePaginatedArticles = (
 
 export const useBookmarkArticle = () => {
     
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
   
     return useMutation({ 
         mutationFn: (input: UpdateBoolInput) => {
+
+            toastWarning(setToast, 'You need to login to do that')
+
             return gqlClient.request(
                 BOOKMARK_ARTICLE,
                 {input }
@@ -107,7 +118,7 @@ export const useDeleteArticle = () => {
       })
 }
 
-export const useAddArticle = () => {
+export const useAddArticle = (onCreate: (newArticle: number) => void, onError: () => void) => {
     const client = useQueryClient()
   
     return useMutation({
@@ -117,9 +128,12 @@ export const useAddArticle = () => {
                 { input }
             )
         },
-        onSuccess: () => {
+        onSuccess: (f: any) => {
+            console.log(f)
+            onCreate(f.createArticle.article_id)
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError
       })
 }
 
@@ -199,6 +213,23 @@ export const useColorArticle = () => {
             
             return gqlClient.request(
                 COLOR_ARTICLE             ,
+                { input }
+            )
+        },
+        onSuccess: () => {
+            client.invalidateQueries([GqlCacheKeys.paginatedArticles])
+        },
+      })
+}
+
+export const useTagArticle = () => {
+
+    const client = useQueryClient()
+  
+    return useMutation({ 
+        mutationFn: (input: { article_id: number; user_id: number; tag_id: number; }) => {
+            return gqlClient.request(
+                TAG_ARTICLE,
                 { input }
             )
         },

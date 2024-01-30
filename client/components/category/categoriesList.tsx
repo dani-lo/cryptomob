@@ -1,7 +1,7 @@
 import { ellipsys } from '@/src/helpers/ellipsys';
 import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
 import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CategoryApiData } from '@/src/models/category';
 import { CreateCategoryComponent } from './createCategory';
 import { ResourceItemsCount } from '@/src/queries';
@@ -32,15 +32,17 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
     const appStaticSettings = getAppStaticSettings()
     const cnTableFull = cnTable(appStaticSettings.bg)
 
+    const onSearchCb = useCallback((term: string) => {
+        setSearchterm(term)
+        // setFetchParams({ ...fetchParams, offset: 0 })
+    }, [])
+
     return <div>
         <div className="flex items-center justify-between">
-            <div style={{ flex: 1, padding: '1rem' }}>
+            <div style={{ flex: 1 }} className='pb-4'>
                 <InlineSearchComponent 
-                    onSearch={ (term: string) => {
-                        // if (term !== '') {
-                            setSearchterm(term)
-                        // }
-                    }} 
+                    currTerm={searchterm}
+                    onSearch={ onSearchCb } 
                 />
             </div>
             <div style={{ flex: 1 }}>

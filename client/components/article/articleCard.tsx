@@ -22,9 +22,10 @@ import { getAppStaticSettings } from "@/src/store/static"
 
 interface Props {
     article: ArticleBase;
-    bookmarkArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>,
-    deleteArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>,
-    selectTag: (tagId: number) => void,
+    bookmarkArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>;
+    deleteArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>;
+    selectTag: (tagId: number) => void;
+    userId: number;
 }
 
 export const ArticleCardComponent = (props: Props) => {
@@ -104,7 +105,7 @@ export const ArticleCardComponent = (props: Props) => {
                 modalaction === ArticleModalActions.AddComment ? 
                     <ArticleCommentActionModalComponent 
                         article={ article } 
-                        userId={ 33 } 
+                        userId={ props.userId } 
                         onClose={ () => setModalAction(null) }
                     /> : null 
             }
@@ -112,7 +113,7 @@ export const ArticleCardComponent = (props: Props) => {
                 modalaction === ArticleModalActions.ArticleDetail ? 
                     <ArticleDetailModalComponent
                         article={ article } 
-                        userId={ 33 } 
+                        userId={ props.userId } 
                         onClose={ () => setModalAction(null) }
                     /> : null 
             }
@@ -120,7 +121,7 @@ export const ArticleCardComponent = (props: Props) => {
                 modalaction === ArticleModalActions.ArticleBg ? 
                     <ArticleColorizeActionModalComponent
                         article={ article } 
-                        userId={ 33 } 
+                        userId={ props.userId } 
                         onClose={ () => setModalAction(null) }
                     /> : null 
             }

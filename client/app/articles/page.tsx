@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { LoadingComponent } from '@/components/widgets/status/loading'
+import { GhostArticlesLoadingComponent } from '@/components/widgets/status/loading'
 import { ArticlesScreenComponent } from '@/components/article/articlesScreen'
 
 import { cnPage, utils } from "@/src/styles/classnames.tailwind"
@@ -14,11 +14,11 @@ const ArticlesPage = () => {
   return <div  className={ utils.cnJoin([cnPage, 'content']) }> 
     <Suspense
         fallback={
-              <LoadingComponent appStaticSettings={ appStaticSettings } />
+          <GhostArticlesLoadingComponent staticAppSettings={ appStaticSettings } />
         }
       >
         <ArticlesScreenComponent  />
-      </Suspense>
+    </Suspense>
   </div>
 }
 

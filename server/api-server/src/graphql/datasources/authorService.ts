@@ -19,7 +19,8 @@ export class AuthorService extends DataSource {
     async pgGetAuthors(
             fromDate: string,
             toDate: string,
-            filters:WhereParameters) {
+            filters:WhereParameters,
+            takeAll: boolean) {
         
 
         const pgPool = getPool()
@@ -27,38 +28,8 @@ export class AuthorService extends DataSource {
                 
         try {
 
-            if (hasAnyFilter(filters)) {
+            if (hasAnyFilter(filters) && !takeAll) {
                 
-                // const articlesWhere = await articleWhere(
-                //     filters, 
-                //     fromDate, 
-                //     toDate,
-                //     pgclient
-                // ) as ArticleWhere
-
-                // const strArticlesWhere = whereClauseObjToSql(articlesWhere, 'articles')
-
-                // const articles = await pgclient.query(`
-                //         SELECT * FROM articles  ${ strArticlesWhere?.length ? ('WHERE' + strArticlesWhere) : '' };
-                //     `
-                // )
-    
-                // const authorIDs = articles.rows.map((a: any) => Number(a.author_id))
-                
-                // if (!authorIDs?.length) {
-                //     return {
-                //         rows: []
-                //     }
-                // }
-
-                // return pgclient.query(`
-                //         SELECT *,
-                //             (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id)
-                //         FROM authors
-                //         WHERE author_id IN ${ whereArrayInValues(authorIDs) };
-                //     `
-                // )
-
                 return pgclient.query(`
                     SELECT DISTINCT authors.author_id, authors.author_name, 
                         (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id) 
@@ -68,21 +39,19 @@ export class AuthorService extends DataSource {
                     `
                 )
 
+            } else if (takeAll) {
+                return pgclient.query(`
+                    SELECT DISTINCT authors.author_id, authors.author_name FROM authors;
+                `
+                )
             } else {
-                
-                // return pgclient.query(`
-                //         SELECT *,
-                //         (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id)
-                //         FROM authors;
-                //     `
-                // )
 
                 throw new Error('Must pass an app id to get authors')
             }
 
         } catch (err) {
         
-        //    console.log(err)
+           console.log(err)
 
            return Promise.reject('Error fetching authors')
 
@@ -92,6 +61,29 @@ export class AuthorService extends DataSource {
        
 
         
+    }
+
+    async pgcCreateAuthor(authorName: string) {
+
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+
+            return pgclient.query(`
+                    INSERT INTO authors (author_name) VALUES ($1) RETURNING *
+                `, 
+                [
+                    authorName
+                ]
+            )
+
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error creating author')
+        } finally {
+            pgclient.release()
+        }
     }
 
     async pgGetPaginatedAuthors  (
@@ -110,16 +102,23 @@ export class AuthorService extends DataSource {
         }
 
         try {
-
+            
+                // `
+                // SELECT DISTINCT authors.author_id, authors.author_name, 10 as articles_count
+                // FROM authors 
+                // JOIN articles ON articles.author_id = authors.author_id 
+                // WHERE articles.app_id =  ${ filters.appId } 
+                // ORDER BY authors.author_id
+                // LIMIT ${ limit }
+                // OFFSET ${ offset };
+                // `
+            
             const authors = await pgPool.query(`
-                SELECT DISTINCT authors.author_id, authors.author_name, 
-                (SELECT COUNT(article_id) as articles_count FROM articles WHERE articles.author_id = authors.author_id) 
+                SELECT DISTINCT authors.author_id, authors.author_name, 10 as articles_count
                 FROM authors 
                 JOIN articles ON articles.author_id = authors.author_id 
-                WHERE articles.app_id =  ${ filters.appId }
-                ORDER BY authors.author_id
-                LIMIT ${ limit }
-                OFFSET ${ offset };
+                WHERE articles.app_id =  ${ filters.appId } 
+                ORDER BY authors.author_id;
                 `
             )
 
@@ -167,9 +166,6 @@ export class AuthorService extends DataSource {
 
     async pgGetAuthorWatchlists (authorId: number) {
 
-        // return {
-        //     rows: []
-        // }
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 

@@ -1,6 +1,6 @@
 
 
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 
@@ -35,12 +35,6 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
     
     const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.tags)
 
-    const paginator = new PaginationCtrl(
-        paginatedTags.recordsCount,
-        fetchParams.offset,
-        fetchParams.limit
-    )
-
     const onSortBy = (newSortField : keyof (TagApiData & ResourceItemsCount)) => {
 
         const currSortDir = sortby[1]
@@ -54,17 +48,36 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
 
     const sorted = sortItemsArray<TagApiData & ResourceItemsCount>(paginatedTags.tags, sortby[0], sortby[1])
 
+    const filtered = sorted.filter(t => {
+        if (searchterm !== '' && t.tag_name.toLowerCase().indexOf(searchterm.toLowerCase()) === -1) {
+            return false
+        }
+        return true
+    })
+
+    const paginator = new PaginationCtrl(
+        filtered.length,
+        fetchParams.offset,
+        fetchParams.limit
+    )
+    
+    const paginated = paginator.takeLocal(filtered)
+
     const appStaticSettings = getAppStaticSettings()
     const cnTableFull = cnTable(appStaticSettings.bg)
+    
+    const onSearchCb = useCallback((term: string) => {
+        setSearchterm(term)
+        setFetchParams({ ...fetchParams, offset: 0 })
+    }, [])
 
     return <div>
         <div className="flex items-center justify-between">
-            <div style={{ flex: 1, padding: '1rem' }}>
-                <InlineSearchComponent onSearch={ (term: string) => {
-                        // if (term !== '') {
-                            setSearchterm(term)
-                        // }
-                }} />
+        <div style={{ flex: 1 }} className='pb-4'>
+                <InlineSearchComponent 
+                    currTerm={ searchterm }
+                    onSearch={ onSearchCb } 
+                />
             </div>
             <div style={{ flex: 1}}>  
                 <CreateTagComponent />
@@ -105,11 +118,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
             </thead>
         <tbody>
         {
-            sorted.map((t, i) => {
-
-                if (searchterm !== '' && t.tag_name.toLowerCase().indexOf(searchterm.toLowerCase()) === -1) {
-                    return null
-                }
+            paginated.map((t, i) => {
 
                 if (paginator && !paginator.pageItemInRange(i + fetchParams.offset)) {
                     return null
@@ -143,14 +152,14 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
         </tbody>
     </table>
     {
-      paginator ? 
-        <PaginationComponent 
-          paginationCtrl={ paginator } 
-          onSelectPage={ (nextOffset) => { 
-            setFetchParams({ ...fetchParams, offset: nextOffset })
-          }} 
-      /> 
-      : null
+        paginator.displaySelf(filtered) ? 
+            <PaginationComponent 
+                paginationCtrl={ paginator } 
+                onSelectPage={ (nextOffset) => { 
+                    setFetchParams({ ...fetchParams, offset: nextOffset })
+                }} 
+            /> 
+            : null
     }
-        </div>
+    </div>
 }

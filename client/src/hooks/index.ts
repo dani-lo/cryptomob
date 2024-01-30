@@ -1,7 +1,8 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query"
-import { GRAPHQL_ENDPOINT, GqlCacheKeys } from "../queries";
-import request from "graphql-request";
-import { READ_COUNTS } from "../queries/metaQueries";
+import { GqlCacheKeys } from "../queries"
+import request from "graphql-request"
+import { READ_COUNTS } from "../queries/metaQueries"
+import { GRAPHQL_ENDPOINT } from "@/src/config"
 
 export interface UpdateBoolInput {
   item_id: number, val: boolean
@@ -21,7 +22,6 @@ export const useMeta = (appId: number) => {
     isFetching,
     // isPreviousData 
 } : UseQueryResult<{ counts: AppItemsCounts}> = useQuery({
-
     queryKey: [GqlCacheKeys.meta],
     queryFn: async () => {
         return await request(GRAPHQL_ENDPOINT, READ_COUNTS(appId))

@@ -9,8 +9,11 @@ import { hasNamedProp } from '../../helpers/obj';
 export default {
     
     Query: {
-        async paginatedArticles(_parent: any, args: { params: PaginationQueryParams }) {
+        async paginatedArticles(_parent: any, args: { params: PaginationQueryParams }, ctx: any) {
             
+            console.log('======================================= pag arties --- CTX')
+            console.log(ctx.user)
+
             const filters = {
                 appId: args.params.appId,
                 whereAuthors: args.params.whereAuthors || null,
@@ -27,7 +30,6 @@ export default {
                 bookmarked :hasNamedProp(args.params, 'bookmarked') ? args.params.bookmarked  : null,
             }
 
-            
             const result = await dataSources.articleService.pgGetPaginateArticles(
                 args.params.offset, 
                 args.params.sortBy, 
@@ -47,16 +49,23 @@ export default {
 
     Mutation: {
 
-        async createArticle(_: any, args: { input :  {article_title: string; article_description: string; article_link: string;app_id: number; }}) { 
+        async createArticle(_: any, args: { input :  {
+            article_title: string; 
+            article_description: string; 
+            article_link: string;
+            app_id: number;
+            author_id: number 
+        }}) { 
 
             const {
                 article_title,
                 article_description,
                 article_link,
-                app_id
+                app_id,
+                author_id
             } = args.input
  
-            const createdRows = await dataSources.articleService.pgCreateArticle(article_title, article_description, article_link, app_id)
+            const createdRows = await dataSources.articleService.pgCreateArticle(article_title, article_description, article_link, app_id, author_id)
 
             return createdRows?.rows?.length ? createdRows.rows[0] : null
         },
@@ -117,6 +126,37 @@ export default {
 
             return article
         },
+
+        async setArticleTag (_parent: any, args: { input: { article_id: number, tag_id: number, user_id: number}}) {
+
+            const {
+                article_id,
+                tag_id,
+                user_id
+            } = args.input
+
+
+            const articleRows = await dataSources.articleService.pgTagArticle(article_id, tag_id, user_id)
+            const article = articleRows?.rows?.length ? articleRows.rows[0] : null
+
+            return article
+        },
+
+        async unsetArticleTag (_parent: any, args: { input: { article_id: number, tag_id: number, user_id: number}}) {
+
+            const {
+                article_id,
+                tag_id,
+                user_id
+            } = args.input
+
+
+            const articleRows = await dataSources.articleService.pgUntagArticle(article_id, tag_id)
+            const article = articleRows?.rows?.length ? articleRows.rows[0] : null
+
+            return article
+        },
+
 
         async setArticleBg (_parent: any, args: { input: { color: string, article_id: number}}) {
             const {

@@ -1,10 +1,6 @@
 import { READ_ARTICLES } from "./articleQueries"
 import { CREATE_COMMENT } from "./commentQueries"
 
-export const API_BASE = process.env.NODE_ENV === 'production' ? 'http://35.179.90.228:8080' : 'http://localhost:8080'
-
-export const GRAPHQL_ENDPOINT = `${ API_BASE }/graphql`
-
 export {
     READ_ARTICLES,
     CREATE_COMMENT
