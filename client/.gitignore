@@ -32,9 +32,12 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# env
 .env
 .env.local.1
 .env.local.2
 .env.local
+**/.env
 
 deployment/scripts/*.sh
