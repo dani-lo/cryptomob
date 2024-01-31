@@ -11,11 +11,18 @@ export const InlineSearchComponent = ({ onSearch, currTerm } : { onSearch: (term
     // console.log('SEARCHYYYYY searchval, currTerm', searchval, currTerm)
     useEffect(() => {
         
-        const delayInputTimeoutId = setTimeout(() => {
-            onSearch(searchval);
+        const delayInputTimeoutId =  setTimeout(() => {
+            if (searchval !== '') {
+                onSearch(searchval);
+            }
         }, 500)
         
-        return () => clearTimeout(delayInputTimeoutId);
+        return () => {
+            if (delayInputTimeoutId) {
+                clearTimeout(delayInputTimeoutId)
+            }
+        }
+            
       }, [searchval, currTerm, onSearch])
 
     return <div className="relative">

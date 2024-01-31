@@ -27,7 +27,7 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
 
     const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.authors)
 
-    // console.log(fetchParams)
+    console.log(fetchParams)
 
     const onSortBy = (newSortField : keyof (AuthorApiData & ResourceItemsCount)) => {
 
