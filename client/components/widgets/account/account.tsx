@@ -8,6 +8,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { submitLogin } from "@/src/queries/userQueries"
 import { cnButton, cnInputBlock, cnInputLabel, cnInputText, cnParagraph, cnSectionTitle, utils } from "@/src/styles/classnames.tailwind"
 import { SetStateAction } from "jotai"
+import { getAppStaticSettings } from "@/src/store/static"
 
 interface StoredUser {
     user_email: string | null,
@@ -41,7 +42,7 @@ export const AccountComponent = ({ onClose }: { onClose: () => void}) => {
         
     }, [p, u, setUserwithtok])
     
-    console.log(userwithtok.user_email)
+    const { bg } = getAppStaticSettings()
 
     const isValidUser = !!userwithtok.user_id && !!userwithtok.user_email && !!userwithtok.token
 
@@ -53,6 +54,7 @@ export const AccountComponent = ({ onClose }: { onClose: () => void}) => {
             <IconTitleComponent
                 text="Your account"
                 icon={ faUser }
+                bgColor={ bg }
             />
             <div style={{ height: '100%' }}>
                 {
