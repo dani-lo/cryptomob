@@ -11,9 +11,9 @@
     "typescript"
   ],
   "scripts": {
-    "dev": "next",
+    "dev": "./server.development.sh",
     "build": "next build",
-    "start": "next start",
+    "start": "./server.production.sh",
     "export": "next build && next export",
     "lint": "eslint --ignore-path .gitignore --fix",
     "format": "prettier --ignore-path .gitignore \"pages/**/*.+(ts|js|tsx)\" --write",
