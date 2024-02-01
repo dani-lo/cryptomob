@@ -18,7 +18,8 @@ const yogabhavanaAppSettings = {
     bgEvidence: 'bg-red-600',
     appId: 1,
     appName: 'yogabhavana',
-    bgUnactive: 'bg-gray-500'
+    bgUnactive: 'bg-gray-500',
+    url: 'https://yogabhavana.qrated-review.net/articles'
 }
 
 const fullstackedAppSettings = {
@@ -29,7 +30,8 @@ const fullstackedAppSettings = {
     bgEvidence: 'bg-amber-600',
     appId: 2,
     appName: 'fullstacked',
-    bgUnactive: 'bg-gray-500'
+    bgUnactive: 'bg-gray-500',
+    url: 'https://fullstacked.qrated-review.net/articles'
 }
 
 export const getAppStaticSettings =  () : AppStaticSettings => {
