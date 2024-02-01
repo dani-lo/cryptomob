@@ -8,6 +8,7 @@ export interface AppStaticSettings {
     appId: number,
     appName: string,
     bgUnactive: string
+    url: string
 }
 
 const yogabhavanaAppSettings = {
@@ -19,7 +20,7 @@ const yogabhavanaAppSettings = {
     appId: 1,
     appName: 'yogabhavana',
     bgUnactive: 'bg-gray-500',
-    url: 'https://yogabhavana.qrated-review.net/articles'
+    url: 'https://yogabhavana.qrated-review.net'
 }
 
 const fullstackedAppSettings = {
@@ -31,7 +32,7 @@ const fullstackedAppSettings = {
     appId: 2,
     appName: 'fullstacked',
     bgUnactive: 'bg-gray-500',
-    url: 'https://fullstacked.qrated-review.net/articles'
+    url: 'https://fullstacked.qrated-review.net'
 }
 
 export const getAppStaticSettings =  () : AppStaticSettings => {
