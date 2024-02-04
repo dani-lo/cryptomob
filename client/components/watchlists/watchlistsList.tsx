@@ -59,10 +59,10 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
 
     return <div>
         <div className="flex items-center justify-between">
-        <div style={{ flex: 1 }} className='pb-4'>
+        <div>
                 <InlineSearchComponent currTerm={searchterm} onSearch={ onSearchCb } />
             </div>
-            <div style={{ flex: 1 }}>
+            <div>
                 <CreateWatchlistComponent />
             </div>
         </div>

@@ -69,7 +69,7 @@ export const cnTabItem = 'inline-flex items-center justify-center p-4 border-b-2
 
 export const cnTextClear = 'text-gray-200'
 
-export const cnPage = "p-6"
+export const cnPage = ""
 
 export const cnBold = 'font-bold'
 
@@ -93,12 +93,14 @@ export const cnTabItemSvgIcon = 'w-4 h-4 mr-2 text-gray-400 group-hover:text-gra
 export const cnTable  = (bg: string) =>  {
 
     return {
-        table: 'w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-6',
-        thead: 'text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400',
-        th: 'px-4 py-3   text-white text-sm underline font-lld ' + bg,
+        table: 'as-table w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-6',
+        thead: 'as-thead text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400',
+        th: 'as-th px-4 py-3   text-white text-sm underline font-lld ' + bg,
         thContent: 'flex items-center justify-between cursor-pointer',
-        td: 'text-sm px-4 py-3 bg-gray-50 text-gray-900' ,
+        td: 'as-td text-sm px-4 py-3 bg-gray-50 text-gray-900' ,
+        tr: 'as-tr',
         tdAction: 'text-sm px-4 py-3 bg-gray-50 text-gray-900 text-center' ,
+        tbody: 'as-tbody'
     }
    
 }

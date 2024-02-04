@@ -34,6 +34,7 @@ import { ApiParamsContext } from '@/context/apiParams.context'
 
 import { gqlCacheKey } from '@/src/helpers/gqlCacheKey'
 import { SortDirection } from '@/src/helpers/sort'
+import { HeaderComponent } from '../header'
 
 export interface TagApiDataResult {
     recordsCount: number;
@@ -130,7 +131,8 @@ export const TagsScreenComponent = () => {
         setActiveTag(null)
     }
 
-    return <div>
+    return <div  className="qrated-ctn p-5">
+        <HeaderComponent />
         {/* <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
         <p>working...</p>
     </div>  */}

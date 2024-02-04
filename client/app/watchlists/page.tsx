@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 
 import { WatchlistsScreenComponent } from '@/components/watchlists/watchlistsScreen'
-import { GhostTableLoadingComponent } from '@/components/widgets/status/loading'
+import { GhostTabularLoader } from '@/components/widgets/status/loading'
 
 import { getAppStaticSettings } from '@/src/store/static'
 import {  cnPage, utils } from '@/src/styles/classnames.tailwind'
@@ -13,7 +13,7 @@ const WatchlistsPage = () => {
   return <div  className={ utils.cnJoin([cnPage, 'content']) }> 
     <Suspense
         fallback={
-          <GhostTableLoadingComponent staticAppSettings={ appStaticSettings } />
+          <GhostTabularLoader staticAppSettings={ appStaticSettings } />
         }
       >
         <WatchlistsScreenComponent  />

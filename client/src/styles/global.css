@@ -166,7 +166,6 @@ input {
 
 /* Page content */
 .content {
-  padding: 16px;
   position: relative;
 }
 
@@ -224,9 +223,12 @@ input {
 /* PAGINATION:END */
 
 .content {
-  margin-left: 250px;
+  margin-left: 0;
 }
 
+.qrated-ctn {
+  margin-left: 250px;
+}
 .navbar {
   position: fixed;
   height: 100%;
@@ -438,4 +440,27 @@ input:focus, input:focus-visible, input:focus-within {
 
 .sectioned h3:first-child {
   margin-top: auto;
+}
+
+.as-table {
+  display: table;
+}
+
+.as-tr {
+  display: table-row;
+}
+
+.as-tbody {
+}
+
+.as-thead {
+  display: table-header-group;
+}
+
+.as-th {
+  display: table-cell;
+}
+
+.as-td {
+  display: table-cell;
 }

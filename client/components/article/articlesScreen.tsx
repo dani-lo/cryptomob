@@ -29,6 +29,11 @@ import { currUserAtom } from '@/src/store/userAtoms'
 import { limitOptions } from '@/src/store/app'
 
 import { getAppStaticSettings } from '@/src/store/static'
+import { useWatchlistsWIthItemsCount } from '@/src/hooks/useWatchlist'
+import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories'
+import { useTagsWithArticlesCount } from '@/src/hooks/useTags'
+import { cnPage, utils } from '@/src/styles/classnames.tailwind'
+import { HeaderComponent } from '../header'
 // import { useMeta } from '@/src/hooks'
 
 interface ArticleApiDataResult {
@@ -51,9 +56,16 @@ export const ArticlesScreenComponent = () => {
 
   const ctx = useContext(ApiParamsContext)
 
+  const appStaticSettings = getAppStaticSettings()
+  const appId = appStaticSettings.appId
+
   const [publicFilters] = useAtom(ctx.filterParams.articles.pub)
   const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.articles)
   const [user, setUser] = useAtom(currUserAtom)
+
+  useWatchlistsWIthItemsCount(appId)
+  useCategoriesWithArticlesCount(appId)
+  useTagsWithArticlesCount(appId)
 
   const { data: udata } = useUsers()
 
@@ -64,8 +76,7 @@ export const ArticlesScreenComponent = () => {
   }, [udata, user, setUser])
 
   
-  const appStaticSettings = getAppStaticSettings()
-  const appId = appStaticSettings.appId
+  
 
   const { 
       isLoading,
@@ -103,34 +114,37 @@ export const ArticlesScreenComponent = () => {
  
   const isEMpty = (!data || !data.paginatedArticles || data.paginatedArticles.articles.length === 0) 
 
-return <div> 
-    <ArticlesToolbarComponent 
-      onFromDateChange={ (date) => {
-        setFetchParams({ ...fetchParams, dateFrom: date})
-      }}
-      onToDateChange={ (date) => {
-        setFetchParams({ ...fetchParams, dateTo: date})
-      }}
-      onSortbyChange={ (opt: ArticlesSortby) => {
-        setFetchParams({ ...fetchParams, sortBy: opt })
-      }}
-      onSortdirChange={ (opt: SortDirection) => {
-        setFetchParams({ ...fetchParams, sortDir: opt })
-      }}
-      fromDate={ fetchParams.dateFrom }
-      toDate={ fetchParams.dateTo }
-      sortby={ fetchParams.sortBy }
-      sortdir={ fetchParams.sortDir }
-      sortOptions={ sortOptions }
-      onLimitChange={ (opt: string) => {
-        setFetchParams({ ...fetchParams, limit: Number(opt), offset: 0 })
-      }}
-      limitOptions={ limitOptions }
-      limit={ fetchParams.limit }
-    />  
-    {
-      !isEMpty ? <ArticlesListComponent paginatedArticles={ data.paginatedArticles } /> : null
-    }
+return <div   className={ utils.cnJoin([cnPage, 'content']) }>
+    <HeaderComponent />
+      <div className="qrated-ctn p-5"> 
+        <ArticlesToolbarComponent 
+          onFromDateChange={ (date) => {
+            setFetchParams({ ...fetchParams, dateFrom: date})
+          }}
+          onToDateChange={ (date) => {
+            setFetchParams({ ...fetchParams, dateTo: date})
+          }}
+          onSortbyChange={ (opt: ArticlesSortby) => {
+            setFetchParams({ ...fetchParams, sortBy: opt })
+          }}
+          onSortdirChange={ (opt: SortDirection) => {
+            setFetchParams({ ...fetchParams, sortDir: opt })
+          }}
+          fromDate={ fetchParams.dateFrom }
+          toDate={ fetchParams.dateTo }
+          sortby={ fetchParams.sortBy }
+          sortdir={ fetchParams.sortDir }
+          sortOptions={ sortOptions }
+          onLimitChange={ (opt: string) => {
+            setFetchParams({ ...fetchParams, limit: Number(opt), offset: 0 })
+          }}
+          limitOptions={ limitOptions }
+          limit={ fetchParams.limit }
+        />  
+        {
+          !isEMpty ? <ArticlesListComponent paginatedArticles={ data.paginatedArticles } /> : null
+        }
+    </div>
   </div>
 }
 

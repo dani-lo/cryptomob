@@ -1,0 +1,41 @@
+.moby {
+    display: none;
+}
+
+.desk {
+    display: block;
+}
+
+.login {
+    display: block;
+}
+
+.navbar {
+    display: block;
+}
+
+@media only screen and (max-width: 768px) {
+    /* .moby {
+        display: block;
+   }
+
+   .desk {
+        display: none;
+    }
+
+    .login {
+        display: none;
+    }
+    
+    .navbar {
+        display: none;
+    }
+
+    #toolbar {
+        display: none;
+    }
+
+    .mr-4 {
+        margin-left: 1rem;
+    } */
+}

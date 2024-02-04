@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 
 import { AuthorsScreenComponent } from '@/components/author/authorsScreen'
-import { GhostTableLoadingComponent } from '@/components/widgets/status/loading'
+import { GhostTabularLoader } from '@/components/widgets/status/loading'
 
 import { cnPage, utils } from "@/src/styles/classnames.tailwind"
 
@@ -11,14 +11,16 @@ const AuthorsPage = () => {
   const appStaticSettings = getAppStaticSettings()
 
   return <div  className={ utils.cnJoin([cnPage, 'content']) }> 
+    
+    <div>
     <Suspense
         fallback={
-          <GhostTableLoadingComponent staticAppSettings={ appStaticSettings } />
+          <GhostTabularLoader staticAppSettings={ appStaticSettings } />
         }
       >
         <AuthorsScreenComponent  />
       </Suspense>
-    
+    </div>
   </div>
 }
 

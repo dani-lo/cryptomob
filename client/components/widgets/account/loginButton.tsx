@@ -12,7 +12,7 @@ export const LoginButtonComponent = () => {
     const [userUi, setUserUi] = useState(false)
     const staticAppSettings = getAppStaticSettings()
 
-    return <div style={{ position: 'fixed', zIndex: 'var(--z-1)' }}> 
+    return <div className='fixed login'> 
         {
             userUi ? <AccountComponent onClose={ () => setUserUi(v => !v) } /> : null
         }

@@ -20,9 +20,21 @@ import { CreateArticleComponent } from '@/components/article/createArticle'
 // import { ApiParamsContext } from '@/context/apiParams.context'
 // import { useAtom } from 'jotai'
 import { useAuthorsWithArticlesCount } from '@/src/hooks/useAuthors'
+import { ThreePanel } from '@/components/widgets/threePanel'
 
 const EtlPage = () => {
     
+    return <ThreePanel>
+        <div>
+            <h1>Lorem ipso LLLLLLLLLLLLLLL leeeeffffffffffffffffffftt</h1>
+        </div>
+        <div>
+            <h1>Lorem ipso MMMMMMMMMMMMMMMMMMMMM leeeeffffffffffffffffffftt</h1>
+        </div>
+        <div>
+            <h1>Lorem ipso RRRRRRRRRRRRRRRRRRRRR leeeeffffffffffffffffffftt</h1>
+        </div>
+    </ThreePanel>
     // const ctx = useContext(ApiParamsContext)
 
     // const [fetchParams] = useAtom(ctx.queryParams.tags)

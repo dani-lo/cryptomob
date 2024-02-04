@@ -44,7 +44,8 @@
     "react-dropdown": "1.11.0",
     "react-select": "5.8.0",
     "react-transition-group": "4.4.5",
-    "styled-components": "6.0.8"
+    "styled-components": "6.0.8",
+    "usehooks-ts": "2.12.1"
   },
   "devDependencies": {
     "@emotion/react": "11.11.1",

@@ -32,6 +32,8 @@ import request from 'graphql-request'
 import { ApiParamsContext } from '@/context/apiParams.context'
 import { SortDirection } from '@/src/helpers/sort'
 import { AuthorSortby, READ_PAGINATED_AUTHORS } from '@/src/queries/authorQueries'
+import { HeaderComponent } from '../header';
+import { ThreePanel } from '../widgets/threePanel';
 
 export interface AuthorsApiDataResult {
   recordsCount: number;
@@ -102,18 +104,19 @@ export const AuthorsScreenComponent = () => {
 
   const reqAuthor = authorId !== null ? (data.paginatedAuthors.authors.find(apiT => Number(apiT.author_id) === Number(authorId)) || null) : null
   
-  return <div>
-  {
-    reqAuthor ? 
-      <AuthorDetailModalComponent 
-          userId={ 1 }
-          author={ reqAuthor } 
-          onClose={ () => {
-              router.replace('/authors')
-          }} 
-      /> 
-      : null
-  }
-  <AuthorsListComponent paginatedAuthors={ data.paginatedAuthors } />
-  </div>
+  return <ThreePanel> 
+    <HeaderComponent />
+    <AuthorsListComponent paginatedAuthors={ data.paginatedAuthors } />
+    {
+      reqAuthor ? 
+        <AuthorDetailModalComponent 
+            userId={ 1 }
+            author={ reqAuthor } 
+            onClose={ () => {
+                router.replace('/authors')
+            }} 
+        /> 
+        : null
+    }
+  </ThreePanel>
 }

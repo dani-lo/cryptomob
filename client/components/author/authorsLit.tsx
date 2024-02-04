@@ -70,8 +70,7 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
     
     return <div>
         <div className="flex items-center justify-between">
-
-            <div style={{ flex: 1 }} className='pb-4'>
+            <div>
                 <InlineSearchComponent 
                     currTerm={ searchterm }
                     onSearch={ onSearchCb } 

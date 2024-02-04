@@ -1,5 +1,6 @@
+import { HeaderComponent } from '@/components/header'
 import { AppStaticSettings } from '@/src/store/static'
-import { cnBold, cnCardContainer, cnCardTitle, cnItemCard, cnParagraph, cnSectionSmallTitle, cnTable, cnTag, utils } from '@/src/styles/classnames.tailwind'
+import { cnBold, cnCardContainer, cnCardTitle, cnItemCard, cnPage, cnParagraph, cnSectionSmallTitle, cnTable, cnTag, utils } from '@/src/styles/classnames.tailwind'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import {
 //   faBookmark,
@@ -142,4 +143,20 @@ export const GhostTableLoadingComponent = ({staticAppSettings}: { staticAppSetti
 </table>
 </div>
 
+}
+
+export const GhostArticlesLoader = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
+  return <div className={ utils.cnJoin([cnPage, 'content']) }>
+      <HeaderComponent />
+      <div className="qrated-ctn  p-5"> 
+        <GhostArticlesLoadingComponent staticAppSettings={ staticAppSettings } />
+      </div>
+  </div>
+}
+
+export const GhostTabularLoader = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
+  return <div className={ utils.cnJoin([cnPage, 'content']) }>
+      <HeaderComponent />
+      <GhostTableLoadingComponent staticAppSettings={ staticAppSettings } />
+  </div>
 }

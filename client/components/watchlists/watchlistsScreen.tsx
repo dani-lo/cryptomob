@@ -17,6 +17,7 @@ import { WatchlistDetailModalComponent } from '@/components/widgets/modal/watchl
 
 import { useWatchlistsWIthItemsCount } from '@/src/hooks/useWatchlist'
 import { useUsers } from '@/src/hooks/useUsers'
+import { HeaderComponent } from '../header';
  
 export const WatchlistsScreenComponent = () => {
 
@@ -57,7 +58,8 @@ export const WatchlistsScreenComponent = () => {
 
     const reqWatchlist = watchlistId ? (data.watchlists.find(apiT => Number(apiT.watchlist_id) === Number(watchlistId)) || null) : null
 
-    return <div>
+    return <div className="qrated-ctn p-5">
+        <HeaderComponent />
         {
         reqWatchlist ? 
             <WatchlistDetailModalComponent 

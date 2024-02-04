@@ -47,6 +47,8 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBa
 
     const {appId, bg } = getAppStaticSettings()
     
+    
+
     const { data: watchlists } = useWatchlistsWIthItemsCount(appId)
     const { data: categories } = useCategoriesWithArticlesCount(appId)
     const { data: tags } = useTagsWithArticlesCount(appId)

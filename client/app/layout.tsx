@@ -9,12 +9,13 @@ import "react-datepicker/dist/react-datepicker.css"
 import '@/src/styles/widget.css'
 import '@/src/styles/global.css'
 import '@/src/styles/anime.css'
+import '@/src/styles/mob.css'
 
 import Providers from "@/src/utils/provider"
 
 import { ApiParamsContextProvider } from '@/context/apiParams.context'
 
-import { HeaderComponent } from '@/components/header'
+// import { HeaderComponent } from '@/components/header'
 import { TailwindHiddenLoaderComponent } from '@/components/tailwindHiddenLoader'
 import { LoginButtonComponent } from '@/components/widgets/account/loginButton'
 import { ToastComponent } from '@/components/widgets/modal/toast'
@@ -32,7 +33,7 @@ export default function RootLayout({
         <body>
             <LoginButtonComponent />
             <TailwindHiddenLoaderComponent />
-            <HeaderComponent />
+            
             <ToastComponent />
             <Providers>
                 <ApiParamsContextProvider>

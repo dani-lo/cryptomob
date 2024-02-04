@@ -22,6 +22,7 @@ import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories';
 import { useUsers } from '@/src/hooks/useUsers';
 import { currUserAtom } from '@/src/store/userAtoms';
 import { getAppStaticSettings } from '@/src/store/static';
+import { HeaderComponent } from '../header';
 
 export const CategoriesScreenComponent = () => {
 
@@ -67,7 +68,8 @@ export const CategoriesScreenComponent = () => {
 
     // const opacity = isFetching ? 1 : 0
 
-    return <div>
+    return <div className="qrated-ctn p-5">
+      <HeaderComponent />
       {
         reqCategory ?
             <CSSTransition
