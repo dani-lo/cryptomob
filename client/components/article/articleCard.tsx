@@ -14,17 +14,18 @@ import { UpdateBoolInput } from "@/src/hooks"
 
 import { ArticleActionsHeaderComponent } from "@/components/article/articleActionsHeader"
 import { ArticleModalActions } from "@/components/widgets/modal"
-import { ArticleDetailModalComponent } from "@/components/widgets/modal/articleDetail"
 import { ArticleColorizeActionModalComponent, ArticleCommentActionModalComponent } from "@/components/widgets/modal/articleActions"
 import { DeleteditemOverlayComponent } from "@/components/widgets/deletedItemOverlay"
 
 import { getAppStaticSettings } from "@/src/store/static"
+import { stripHtml } from "@/src/helpers/strip"
 
 interface Props {
     article: ArticleBase;
     bookmarkArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>;
     deleteArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>;
     selectTag: (tagId: number) => void;
+    selectArticle: (articleId: number) => void;
     userId: number;
 }
 
@@ -33,6 +34,7 @@ export const ArticleCardComponent = (props: Props) => {
     const { article, bookmarkArticle, deleteArticle } = props
 
     const [modalaction, setModalAction] = useState<ArticleModalActions | null>(null)
+
     const uniqueTags = article.tags.reduce((acc: Tag[], curr: Tag) => {
 
         if (acc.find(d => d.tag_id === curr.tag_id)) {
@@ -44,7 +46,7 @@ export const ArticleCardComponent = (props: Props) => {
         return acc
     }, [])
 
-    const description = article.article_description.replace(/(&nbsp;|<([^>]+)>)/ig, "")
+    const description = stripHtml(article.article_description)
 
     const appStaticSettings = getAppStaticSettings()
 
@@ -62,7 +64,7 @@ export const ArticleCardComponent = (props: Props) => {
         <ArticleActionsHeaderComponent 
             article={ article } 
             onToggleComment={ () => setModalAction(modalaction === null ? ArticleModalActions.AddComment : null) }
-            onToggleExtras={ () => setModalAction(modalaction === null ? ArticleModalActions.ArticleDetail : null) }
+            onToggleExtras={ () => props.selectArticle( article.article_id) }
             onToggleColorPicker={ () => setModalAction(modalaction === null ? ArticleModalActions.ArticleBg : null) }
             onBookmarkArticle={ bookmarkArticle }
             onDeleteArticle={ deleteArticle }
@@ -104,14 +106,6 @@ export const ArticleCardComponent = (props: Props) => {
             {
                 modalaction === ArticleModalActions.AddComment ? 
                     <ArticleCommentActionModalComponent 
-                        article={ article } 
-                        userId={ props.userId } 
-                        onClose={ () => setModalAction(null) }
-                    /> : null 
-            }
-            {
-                modalaction === ArticleModalActions.ArticleDetail ? 
-                    <ArticleDetailModalComponent
                         article={ article } 
                         userId={ props.userId } 
                         onClose={ () => setModalAction(null) }

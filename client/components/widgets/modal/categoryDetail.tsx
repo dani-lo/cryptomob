@@ -10,6 +10,7 @@ import { faClone } from "@fortawesome/free-solid-svg-icons"
 // import { ItemCategorys } from "../itemCategorys"
 import { CategoryApiData } from "@/src/models/category"
 import { getAppStaticSettings } from "@/src/store/static"
+import { stripHtml } from "@/src/helpers/strip"
 // import Link from "next/link"
 // import { useUncategoryAuthor, useCategoryAuthor } from "@/src/hooks/useAuthors"
 
@@ -79,7 +80,7 @@ export const CategoryDetailModalComponent = ({
                             return <div  key={ a.article_id }>
                             
                             <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
-                            <p className={ cnParagraph }>{ a.article_description }</p>
+                            <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
                             </div>
                         })
                             

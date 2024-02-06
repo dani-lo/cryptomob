@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Dropdown from 'react-dropdown'
-import { faTags } from "@fortawesome/free-solid-svg-icons"
+import { faPerson } from "@fortawesome/free-solid-svg-icons"
 
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { CloseIconButtonComponent } from "../iconButtons/closeIconButton"
@@ -13,6 +13,7 @@ import { useUnwatchlistAuthor, useWatchlistAuthor } from "@/src/hooks/useAuthors
 import { getAppStaticSettings } from "@/src/store/static"
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 import { PaginationComponent } from "../pagination"
+import { stripHtml } from "@/src/helpers/strip"
 
 const ARTICLE_PER_PAGE = 4
 
@@ -80,7 +81,7 @@ export const AuthorDetailModalComponent = ({
             </StyledContainedBar>
             <IconTitleComponent
                 text={ author.author_name }
-                icon={ faTags }
+                icon={ faPerson }
                 bgColor={ bg }
             />
             
@@ -128,7 +129,7 @@ export const AuthorDetailModalComponent = ({
 
                             return <div  key={ a.article_id }>
                             <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
-                            <p className={ cnParagraph }>{ a.article_description }</p>
+                            <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
                             </div>
                         })
                     }

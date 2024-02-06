@@ -20,6 +20,9 @@ import { usePathname } from 'next/navigation';
 // import { useAtom } from 'jotai';
 import { getAppStaticSettings } from '@/src/store/static';
 import { cnParagraph, utils } from '@/src/styles/classnames.tailwind';
+import { currPanelAtom } from '@/src/store/uiAtoms';
+import { useAtom } from 'jotai';
+
 // import { LoginButtonComponent } from './widgets/account/loginButton';
 
 const cname = (isActive: boolean, activeCname: string) => {
@@ -33,7 +36,8 @@ const cname = (isActive: boolean, activeCname: string) => {
 export const HeaderComponent = ()  => {
     
     const pathname = usePathname()
-
+    const [, setPanel] = useAtom(currPanelAtom)
+    
     const appStaticSettings = getAppStaticSettings()
     const appId = appStaticSettings.appId
     
@@ -76,24 +80,24 @@ export const HeaderComponent = ()  => {
                 <ul className=" px-2">
                     <li  className={ cname(pathname.indexOf('articles') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faNewspaper} />
-                        <Link href="/articles">Articles</Link>
+                        <Link href="/articles" onClick={() => { setPanel('mid') }}>Articles</Link>
                     </li>
                     <li className="separate"><span /></li>
                     <li  className={ cname(pathname.indexOf('tags') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faTags} />
-                        <Link href="/tags">Tags</Link>
+                        <Link href="/tags" onClick={() => { setPanel('mid') }}>Tags</Link>
                     </li>
                     <li  className={ cname(pathname.indexOf('categories') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faClone} />
-                        <Link href="/categories">Categories</Link>
+                        <Link href="/categories" onClick={() => { setPanel('mid') }}>Categories</Link>
                     </li>
                     <li  className={ cname(pathname.indexOf('authors') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faUserTie} />
-                        <Link href="/authors">Authors</Link>
+                        <Link href="/authors" onClick={() => { setPanel('mid') }}>Authors</Link>
                     </li>
                     <li  className={ cname(pathname.indexOf('watchlists') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faBinoculars} />
-                        <Link href="/watchlists">WatchLists</Link>
+                        <Link href="/watchlists" onClick={() => { setPanel('mid') }}>WatchLists</Link>
                     </li>
                     {/* <li  className={ cname(pathname.indexOf('comments') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faComment} />
@@ -106,7 +110,7 @@ export const HeaderComponent = ()  => {
                     </li> */}
                     <li  className={ cname(pathname.indexOf('etl') !== -1, appStaticSettings.txtEvidence) }>
                         <FontAwesomeIcon icon={faRss} />
-                        <Link href="/etl">ETL</Link>
+                        <Link href="/etl" onClick={() => { setPanel('mid') }}>ETL</Link>
                     </li>
                 </ul>
                

@@ -24,12 +24,15 @@ import { ResourceItemsCount } from '@/src/queries'
 
 import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind'
 import { PaginationComponent } from '../widgets/pagination';
+import { IconTitleComponent } from '../widgets/iconed';
+import { faTags } from '@fortawesome/free-solid-svg-icons';
+import { currPanelAtom } from '@/src/store/uiAtoms';
 
 export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiDataResult}) => {
 
     const [searchterm, setSearchterm] = useState('')
     const [sortby, setSortby] = useState<[keyof (TagApiData & ResourceItemsCount), SortDirection | null]>(['tag_name', null])
-    // const [paginator, setPaginator] = useState<PaginationCtrl | null>(null)
+    const [, setPanel] = useAtom(currPanelAtom)
 
     const ctx = useContext(ApiParamsContext)
     
@@ -71,18 +74,18 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
         setFetchParams({ ...fetchParams, offset: 0 })
     }, [])
 
-    return <div>
-        <div className="flex items-center justify-between">
-        <div style={{ flex: 1 }} className='pb-4'>
-                <InlineSearchComponent 
-                    currTerm={ searchterm }
-                    onSearch={ onSearchCb } 
-                />
+    return <div className="items-list">
+            <div className="flex items-center justify-between items-list-util">
+                <div style={{ flex: 1 }} className='pb-4'>
+                    <InlineSearchComponent 
+                        currTerm={ searchterm }
+                        onSearch={ onSearchCb } 
+                    />
+                </div>
+                <div style={{ flex: 1}}>  
+                    <CreateTagComponent />
+                </div>
             </div>
-            <div style={{ flex: 1}}>  
-                <CreateTagComponent />
-            </div>
-        </div>
              <table className={ cnTableFull.table }>
                 <thead className={ cnTableFull.thead}>
                     <tr>
@@ -95,14 +98,14 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                             </div>
                         </th>
                         
-                        <th scope="col" className={ cnTableFull.th } onClick={ () => {
+                        {/* <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('tag_origin')
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Tag Origin
                                 { sortby[0] === 'tag_origin' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
                             </div>
-                        </th>
+                        </th> */}
                         <th scope="col" className={ cnTableFull.th } onClick={ () => {
                             onSortBy('articles_count')
                         }}>
@@ -116,7 +119,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                         </th>
                     </tr>
             </thead>
-        <tbody>
+        <tbody className={ cnTableFull.tbody }>
         {
             paginated.map((t, i) => {
 
@@ -124,27 +127,41 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                     return null
                 }
 
-                return <tr key={ t.tag_id }>
+                return <tr className={ cnTableFull.tr } key={ t.tag_id }>
                     <td className={ cnTableFull.td }>     
          
-                        <span className={ cnBold }>
+                        <span className={ utils.cnJoin([cnBold, 'row-title']) }>
                             {
                                 ellipsys(t.tag_name, 20)
                             }        
-                        </span>            
+                        </span>  
+                        <div className="list-item-header">
+                            <IconTitleComponent
+                                text={ ellipsys(t.tag_name, 20) }
+                                icon={ faTags }
+                                bgColor={ appStaticSettings.bg }
+                            />
+                        </div>          
                     </td>
-                    <td className={ cnTableFull.td }>
+                    {/* <td className={ cnTableFull.td }>
                                     {
                                         `${t.tag_origin }`
                                     }
+                    </td> */}
+                    <td className={ utils.cnJoin([cnTableFull.td, 'as-td']) }>
+                        <span>
+                        {
+                            `${t.articles_count } articles`
+                        }
+                        </span>
                     </td>
-                    <td className={ cnTableFull.td }>
-                                    {
-                                        `${t.articles_count } articles`
-                                    }
-                    </td>
-                    <td className={ utils.cnJoin([cnTableFull.tdAction]) }>
-                        <Link href={ `/tags?tagId=${ t.tag_id }` }>view</Link>
+                    <td className={ utils.cnJoin([cnTableFull.tdAction, 'as-td']) }>
+                        <span>
+                            <Link 
+                                href={ `/tags?tagId=${ t.tag_id }` }
+                                onClick={ () => setPanel('right')}
+                            >view</Link>
+                        </span>
                     </td>
                 </tr>
             })

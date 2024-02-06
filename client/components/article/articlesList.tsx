@@ -12,23 +12,25 @@ import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 
 import { ArticleCardComponent } from "@/components/article/articleCard"
 import { PaginationComponent } from "@/components/widgets/pagination"
-import { useTag } from "@/src/hooks/useTags";
-import { TagDetailModalComponent } from "../widgets/modal/tagDetail";
+// import { useTag } from "@/src/hooks/useTags";
+// import { TagDetailModalComponent } from "../widgets/modal/tagDetail";
 import { currUserAtom } from "@/src/store/userAtoms";
 // import { CreateArticleComponent } from "@/components/article/createArticle"
 
-interface AtriclesProps { articles: ArticleAPiData[], recordsCount: number }
+interface PaginatedAtriclesProp { articles: ArticleAPiData[], recordsCount: number;  }
 
-export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles: AtriclesProps }) => {
+export const ArticlesListComponent = ({ paginatedArticles, selectArticle, selectArticleTag }: { 
+      paginatedArticles: PaginatedAtriclesProp; 
+      selectArticle: (articleId: number) => void;
+      selectArticleTag:  (articleTagId: number) => void; 
+    }) => {
 
-    const [tagId, setTagId] = useState(0)
+    // const [tagId, setTagId] = useState(0)
     const [user] = useAtom(currUserAtom)
 
-    console.log(user)
-
-    const {
-      data: tagData
-    } = useTag(tagId)
+    // const {
+    //   data: tagData
+    // } = useTag(tagId)
 
     const bookmarkArticle = useBookmarkArticle()
     const deleteArticle = useDeleteArticle()
@@ -56,10 +58,10 @@ export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles
     ])
 
     return <div>
-      <TagDetailModalComponent 
+      {/* <TagDetailModalComponent 
         tag={ tagData?.tag } 
         onClose={ () => setTagId(0)} userId={ user?.user_id || 0 } 
-      />
+      /> */}
       <div className="pb-8 pt-8 StyledCardContainer">
       {
           paginatedArticles.articles.map(article => {
@@ -72,8 +74,9 @@ export const ArticlesListComponent = ({ paginatedArticles }: { paginatedArticles
               key={ article.article_id }
               bookmarkArticle={ bookmarkArticle.mutate }
               deleteArticle={ deleteArticle.mutate }
-              selectTag= { (d: number) => setTagId(d)}
+              selectTag= { selectArticleTag }
               userId={ user?.user_id || 0 }
+              selectArticle={ selectArticle }
             />
           })
       }

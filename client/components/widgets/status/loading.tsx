@@ -102,51 +102,51 @@ export const GhostTableLoadingComponent = ({staticAppSettings}: { staticAppSetti
 
   const cnTableFull = cnTable(staticAppSettings.bg)
 
-  return <div className="app-loading pt-4"><table className={ cnTableFull.table }>
-  <thead className={ cnTableFull.thead}>
-      <tr>
-          <th scope="col" className={ cnTableFull.th }>
-              <div className={ cnTableFull.thContent}>
-                  ...
-               </div>
-          </th>
-          <th scope="col" className={ cnTableFull.th }>
-              <div className={ cnTableFull.thContent}>
+  return <div className="app-loading pt-4">
+    <table className={ cnTableFull.table }>
+      <thead className={ cnTableFull.thead }>
+          <tr className={ cnTableFull.tr }>
+              <th scope="col" className={ cnTableFull.th }>
+                  <div className={ cnTableFull.thContent}>
                       ...
-              </div>
-          </th>
-          <th scope="col" className={ cnTableFull.th }>
-              <span className="sr-only" />
-          </th>
-      </tr>
-  </thead>
-  <tbody>
-  {
-      [1,2,3,4,5,6,7,8,9,10].map(t => {
-          return <tr key={ t }>
-              <td className={ cnTableFull.td }>     
-        
-                  <span className={ cnBold }>
-                  ...
-                  </span>                 
-              </td>
-              <td className={ cnTableFull.td }>
-                  ...
-              </td>
-              <td className={ cnTableFull.tdAction }>
-                  ...
-              </td>
+                  </div>
+              </th>
+              <th scope="col" className={ cnTableFull.th }>
+                  <div className={ cnTableFull.thContent}>
+                          ...
+                  </div>
+              </th>
+              <th scope="col" className={ cnTableFull.th }>
+                  <span className="sr-only" />
+              </th>
           </tr>
-      })
-  }
-  </tbody>
-</table>
-</div>
-
+      </thead>
+      <tbody className={ cnTableFull.tbody }>
+      {
+          [1,2,3,4,5,6,7,8,9,10].map(t => {
+              return <tr key={ t } className={ cnTableFull.tr }>
+                  <td className={ cnTableFull.td }>     
+            
+                      <span className={ cnBold }>
+                      ...
+                      </span>                 
+                  </td>
+                  <td className={ cnTableFull.td }>
+                      ...
+                  </td>
+                  <td className={ cnTableFull.tdAction }>
+                      ...
+                  </td>
+              </tr>
+          })
+      }
+      </tbody>
+    </table>
+  </div>
 }
 
 export const GhostArticlesLoader = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
-  return <div className={ utils.cnJoin([cnPage, 'content']) }>
+  return <div className={ utils.cnJoin([cnPage, 'content', 'suspense-content']) }>
       <HeaderComponent />
       <div className="qrated-ctn  p-5"> 
         <GhostArticlesLoadingComponent staticAppSettings={ staticAppSettings } />
@@ -155,7 +155,7 @@ export const GhostArticlesLoader = ({staticAppSettings}: { staticAppSettings : A
 }
 
 export const GhostTabularLoader = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
-  return <div className={ utils.cnJoin([cnPage, 'content']) }>
+  return <div className={ utils.cnJoin([cnPage, 'content', 'suspense-content']) }>
       <HeaderComponent />
       <GhostTableLoadingComponent staticAppSettings={ staticAppSettings } />
   </div>

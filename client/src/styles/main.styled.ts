@@ -26,6 +26,10 @@ export const StyledCard = styled.div<{ w?: string, h?: string, minw?: string}>`
     ${ props => props.h ? 'height: ' + props.h + ';': '' }
     ${ props => props.w ? 'width: ' + props.w + ';': '' }
     ${ props => props.minw ? 'min-width: ' + props.minw + ';': '' }
+
+    @media only screen and (max-width: 768px) {
+        min-width: 0;
+    }
 `
 
 export const StyledContainedBar = styled.div`

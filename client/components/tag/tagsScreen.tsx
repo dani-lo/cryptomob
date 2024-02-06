@@ -35,6 +35,8 @@ import { ApiParamsContext } from '@/context/apiParams.context'
 import { gqlCacheKey } from '@/src/helpers/gqlCacheKey'
 import { SortDirection } from '@/src/helpers/sort'
 import { HeaderComponent } from '../header'
+import { ThreePanel } from '../widgets/threePanel'
+import { currPanelAtom } from '@/src/store/uiAtoms'
 
 export interface TagApiDataResult {
     recordsCount: number;
@@ -49,12 +51,15 @@ export const TagsScreenComponent = () => {
 
     const ctx = useContext(ApiParamsContext)
 
-    const [user, setUser] = useAtom(currUserAtom)
+    
     const [activeTag, setActiveTag] = useState<TagApiDataWithArticlesCount | null>(null)
 
+    const [user, setUser] = useAtom(currUserAtom)
     const [fetchParams] = useAtom(ctx.queryParams.tags)
+    const [, setPanel] = useAtom(currPanelAtom)
 
     const searchParams = useSearchParams()
+    
     const router = useRouter()
 
     const tagId = searchParams.get('tagId')
@@ -131,11 +136,13 @@ export const TagsScreenComponent = () => {
         setActiveTag(null)
     }
 
-    return <div  className="qrated-ctn p-5">
+    return <ThreePanel>
         <HeaderComponent />
-        {/* <div style={{ opacity }} className={ utils.cnJoin(['status-widget']) }>
-        <p>working...</p>
-    </div>  */}
+        <div className="qrated-ctn"> 
+            <TagsListComponent
+                paginatedTags={ data.paginatedTags} 
+            />
+        </div>
         {
          activeTag ? 
             <TagDetailModalComponent 
@@ -143,12 +150,13 @@ export const TagsScreenComponent = () => {
                 tag={ activeTag } 
                 onClose={ () => {
                     // setTimeout(() => setActiveTag(null), 50)
+                    setPanel('mid')
                     router.replace('/tags')
+
                 }} 
             /> 
             : null
         }
-        <TagsListComponent paginatedTags={ data.paginatedTags} />
-    </div>
+    </ThreePanel>
     
 }

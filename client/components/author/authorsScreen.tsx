@@ -106,7 +106,9 @@ export const AuthorsScreenComponent = () => {
   
   return <ThreePanel> 
     <HeaderComponent />
-    <AuthorsListComponent paginatedAuthors={ data.paginatedAuthors } />
+    <div className="qrated-ctn"> 
+      <AuthorsListComponent paginatedAuthors={ data.paginatedAuthors } />
+    </div>
     {
       reqAuthor ? 
         <AuthorDetailModalComponent 

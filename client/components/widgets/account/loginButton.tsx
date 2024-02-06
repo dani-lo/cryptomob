@@ -1,25 +1,42 @@
 'use client'
 
+import { useAtom } from 'jotai';
+import { currPanelAtom } from '@/src/store/uiAtoms';
+
 import { getAppStaticSettings } from "@/src/store/static"
-import { cnBigIcon, utils } from "@/src/styles/classnames.tailwind"
-import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { cnBigIcon, utils, cnLoginContainer } from "@/src/styles/classnames.tailwind"
+import { faBars, faUser } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
-import { AccountComponent } from "./account"
+// import { AccountComponent } from "./account"
 
 export const LoginButtonComponent = () => {
 
-    const [userUi, setUserUi] = useState(false)
+    const [, setUserUi] = useState(false)
+
+    const [panel, setPanel] = useAtom(currPanelAtom)
+
     const staticAppSettings = getAppStaticSettings()
 
-    return <div className='fixed login'> 
-        {
-            userUi ? <AccountComponent onClose={ () => setUserUi(v => !v) } /> : null
-        }
+    return panel === 'mid' ? <div className={ cnLoginContainer }> 
+
+        <FontAwesomeIcon
+            icon={ faBars }
+            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'mt-4 mr-2'])}
+            onClick={ () => {
+                setUserUi(v => !v) 
+                setPanel('left')
+            }}
+        />
+
         <FontAwesomeIcon
             icon={ faUser }
-            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txtClear), 'clickable-icon', 'mt-4 ml-2'])}
-            onClick={ () => setUserUi(v => !v) }
+            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'mt-4 ml-2'])}
+            onClick={ () => {
+                setUserUi(v => !v) 
+                setPanel('user')
+            }}
         />
-    </div>
+        
+    </div> : null
 }

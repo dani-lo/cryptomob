@@ -1,3 +1,5 @@
+import { AppStaticSettings } from "../store/static"
+
 const withBorder = (cn: string) => `${ cn } with-border`
 
 
@@ -71,6 +73,12 @@ export const cnTextClear = 'text-gray-200'
 
 export const cnPage = ""
 
+export const cnLoginContainer = 'fixed login flex justify-between items-center shadow'
+
+export const cnThreePanel =  (settings: AppStaticSettings) => ({
+    nav: `flex  justify-between items-center ${ settings.bg }`
+})
+
 export const cnBold = 'font-bold'
 
 export const border = (borderCol: string) => 'border border-solid ' + borderCol
@@ -92,27 +100,36 @@ export const cnTabItemSvgIcon = 'w-4 h-4 mr-2 text-gray-400 group-hover:text-gra
 
 export const cnTable  = (bg: string) =>  {
 
-    return {
+    const cns = {
         table: 'as-table w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-6',
         thead: 'as-thead text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400',
         th: 'as-th px-4 py-3   text-white text-sm underline font-lld ' + bg,
         thContent: 'flex items-center justify-between cursor-pointer',
         td: 'as-td text-sm px-4 py-3 bg-gray-50 text-gray-900' ,
         tr: 'as-tr',
-        tdAction: 'text-sm px-4 py-3 bg-gray-50 text-gray-900 text-center' ,
+        tdAction: 'as-td text-sm px-4 py-3 bg-gray-50 text-gray-900 text-center' ,
         tbody: 'as-tbody'
     }
+
+    // return Object.keys(cns).reduce((acc: { [k: string] : string }, curr) => {
+        
+    //     acc[curr] = `${ suspense ? 'suspense' : '' } ${ acc[curr] }`
+
+    //     return acc
+    // }, {})
+
+    return cns
    
 }
 
 export const cnActionablesList = {
-    div: 'my-4 max-w-md border border-solid border-gray-400 p-4 pt-2 rounded',
+    div: 'my-4 max-w-md ',
     ul: '',
-    li: 'inline-block py-2 flex items-center justify-between',
+    li: 'inline-block py-2 flex items-center justify-between text-sm',
 }
 
-export const cnItemCardActions = 'flex items-center p-2 items-center justify-end absolute w-full top-0 left-0  h-40'
-
+export const cnItemCardActions = 'flex items-center p-2 px-4 items-center justify-between absolute w-full top-0 left-0  h-40'
+export const cnItemCardActionsInline = 'flex items-center'
 export const cnItemCard = 'pt-6 overlay-filler-parent mr-4 mb-4 pb-2 rounded-lg md:flex-row md:max-w-xl'
 
 export const cnTextualList = {

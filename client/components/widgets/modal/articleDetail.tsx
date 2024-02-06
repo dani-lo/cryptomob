@@ -8,7 +8,7 @@ import Dropdown from 'react-dropdown'
 import { useCategoriesWithArticlesCount } from "@/src/hooks/useCategories"
 import { useCategoriseArticle, useTagArticle, useUnwatchlistArticle, useWatchlistArticle } from "@/src/hooks/useArticles"
 
-import { ArticleBase } from "@/src/models/article"
+import { ArticleAPiData, ArticleBase } from "@/src/models/article"
 
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
@@ -26,8 +26,12 @@ import { ItemWatchlists } from "../itemWatchlists"
 import { getAppStaticSettings } from "@/src/store/static"
 import { Tag } from "@/src/models/tag"
 import { useTagsWithArticlesCount } from "@/src/hooks/useTags"
+import { stripHtml } from "@/src/helpers/strip"
 
-export const ArticleDetailModalComponent = ({ article, userId, onClose }: { article: ArticleBase, userId: number, onClose: () => void }) => {
+export const ArticleDetailModalComponent = ({ article, userId, onClose }: { 
+        article: ArticleAPiData | null, 
+        userId: number, 
+        onClose: () => void }) => {
 
     return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
         <div className="overlay-full-content rounded-lg shadow article-detail">
@@ -43,17 +47,19 @@ export const ArticleDetailModalComponent = ({ article, userId, onClose }: { arti
     </div>
 }
 
-export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBase, userId: number }) => {
+export const ArticleDetailComponent = ({ article, userId }: { article: ArticleAPiData | null, userId: number }) => {
 
     const {appId, bg } = getAppStaticSettings()
-    
-    
 
     const { data: watchlists } = useWatchlistsWIthItemsCount(appId)
     const { data: categories } = useCategoriesWithArticlesCount(appId)
     const { data: tags } = useTagsWithArticlesCount(appId)
     
-    const description = article.article_description.replace(/(&nbsp;|<([^>]+)>)/ig, "")
+    if (article === null) {
+        return null
+    }
+    
+    const description = stripHtml(article.article_description)
 
     return <div className="flex flex-col justify-between leading-normal" style={{ display: 'flex',flexDirection: 'column',height: '100%' }}>
             <IconTitleComponent
@@ -67,24 +73,24 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleBa
                 description
             }
             </p>
-        <div className="flex p-6 pt-0" style={{ overflowY: 'scroll', flex: 2 }}>
+        <div className="flex p-6 pt-0 article-detail-content" style={{ overflowY: 'scroll', flex: 2 }}>
                 
-        <ArticleDetailActions
-            watchlists={ watchlists?.watchlists || [] }
-            categories={ categories?.categories || [] }
-            tags= { tags?.tags.map(t => new Tag(t, false)) || [] }
-            article={ article }
-            userId={ userId }
-        />
-                <div className="my-2 pl-8">
-                    <h5 className={cnSectionSmallTitle }>User comments</h5>
-                    {
-                        article.comments?.length ? 
-                        <CommentBaloonsComponent comments={ article.comments } />:
-                        <p className={ cnParagraph }>No comments for this article. You can add comments from the comment button within the article card toolbar</p>
-                    }
-                </div>
+            <ArticleDetailActions
+                watchlists={ watchlists?.watchlists || [] }
+                categories={ categories?.categories || [] }
+                tags= { tags?.tags.map(t => new Tag(t, false)) || [] }
+                article={ new ArticleBase(article) }
+                userId={ userId }
+            />
+            <div className="my-2 pl-8 article-detail-comments">
+                <h5 className={cnSectionSmallTitle }>User comments</h5>
+                {
+                    article.comments?.length ? 
+                    <CommentBaloonsComponent comments={ article.comments } />:
+                    <p className={ cnParagraph }>No comments for this article. You can add comments from the comment button within the article card toolbar</p>
+                }
             </div>
+    </div>
             
         </div>
 }
@@ -96,16 +102,16 @@ const ArticleDetailActions = ({
         tags,
         userId
     }: {
-        article: ArticleBase;
+        article: ArticleBase | null;
         watchlists: Watchlist[];
         categories: Category[];
         tags: Tag[],
         userId: number;
     }) => {
 
-        const currentCategory = article.category || null
+        const currentCategory = article?.category || null
 
-        const [wid, setWid] = useState<string | undefined>(undefined) // (currentWatchlist ? `${currentWatchlist.watchlist_id}` : undefined )
+        const [wid, setWid] = useState<string | undefined>(undefined)
         const [cid, setCid] = useState<string | undefined>(currentCategory ? `${currentCategory.category_id}` : undefined)
         const [tid, setTid] = useState<string | undefined>(undefined)
         
@@ -114,7 +120,9 @@ const ArticleDetailActions = ({
         const unwatchlistTagMutation = useUnwatchlistArticle()
         const tagArticleMutation = useTagArticle()
 
-
+        if (article === null) {
+            return null
+        }
 
         const onSetCategory = () => {
 

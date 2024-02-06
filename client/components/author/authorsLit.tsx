@@ -1,7 +1,7 @@
 
 
 import { ellipsys } from '@/src/helpers/ellipsys';
-import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
+import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind';
 import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
 import { useCallback, useContext, useState } from 'react';
 import { ResourceItemsCount } from '@/src/queries';
@@ -15,19 +15,19 @@ import { PaginationCtrl } from '@/src/utils/paginationCtrl';
 import { AuthorsApiDataResult } from './authorsScreen';
 import { ApiParamsContext } from '@/context/apiParams.context';
 import { PaginationComponent } from '../widgets/pagination';
+import { IconTitleComponent } from '../widgets/iconed';
+import { faPerson } from '@fortawesome/free-solid-svg-icons';
+import { currPanelAtom } from '@/src/store/uiAtoms';
  
 export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: AuthorsApiDataResult}) => {
 
-    const [searchterm, setSearchterm] = useState('')
-
-    // const [sortby, setSortby] = useState<[keyof AuthorProps, SortDirection | null]>(['author_name', null])
-    const [sortby, setSortby] = useState<[keyof (AuthorApiData & ResourceItemsCount), SortDirection | null]>(['author_name', null])
-    
     const ctx = useContext(ApiParamsContext)
 
-    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.authors)
+    const [searchterm, setSearchterm] = useState('')
+    const [sortby, setSortby] = useState<[keyof (AuthorApiData & ResourceItemsCount), SortDirection | null]>(['author_name', null])
 
-    console.log(fetchParams)
+    const [, setPanel] = useAtom(currPanelAtom)
+    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.authors)
 
     const onSortBy = (newSortField : keyof (AuthorApiData & ResourceItemsCount)) => {
 
@@ -68,8 +68,8 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
         setFetchParams({ ...fetchParams, offset: 0 })
     }, [])
     
-    return <div>
-        <div className="flex items-center justify-between">
+    return <div className="items-list">
+        <div className="flex items-center justify-between items-list-util">
             <div>
                 <InlineSearchComponent 
                     currTerm={ searchterm }
@@ -101,18 +101,25 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody  className={ cnTableFull.tbody}>
             {
                 paginated.map(t => {
 
-                    return <tr key={ t.author_name }>
+                    return <tr key={ t.author_name }  className={ cnTableFull.tr }>
                         <td className={ cnTableFull.td }>     
-                  
-                            <span className={ cnBold }>
+                            <span className={ utils.cnJoin([cnBold, 'row-title']) }>
                             {
                                 ellipsys(t.author_name, 20)
                             }
-                            </span>                 
+                            </span>        
+                            <div className="list-item-header">
+                                <IconTitleComponent
+                                    text={ ellipsys(t.author_name, 20) }
+                                    icon={ faPerson }
+                                    bgColor={ appStaticSettings.bg }
+                                />
+                            </div>  
+                                           
                         </td>
                         <td className={ cnTableFull.td }>
                             {
@@ -120,7 +127,10 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
                             }
                         </td>
                         <td className={ cnTableFull.tdAction }>
-                            <Link href={ `/authors?authorId=${ t.author_id }` }>view</Link>
+                            <Link 
+                                href={ `/authors?authorId=${ t.author_id }` }
+                                onClick={ () => setPanel('right')}
+                            >view</Link>
                         </td>
                     </tr>
                 })
@@ -132,6 +142,7 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
                 <PaginationComponent 
                     paginationCtrl={ paginator } 
                     onSelectPage={ (nextOffset) => { 
+                        setPanel('mid')
                         setFetchParams({ ...fetchParams, offset: nextOffset })
                     }} 
                 /> 

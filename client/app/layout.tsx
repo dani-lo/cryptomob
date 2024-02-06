@@ -33,7 +33,6 @@ export default function RootLayout({
         <body>
             <LoginButtonComponent />
             <TailwindHiddenLoaderComponent />
-            
             <ToastComponent />
             <Providers>
                 <ApiParamsContextProvider>

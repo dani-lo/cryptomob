@@ -4,9 +4,9 @@
 // import * as Tg from 'react-transition-group';
 
 import { useSearchParams, useRouter, } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { CSSTransition } from 'react-transition-group'
+// import { CSSTransition } from 'react-transition-group'
 
 import { LoadingComponent } from '@/components/widgets/status/loading'
 import { ErrorComponent } from '@/components/widgets/status/error'
@@ -23,18 +23,20 @@ import { useUsers } from '@/src/hooks/useUsers';
 import { currUserAtom } from '@/src/store/userAtoms';
 import { getAppStaticSettings } from '@/src/store/static';
 import { HeaderComponent } from '../header';
+import { ThreePanel } from '../widgets/threePanel';
+import { currPanelAtom } from '@/src/store/uiAtoms';
 
 export const CategoriesScreenComponent = () => {
 
   const { data: udata } = useUsers()
 
   const [user, setUser] = useAtom(currUserAtom)
-//   const [activeAuthor, setActiveAuthor] = useState<(AuthorApiData  & { articles_count: number; }) | null>(null)
+  const [, setPanel] = useAtom(currPanelAtom)
 
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const modalRef = useRef(null)
+  // const modalRef = useRef(null)
 
   const categoryId = searchParams.get('categoryId')
 
@@ -46,6 +48,7 @@ export const CategoriesScreenComponent = () => {
 
   const appStaticSettings = getAppStaticSettings()
   const appId = appStaticSettings.appId
+
   const { data, isError, isLoading } = useCategoriesWithArticlesCount(appId)
 
   if (isLoading) {
@@ -68,9 +71,12 @@ export const CategoriesScreenComponent = () => {
 
     // const opacity = isFetching ? 1 : 0
 
-    return <div className="qrated-ctn p-5">
+    return <ThreePanel> 
       <HeaderComponent />
-      {
+      <div className="qrated-ctn"> 
+        <CategoriesListComponent categories={ data.categories } />
+      </div>
+      {/* {
         reqCategory ?
             <CSSTransition
                 in={ !!reqCategory }
@@ -91,19 +97,18 @@ export const CategoriesScreenComponent = () => {
             </CSSTransition> :
             null
       }
-      
-      {/* {
+       */}
+      {
       reqCategory ? 
         <CategoryDetailModalComponent 
             category={ reqCategory } 
             onClose={ () => {
                 // setTimeout(() => setActiveTag(null), 50)
                 router.replace('/categories')
+                setPanel('mid')
             }} 
         /> 
         : null
-      } */}
-      
-        <CategoriesListComponent categories={ data.categories } />
-    </div>
+      }
+    </ThreePanel>
 }

@@ -9,24 +9,28 @@ import { TagApiData } from "@/src/models/tag"
 import { IconTitleComponent } from "../iconed"
 import { faTags } from "@fortawesome/free-solid-svg-icons"
 import { useWatchlistsWIthItemsCount } from "@/src/hooks/useWatchlist"
-import { useUnwatchlistTag, useWatchlistTag } from "@/src/hooks/useTags"
+import { useTag, useUnwatchlistTag, useWatchlistTag } from "@/src/hooks/useTags"
 import { ItemWatchlists } from "../itemWatchlists"
 import { getAppStaticSettings } from "@/src/store/static"
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 import { PaginationComponent } from "../pagination"
+import { stripHtml } from "@/src/helpers/strip"
+import { ellipsys } from "@/src/helpers/ellipsys"
 
 const ARTICLE_PER_PAGE = 4
 
 export const TagDetailModalComponent = ({
         tag, 
         userId,
-        onClose 
+        onClose,
+        fetchOwn
     }: { 
         tag: TagApiData | undefined; 
         onClose: () => void; 
         userId: number;
+        fetchOwn ?: boolean;
     }) => {
-    
+        
     const {appId, bg } = getAppStaticSettings()
 
     const { data: watchlistsData } = useWatchlistsWIthItemsCount(appId)
@@ -38,17 +42,23 @@ export const TagDetailModalComponent = ({
 
     const [articlesOffset, setArticlesOffset] = useState(0)
     
-    const numArticles = tag?.articles?.length || 0
+    // const numArticles = tag?.articles?.length || 0
+
+    const tData = useTag(tag?.tag_id || 0) 
+
+    if (!tag || (fetchOwn && tData.isLoading) ) {
+        return null
+    }
+
+    const articles = fetchOwn ? (tData.data?.tag?.articles || []) : (tag?.articles || [])
+
+    const numArticles = articles.length
 
     const paginator = numArticles > ARTICLE_PER_PAGE ? new PaginationCtrl(
         numArticles,
         articlesOffset,
         ARTICLE_PER_PAGE
     ) : null
-
-    if (!tag) {
-        return null
-    }
 
     const disabledWatchlist = (watchlistID: number) => tag.watchlists?.some(w => w.watchlist_id === Number(watchlistID))
 
@@ -119,10 +129,10 @@ export const TagDetailModalComponent = ({
                 }
             </div>
             {
-                tag.articles ? 
+                articles ? 
                     <div className="my-2  px-6">
                         {
-                            tag.articles.map((a, i) => {
+                            articles.map((a, i) => {
 
                                 if (paginator && !paginator.pageItemInRange(i)) {
                                     return null
@@ -132,7 +142,7 @@ export const TagDetailModalComponent = ({
                                     <h2 className={ cnSectionSmallTitle }>
                                         <a href={ a.article_link} target="_blank">{ a.article_title }</a>
                                     </h2>
-                                    <p className={ cnParagraph }>{ a.article_description }</p>
+                                    <p className={ cnParagraph }>{ellipsys(stripHtml(a.article_description), 200)  }</p>
                                 </div>
                             })
                         }

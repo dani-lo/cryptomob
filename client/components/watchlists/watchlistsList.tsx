@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { ResourceItemsCount } from '@/src/queries'
 
-import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
+import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind';
 
 import { WatchlistApiData } from '@/src/models/watchlist'
 
@@ -14,6 +14,10 @@ import { ellipsys } from '@/src/helpers/ellipsys'
 import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/sort'
 import Link from 'next/link';
 import { getAppStaticSettings } from '@/src/store/static';
+import { useAtom } from 'jotai';
+import { currPanelAtom } from '@/src/store/uiAtoms';
+import { IconTitleComponent } from '../widgets/iconed';
+import { faBinoculars } from '@fortawesome/free-solid-svg-icons';
  
 type WatchlistProp = WatchlistApiData & ResourceItemsCount
 
@@ -21,6 +25,8 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
 
     const [searchterm, setSearchterm] = useState('')
     const [sortby, setSortby] = useState<[keyof WatchlistProp, SortDirection | null]>(['watchlist_name', null])
+
+    const [, setPanel] = useAtom(currPanelAtom)
 
     const onSortBy = (newSortField : keyof WatchlistProp) => {
 
@@ -57,16 +63,15 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
         setSearchterm(term)
     }, [])
 
-    return <div>
-        <div className="flex items-center justify-between">
-        <div>
-                <InlineSearchComponent currTerm={searchterm} onSearch={ onSearchCb } />
-            </div>
+    return <div className="items-list">
+        <div className="flex items-center justify-between items-list-util">
             <div>
-                <CreateWatchlistComponent />
+                    <InlineSearchComponent currTerm={searchterm} onSearch={ onSearchCb } />
+                </div>
+                <div>
+                    <CreateWatchlistComponent />
+                </div>
             </div>
-        </div>
-        
             <table className={ cnTableFull.table }>
                 <thead className={ cnTableFull.thead}>
                     <tr>
@@ -109,7 +114,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className={ cnTableFull.tbody }>
                 {
                     sorted.map(w => {
 
@@ -117,24 +122,37 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                             return null
                         }
 
-                        return <tr  key={ w.watchlist_id }>
+                        return <tr  key={ w.watchlist_id }  className={ cnTableFull.tr }>
                             <td className={ cnTableFull.td }>
-                 
-                                <span className={ cnBold }>
+                                <span className={ utils.cnJoin([cnBold, 'row-title']) }>
                                     {
                                         ellipsys(w.watchlist_name, 20)
                                     }        
                                 </span> 
+                                <div className="list-item-header">
+                                    <IconTitleComponent
+                                        text={ ellipsys(w.watchlist_name, 20) }
+                                        icon={ faBinoculars }
+                                        bgColor={ appStaticSettings.bg }
+                                    />
+                                </div>    
                             </td>
                             <td className={ cnTableFull.td }>
-                                {
-                                    `${ w.articles?.length || 0 }`
-                                }
+                                <span>
+                                    <span className="inline-head">
+                                        Watchlist Articles:
+                                    </span>
+                                    {
+                                        `${ w.articles?.length || 0 }`
+                                    }
+                                </span>
                             </td>
                             <td className={ cnTableFull.td }>
-                                {
+                                <span><span className="inline-head">
+                                        Watchlist Tags:
+                                    </span>{
                                     `${ w.tags?.length || 0 }`
-                                }
+                                }</span>
                             </td>
                             {/* <td className={ cnTableFull.td }>
                                 {
@@ -142,12 +160,17 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                                 }
                             </td> */}
                             <td className={ cnTableFull.td }>
-                                {
+                                <span><span className="inline-head">
+                                        Watchlist Authors:
+                                    </span>{
                                     `${ w.authors?.length || 0 }`
-                                }
+                                }</span>
                             </td>
                             <td className={ cnTableFull.tdAction }>
-                                <Link href={ `/watchlists?watchlistId=${ w.watchlist_id }` }>view</Link>
+                                <Link 
+                                    href={ `/watchlists?watchlistId=${ w.watchlist_id }` }
+                                    onClick={ () => setPanel('right')}
+                                >view</Link>
                             </td>
                         </tr>
                     })

@@ -35,7 +35,7 @@ export const ArticleCommentActionModalComponent = ({ article, onClose }: { artic
 
     return <div className="overlay-filler p-4 bg-white" style={{ overflowY: 'scroll' }}>
         <StyledContainedBar>
-            <CloseIconButtonComponent onClose={ onClose } />
+            <CloseIconButtonComponent onClose={ onClose } dark={ true } />
         </StyledContainedBar>
         <h5 className={ cnames.cnSectionTitle +  ' mt-4 mb-4' }>{ article.article_title }</h5>
         <form method="post" onSubmit={saveComment}>

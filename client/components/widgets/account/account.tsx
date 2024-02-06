@@ -56,7 +56,7 @@ export const AccountComponent = ({ onClose }: { onClose: () => void}) => {
                 icon={ faUser }
                 bgColor={ bg }
             />
-            <div style={{ height: '100%' }}>
+            <div style={{ height: '100%' }} className="user-account-data">
                 {
                     !isValidUser ? 
                         <div>

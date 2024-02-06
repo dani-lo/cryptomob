@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import request from 'graphql-request'
@@ -32,8 +32,12 @@ import { getAppStaticSettings } from '@/src/store/static'
 import { useWatchlistsWIthItemsCount } from '@/src/hooks/useWatchlist'
 import { useCategoriesWithArticlesCount } from '@/src/hooks/useCategories'
 import { useTagsWithArticlesCount } from '@/src/hooks/useTags'
-import { cnPage, utils } from '@/src/styles/classnames.tailwind'
 import { HeaderComponent } from '../header'
+import { ThreePanel } from '../widgets/threePanel'
+import { ArticleDetailModalComponent } from '../widgets/modal/articleDetail'
+import { currPanelAtom } from '@/src/store/uiAtoms'
+import { TagDetailModalComponent } from '../widgets/modal/tagDetail'
+import { TagApiData } from '@/src/models/tag'
 // import { useMeta } from '@/src/hooks'
 
 interface ArticleApiDataResult {
@@ -54,14 +58,19 @@ const sortOptions = [
 
 export const ArticlesScreenComponent = () => {
 
-  const ctx = useContext(ApiParamsContext)
 
-  const appStaticSettings = getAppStaticSettings()
-  const appId = appStaticSettings.appId
+  const ctx = useContext(ApiParamsContext)
 
   const [publicFilters] = useAtom(ctx.filterParams.articles.pub)
   const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.articles)
   const [user, setUser] = useAtom(currUserAtom)
+  const [, setPanel] = useAtom(currPanelAtom)
+
+  const [selectedArticle, setSelectedArticle] = useState(0)
+  const [selectedArticleTag, setSelectedArticleTag] = useState(0)
+
+  const appStaticSettings = getAppStaticSettings()
+  const appId = appStaticSettings.appId
 
   useWatchlistsWIthItemsCount(appId)
   useCategoriesWithArticlesCount(appId)
@@ -74,9 +83,6 @@ export const ArticlesScreenComponent = () => {
           setUser(udata.users[0])
       }
   }, [udata, user, setUser])
-
-  
-  
 
   const { 
       isLoading,
@@ -114,9 +120,23 @@ export const ArticlesScreenComponent = () => {
  
   const isEMpty = (!data || !data.paginatedArticles || data.paginatedArticles.articles.length === 0) 
 
-return <div   className={ utils.cnJoin([cnPage, 'content']) }>
-    <HeaderComponent />
-      <div className="qrated-ctn p-5"> 
+  
+  const allTags = data.paginatedArticles.articles.reduce((acc: TagApiData[], curr) => {
+
+    const c = acc.concat(curr.tags)
+
+    return c
+  }, [])
+
+  const activeArticle = data.paginatedArticles.articles.find(a => a.article_id === selectedArticle)
+  const activeTag = allTags.find(a => a.tag_id === selectedArticleTag)
+
+  console.log('-------------------- TAGS --- selectedArticleTag is ', selectedArticleTag)
+  console.log(allTags)
+  console.log(activeTag)
+  return <ThreePanel> 
+      <HeaderComponent />
+      <div className="qrated-ctn"> 
         <ArticlesToolbarComponent 
           onFromDateChange={ (date) => {
             setFetchParams({ ...fetchParams, dateFrom: date})
@@ -142,9 +162,43 @@ return <div   className={ utils.cnJoin([cnPage, 'content']) }>
           limit={ fetchParams.limit }
         />  
         {
-          !isEMpty ? <ArticlesListComponent paginatedArticles={ data.paginatedArticles } /> : null
+          !isEMpty ? 
+          <ArticlesListComponent 
+            paginatedArticles={ data.paginatedArticles }  
+            selectArticle={ (id: number) => {
+              setSelectedArticle(id)
+              setPanel('right')
+             }} 
+             selectArticleTag={ (id: number) => {
+              setSelectedArticleTag(id)
+              setPanel('right')
+             }} 
+          /> : null
         }
     </div>
-  </div>
+    {
+        selectedArticle ? 
+            <ArticleDetailModalComponent
+                article={ activeArticle || null } 
+                userId={ user?.user_id || 0 } 
+                onClose={ () => {
+                  setPanel('mid')
+                  setSelectedArticle(0) 
+                }}
+            /> : 
+        selectedArticleTag ? 
+            <TagDetailModalComponent 
+              userId={ user?.user_id || 0 } 
+              tag={ activeTag } 
+              fetchOwn={ true }
+              onClose={ () => {
+                  setPanel('mid')
+                  setSelectedArticleTag(0)
+
+              }} 
+            /> : 
+            null 
+    }
+  </ThreePanel>
 }
 

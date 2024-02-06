@@ -14,6 +14,7 @@ import { PaginationComponent } from "../pagination"
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 import { useState } from "react"
 import { getAppStaticSettings } from "@/src/store/static"
+import { stripHtml } from "@/src/helpers/strip"
 // import { useState } from "react"
 // import { useUnwatchlistAuthor, useWatchlistAuthor } from "@/src/hooks/useAuthors"
 
@@ -75,7 +76,7 @@ export const WatchlistDetailModalComponent = ({
                                     watchlist.articles.map((a, i) => {
                                         return  paginationCtrlArticles.pageItemInRange(i) ? <div  key={ a.article_id }>
                                                 <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title.substring(0, 20) }</a></h2>
-                                                <p className={ cnParagraph }>{ a.article_description }</p>
+                                                <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
                                             </div> :
                                             null
                                     })

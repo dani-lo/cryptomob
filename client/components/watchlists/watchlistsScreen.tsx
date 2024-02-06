@@ -18,12 +18,15 @@ import { WatchlistDetailModalComponent } from '@/components/widgets/modal/watchl
 import { useWatchlistsWIthItemsCount } from '@/src/hooks/useWatchlist'
 import { useUsers } from '@/src/hooks/useUsers'
 import { HeaderComponent } from '../header';
+import { ThreePanel } from '../widgets/threePanel';
+import { currPanelAtom } from '@/src/store/uiAtoms';
  
 export const WatchlistsScreenComponent = () => {
 
     const { data: udata } = useUsers()
 
     const [user, setUser] = useAtom(currUserAtom)
+    const [, setPanel] = useAtom(currPanelAtom)
 
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -58,18 +61,21 @@ export const WatchlistsScreenComponent = () => {
 
     const reqWatchlist = watchlistId ? (data.watchlists.find(apiT => Number(apiT.watchlist_id) === Number(watchlistId)) || null) : null
 
-    return <div className="qrated-ctn p-5">
+    return <ThreePanel>
         <HeaderComponent />
+        <div className="qrated-ctn"> 
+            <WatchlistsListComponent watchlists={ data.watchlists } />
+        </div>
         {
         reqWatchlist ? 
             <WatchlistDetailModalComponent 
                 watchlist={ reqWatchlist } 
                 onClose={ () => {
+                    setPanel('mid')
                     router.replace('/watchlists')
                 }} 
             /> 
             : null
         }
-        <WatchlistsListComponent watchlists={ data.watchlists } />
-    </div>
+    </ThreePanel>
 }

@@ -1,0 +1,1 @@
+export const stripHtml = (inStr: string) => inStr.replace(/(&nbsp;|<([^>]+)>)/ig, "")

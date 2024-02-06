@@ -14,7 +14,7 @@ import { ArticleBase } from "@/src/models/article"
 
 import { getAppStaticSettings } from "@/src/store/static"
 
-import {  utils, cnItemCardActions, cnSmallIcon } from "@/src/styles/classnames.tailwind"
+import {  utils, cnItemCardActions, cnSmallIcon, cnItemCardActionsInline } from "@/src/styles/classnames.tailwind"
 
 interface Props { 
     article: ArticleBase;
@@ -36,6 +36,7 @@ export const ArticleActionsHeaderComponent = ({
     const staticAppSettings = getAppStaticSettings()
 
     return <div className={ cnItemCardActions } style={{ height: '40px' }}>
+        <div className={ cnItemCardActionsInline }>
             <FontAwesomeIcon
                 icon={ faPalette }
                 className={ utils.cnJoin([cnSmallIcon(staticAppSettings.txt), 'clickable-icon'])}
@@ -58,6 +59,7 @@ export const ArticleActionsHeaderComponent = ({
                 className={ utils.cnJoin([cnSmallIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
                 onClick={ () => onDeleteArticle({ item_id: Number(article.article_id), val: true }) }
             />
+            </div>
             <div className="pl-8">
                 <FontAwesomeIcon
                     icon={ faPlus }

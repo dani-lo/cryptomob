@@ -227,7 +227,7 @@ input {
 }
 
 .qrated-ctn {
-  margin-left: 250px;
+  /* margin-left: 250px; */
 }
 .navbar {
   position: fixed;
@@ -405,11 +405,15 @@ input:focus, input:focus-visible, input:focus-within {
 .app-loading table  {
     opacity: 0.5;
     margin-top: 4rem;
+    margin-left: 250px;
+    padding: 1rem;
 }
 
 .app-loading table th {
   background: #a6a6a6;
 }
+
+
 
 .create-article {
   display: none;
@@ -440,27 +444,4 @@ input:focus, input:focus-visible, input:focus-within {
 
 .sectioned h3:first-child {
   margin-top: auto;
-}
-
-.as-table {
-  display: table;
-}
-
-.as-tr {
-  display: table-row;
-}
-
-.as-tbody {
-}
-
-.as-thead {
-  display: table-header-group;
-}
-
-.as-th {
-  display: table-cell;
-}
-
-.as-td {
-  display: table-cell;
 }

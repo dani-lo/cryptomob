@@ -1,5 +1,5 @@
 import { ellipsys } from '@/src/helpers/ellipsys';
-import { cnBold, cnTable } from '@/src/styles/classnames.tailwind';
+import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind';
 import { InlineSearchComponent } from '@/components/widgets/inlineSearch';
 import { useCallback, useState } from 'react';
 import { CategoryApiData } from '@/src/models/category';
@@ -9,6 +9,10 @@ import { SortDirection, nextSortDirection, sortItemsArray } from '@/src/helpers/
 import { SortIconComponent } from '../widgets/sortIcon';
 import Link from 'next/link';
 import { getAppStaticSettings } from '@/src/store/static';
+import { IconTitleComponent } from '../widgets/iconed';
+import { faClone } from '@fortawesome/free-solid-svg-icons';
+import { useAtom } from 'jotai';
+import { currPanelAtom } from '@/src/store/uiAtoms';
  
 type CategoryProps = CategoryApiData & ResourceItemsCount
 
@@ -16,6 +20,8 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
 
     const [searchterm, setSearchterm] = useState('')
     const [sortby, setSortby] = useState<[keyof CategoryProps, SortDirection | null]>(['category_name', null])
+    
+    const [, setPanel] = useAtom(currPanelAtom)
 
     const onSortBy = (newSortField : keyof CategoryProps) => {
 
@@ -37,8 +43,8 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
         // setFetchParams({ ...fetchParams, offset: 0 })
     }, [])
 
-    return <div>
-        <div className="flex items-center justify-between">
+    return <div className="items-list">
+        <div className="flex items-center justify-between items-list-util">
             <div>
                 <InlineSearchComponent 
                     currTerm={searchterm}
@@ -51,7 +57,7 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
         </div>
         <table className={ cnTableFull.table }>
             <thead className={ cnTableFull.thead}>
-                <tr>
+                <tr className={ cnTableFull.tr}>
                     <th scope="col" className={ cnTableFull.th }onClick={ () => {
                             onSortBy('category_name')
                     }}>
@@ -73,7 +79,7 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody  className={ cnTableFull.tbody}>
             {
                 sorted.map(t => {
 
@@ -81,21 +87,33 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                         return null
                     }
 
-                    return <tr key={ t.category_id }>
+                    return <tr key={ t.category_id }  className={ cnTableFull.tr}>
                         <td className={ cnTableFull.td }>     
-                            <span className={ cnBold }>
+                            <span className={ utils.cnJoin([cnBold, 'row-title']) }>
                             {
                                 ellipsys(t.category_name, 20)
                             }
-                            </span>                 
+                            </span>        
+                            <div className="list-item-header">
+                                <IconTitleComponent
+                                    text={ ellipsys(t.category_name, 20) }
+                                    icon={ faClone }
+                                    bgColor={ appStaticSettings.bg }
+                                />
+                            </div>           
                         </td>
                         <td className={ cnTableFull.td }>
-                            {
-                                `${t.articles_count } articles`
-                            }
+                            <span>
+                                {
+                                    `${t.articles_count } articles`
+                                }
+                            </span>
                         </td>
                         <td className={ cnTableFull.tdAction }>
-                            <Link href={ `/categories?categoryId=${ t.category_id }` }>view</Link>
+                            <span><Link 
+                                href={ `/categories?categoryId=${ t.category_id }` }
+                                onClick={ () => setPanel('right')}
+                            >view</Link></span>
                         </td>
                     </tr>
                 })
