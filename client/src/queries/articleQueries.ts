@@ -96,7 +96,7 @@ export const READ_ARTICLES = (
 
 export const BOOKMARK_ARTICLE = gql`
     mutation bookmarkArticle($input: UpdateBoolInput!) {
-      bookmarkArticlez(input: $input) {
+      bookmarkArticle(input: $input) {
           article_id
       }
     }

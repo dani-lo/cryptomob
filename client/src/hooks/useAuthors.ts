@@ -11,6 +11,8 @@ import { QueryFilterParams } from "../store/app";
 import { gqlClient } from "../utils/graphqlClient";
 import { updateClientAuthorsCache } from "../helpers/reactQueryCacheUtil";
 import { GRAPHQL_ENDPOINT } from "@/src/config"
+import { useAtom } from "jotai"
+import { toastAtom, toastWarning } from "../store/userAtoms"
 
 interface AuthorInput { author_name: string }
 
@@ -48,6 +50,8 @@ export const useAuthorsWithArticlesCount = (
 
 export const useWatchlistAuthor = () => {
 
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
   
     return useMutation({ 
@@ -64,10 +68,18 @@ export const useWatchlistAuthor = () => {
 
             updateClientAuthorsCache(client, returned)
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
 export const useUnwatchlistAuthor = () => {
+
+    const [, setToast] = useAtom(toastAtom)
 
     const client = useQueryClient()
     
@@ -85,12 +97,20 @@ export const useUnwatchlistAuthor = () => {
 
             updateClientAuthorsCache(client, returned)
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
 
 export const useAddAuthor = (onCreate: (newAuthor: number) => void) => {
     
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
 
     return useMutation({
@@ -105,6 +125,12 @@ export const useAddAuthor = (onCreate: (newAuthor: number) => void) => {
             onCreate(Number(f.createAuthor.author_id))
             client.invalidateQueries([GqlCacheKeys.authors])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
     })
     
 }

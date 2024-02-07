@@ -11,7 +11,6 @@ export const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT, {
     const storedUser = localStorage.getItem('user')
     const user = storedUser ? JSON.parse(storedUser) : null
 
-    console.log(user)
     if (user && user.token) {
         authHeaders['authorization'] = `Bearer ${ user.token }`
     }

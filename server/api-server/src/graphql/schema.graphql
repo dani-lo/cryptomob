@@ -112,7 +112,7 @@ type Mutation {
   createArticle(input: ArticleInput): Article
   createComment(input: CommentInput): Comment
   createTestComment(text: String): Comment
-  bookmarkArticlez(input: UpdateBoolInput): Article 
+  bookmarkArticle(input: UpdateBoolInput): Article 
   deleteArticlez(input: UpdateBoolInput): Article
   createCategory(input: CategoryInput): Category
   createWatchlist(input: WatchlistInput): Watchlist

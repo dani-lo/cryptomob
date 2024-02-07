@@ -1,5 +1,6 @@
 // import { ArticlesTags, Tag } from '@prisma/client';
-import { DatedWhereParams } from '.';
+import { GraphQLError } from 'graphql';
+import { DatedWhereParams, QRATED_AUTH_ERROR } from '.';
 import { dataSources } from '../datasources';
 import { text } from 'stream/consumers';
 // import { pubsub } from '../pubsub';
@@ -25,9 +26,13 @@ export default {
 
     Mutation: {
         
-        async createComment(_: any, args: { input : { comment_text: string; article_id: number; user_id: number; } }) {
+        async createComment(_: any, args: { input : { comment_text: string; article_id: number; user_id: number; } }, contextValue: any) {
 
-            
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
 
             const {
                 comment_text,

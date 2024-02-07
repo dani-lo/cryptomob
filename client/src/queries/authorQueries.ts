@@ -96,22 +96,6 @@ return gql`
 `
 }
 
-// export const BOOKMARK_ARTICLE = gql`
-//     mutation bookmarkArticle($input: UpdateBoolInput!) {
-//       bookmarkArticlez(input: $input) {
-//           article_id
-//       }
-//     }
-// `
-
-// export const DELETE_ARTICLE = gql`
-//     mutation deleteArticle($input: UpdateBoolInput!) {
-//       deleteArticlez(input: $input) {
-//           article_id
-//       }
-//     }
-// `
-
 export const WATCHLIST_AUHTOR = gql`
   mutation setWatchlistAuthor($input: AuthorWatchlistMutation) {
     setWatchlistAuthor(input: $input) {

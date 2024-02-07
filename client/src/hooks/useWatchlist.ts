@@ -8,6 +8,9 @@ import { CREATE_WATCHLIST, READ_WATCHLISTS } from "../queries/watchlistQueries"
 import { WatchlistApiData } from "../models/watchlist"
 import request from "graphql-request"
 
+import { useAtom } from "jotai"
+import { toastAtom, toastWarning } from "../store/userAtoms"
+
 interface WatchlistInput {
   watchlist_id?: number, 
   watchlist_name: string,
@@ -54,7 +57,9 @@ export const useWatchlistsWIthItemsCount = (appId: number) => {
 
 export const useAddWatchlist = () => {
 
-  const client = useQueryClient()
+    const [, setToast] = useAtom(toastAtom)
+
+    const client = useQueryClient()
 
     return useMutation({
         mutationFn: (input: WatchlistInput) => {
@@ -66,6 +71,12 @@ export const useAddWatchlist = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.watchilsts])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+  
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
     })
 }
 

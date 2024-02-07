@@ -10,6 +10,8 @@ import { CREATE_CATEGORY, READ_CATEGORIES } from "../queries/categoryQueries"
 import { CategoryApiData } from "../models/category"
 import request from "graphql-request"
 import { QueryFilterParams } from "../store/app"
+import { useAtom } from "jotai"
+import { toastAtom, toastWarning } from "../store/userAtoms"
 
 interface CategoryInput {
     category_name: string, 
@@ -51,6 +53,9 @@ export const useCategoriesWithArticlesCount = (
 }
 
 export const useAddCategory = () => {
+
+  const [, setToast] = useAtom(toastAtom)
+
   const client = useQueryClient()
 
   return useMutation({
@@ -63,6 +68,12 @@ export const useAddCategory = () => {
       onSuccess: () => {
         client.invalidateQueries([GqlCacheKeys.categories])
       },
+      onError: (err: any) : void => {
+          
+          const thrownError = err.response?.errors[0] || null
+
+          toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+      }
   })
 }
 

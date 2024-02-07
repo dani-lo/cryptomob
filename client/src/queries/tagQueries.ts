@@ -239,22 +239,6 @@ export const UNWATCHLIST_TAG = gql`
   }
 `
 
-// export const BOOKMARK_ARTICLE = gql`
-//     mutation bookmarkArticle($input: UpdateBoolInput!) {
-//       bookmarkArticlez(input: $input) {
-//           article_id
-//       }
-//     }
-// `
-
-// export const DELETE_ARTICLE = gql`
-//     mutation deleteArticle($input: UpdateBoolInput!) {
-//       deleteArticlez(input: $input) {
-//           article_id
-//       }
-//     }
-// `
-
 export const READ_TAG = (
   tagId: number
 ) => {

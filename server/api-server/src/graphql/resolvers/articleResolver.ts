@@ -1,8 +1,13 @@
 // import { ArticlesTags, Comment, Tag, WatchlistsArticles } from '@prisma/client';
+import { GraphQLError } from 'graphql';
+
 import { dataSources } from '../datasources';
-import { PaginationQueryParams } from '.';
+import { PaginationQueryParams, QRATED_AUTH_ERROR } from '.';
 import { hasNamedProp } from '../../helpers/obj';
 // import { pubsub } from '../pubsub';
+
+
+
 
 
 
@@ -69,18 +74,27 @@ export default {
             return createdRows?.rows?.length ? createdRows.rows[0] : null
         },
 
-        async bookmarkArticlez(_parent: any, args: { input: { item_id: number, val: boolean }}, contextValue: any) {
+        async bookmarkArticle(_parent: any, args: { input: { item_id: number, val: boolean }}, contextValue: any) {
 
-            console.log('============== contextValue')
-            console.log(contextValue)
+            const user = contextValue.user 
 
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
+            
             const val = typeof args.input.val == 'undefined' ? true : args.input.val 
             const articleRows = await dataSources.articleService.pgAddBookmarkArticle(args.input.item_id, val)
 
             return articleRows?.rows?.length ? articleRows.rows[0] : null
         },
 
-        async deleteArticlez(_parent: any, args: { input: { item_id: number, val: boolean }}) {
+        async deleteArticlez(_parent: any, args: { input: { item_id: number, val: boolean }}, contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
 
             const val = typeof args.input.val == 'undefined' ? true : args.input.val 
             const articleRows = await  dataSources.articleService.pgDeleteArticle(args.input.item_id, val)
@@ -88,7 +102,14 @@ export default {
             return articleRows?.rows?.length ? articleRows.rows[0] : null
         },
 
-        async setCategoriseArticle (_parent: any, args: { input: { article_id: number, category_id: number}}) {
+        async setCategoriseArticle (_parent: any, args: { input: { article_id: number, category_id: number}}, contextValue: any) {
+            
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
+            
             const {
                 article_id,
                 category_id
@@ -101,7 +122,13 @@ export default {
             return article
         },
 
-        async setWatchlistArticle (_parent: any, args: { input: { article_id: number, watchlist_id: number}}) {
+        async setWatchlistArticle (_parent: any, args: { input: { article_id: number, watchlist_id: number}}, contextValue: any) {
+            
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
             
             const {
                 article_id,
@@ -115,7 +142,13 @@ export default {
             return article
         },
 
-        async deleteWatchlistArticle (_parent: any, args: { input: { article_id: number, watchlist_id: number}}) {
+        async deleteWatchlistArticle (_parent: any, args: { input: { article_id: number, watchlist_id: number}}, contextValue: any) {
+            
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
             
             const {
                 article_id,
@@ -129,8 +162,14 @@ export default {
             return article
         },
 
-        async setArticleTag (_parent: any, args: { input: { article_id: number, tag_id: number, user_id: number}}) {
+        async setArticleTag (_parent: any, args: { input: { article_id: number, tag_id: number, user_id: number}}, contextValue: any) {
 
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
+            
             const {
                 article_id,
                 tag_id,
@@ -144,8 +183,14 @@ export default {
             return article
         },
 
-        async unsetArticleTag (_parent: any, args: { input: { article_id: number, tag_id: number, user_id: number}}) {
+        async unsetArticleTag (_parent: any, args: { input: { article_id: number, tag_id: number, user_id: number}}, contextValue: any) {
 
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
+            
             const {
                 article_id,
                 tag_id,

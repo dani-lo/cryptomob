@@ -1,6 +1,7 @@
 import { dataSources } from '../datasources';
-import { DatedWhereParams } from '.';
+import { DatedWhereParams, QRATED_AUTH_ERROR } from '.';
 import { hasNamedProp } from '../../helpers/obj';
+import { GraphQLError } from 'graphql';
 
 export default {
     
@@ -47,7 +48,13 @@ export default {
             category_name: string
             user_id: number ,
             appId: number
-        } }) {
+        } }, contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
              
             const {
                 category_id,

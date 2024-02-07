@@ -1,8 +1,9 @@
 // import { Tag } from '@prisma/client';
 
-import { DatedWhereParams, PaginationQueryParams } from '.'
+import { DatedWhereParams, PaginationQueryParams, QRATED_AUTH_ERROR } from '.'
 import { dataSources } from '../datasources'
 import { hasNamedProp } from '../../helpers/obj'
+import { GraphQLError } from 'graphql'
 
 export default {
     Query: {
@@ -73,7 +74,13 @@ export default {
     },
 
     Mutation: {
-        async createTag(_: any, args: { input : { tag_name: string; tag_origin: string; } }) {
+        async createTag(_: any, args: { input : { tag_name: string; tag_origin: string; } }, contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
 
             const newTag = await dataSources.tagService.pgcCreateTag(args.input.tag_name, args.input.tag_origin)
 
@@ -82,7 +89,13 @@ export default {
 
        
 
-        async setWatchlistTag(_: any, args: { input: { tag_id: number, watchlist_id: number } }) {
+        async setWatchlistTag(_: any, args: { input: { tag_id: number, watchlist_id: number } }, contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
 
             const {
                 tag_id,
@@ -96,7 +109,13 @@ export default {
             return  result?.rows ? result.rows[0] : []
         },
 
-        async deleteWatchlistTag(_: any, args: { input: { tag_id: number, watchlist_id: number } } ) {
+        async deleteWatchlistTag(_: any, args: { input: { tag_id: number, watchlist_id: number } } , contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
             
             const {
                 tag_id,

@@ -7,6 +7,9 @@ import request from "graphql-request"
 import { READ_COMMENTS } from "../queries/commentQueries"
 import { GRAPHQL_ENDPOINT } from "../config"
 
+import { useAtom } from "jotai"
+import { toastAtom, toastWarning } from "../store/userAtoms"
+
 interface CommentInput {comment_text: string, article_id: number, user_id: number}
 
 export const useComments = (appId: number) => {
@@ -38,6 +41,9 @@ export const useComments = (appId: number) => {
 
 
 export const useAddComment = () => {
+
+  const [, setToast] = useAtom(toastAtom)
+
   const client = useQueryClient()
 
   return useMutation({
@@ -50,5 +56,11 @@ export const useAddComment = () => {
       onSuccess: () => {
         client.invalidateQueries([GqlCacheKeys.paginatedArticles])
       },
+      onError: (err: any) : void => {
+          
+          const thrownError = err.response?.errors[0] || null
+
+          toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+      }
   })
 }

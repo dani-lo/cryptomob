@@ -89,8 +89,6 @@ export const useBookmarkArticle = () => {
     return useMutation({ 
         mutationFn: (input: UpdateBoolInput) => {
 
-            toastWarning(setToast, 'You need to login to do that')
-
             return gqlClient.request(
                 BOOKMARK_ARTICLE,
                 {input }
@@ -99,10 +97,19 @@ export const useBookmarkArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
     })
 }
 
 export const useDeleteArticle = () => {
+
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
   
     return useMutation({
@@ -115,10 +122,19 @@ export const useDeleteArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
-export const useAddArticle = (onCreate: (newArticle: number) => void, onError: () => void) => {
+export const useAddArticle = (onCreate: (newArticle: number) => void, onErrorCustom: (err: any) => void) => {
+    
+    const [, setToast] = useAtom(toastAtom)
+    
     const client = useQueryClient()
   
     return useMutation({
@@ -129,11 +145,17 @@ export const useAddArticle = (onCreate: (newArticle: number) => void, onError: (
             )
         },
         onSuccess: (f: any) => {
-            console.log(f)
             onCreate(f.createArticle.article_id)
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
-        onError
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+
+            onErrorCustom(err)
+        }
       })
 }
 
@@ -155,6 +177,9 @@ export const useArticlesDomains = () => {
 
 
 export const useCategoriseArticle = () => {
+
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
   
     return useMutation({ 
@@ -167,11 +192,20 @@ export const useCategoriseArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
 
 export const useWatchlistArticle = () => {
+
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
   
     return useMutation({ 
@@ -184,10 +218,18 @@ export const useWatchlistArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
 export const useUnwatchlistArticle = () => {
+
+    const [, setToast] = useAtom(toastAtom)
 
     const client = useQueryClient()
   
@@ -201,6 +243,12 @@ export const useUnwatchlistArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
@@ -224,6 +272,8 @@ export const useColorArticle = () => {
 
 export const useTagArticle = () => {
 
+    const [, setToast] = useAtom(toastAtom)
+    
     const client = useQueryClient()
   
     return useMutation({ 
@@ -236,5 +286,11 @@ export const useTagArticle = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.paginatedArticles])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }

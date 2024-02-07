@@ -1,7 +1,8 @@
 // import { Article } from '@prisma/client';
-import { DatedWhereParams, PaginationQueryParams } from '.';
+import { DatedWhereParams, PaginationQueryParams, QRATED_AUTH_ERROR } from '.';
 import { dataSources } from '../datasources';
 import { hasNamedProp } from '../../helpers/obj';
+import { GraphQLError } from 'graphql';
 
 export default {
     Query: {
@@ -57,14 +58,27 @@ export default {
 
     Mutation : {
 
-        async createAuthor(_: any, args: { input : { author_name: string} }) {
+        async createAuthor(_: any, args: { input : { author_name: string} }, contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
 
             const newAuthor = await dataSources.authorService.pgcCreateAuthor(args.input.author_name)
 
             return  newAuthor?.rows ? newAuthor.rows[0] : []
         },
 
-        async setWatchlistAuthor (_: any, args: { input: { author_id: number, watchlist_id: number } }) {
+        async setWatchlistAuthor (_: any, args: { input: { author_id: number, watchlist_id: number } }, contextValue: any) {
+
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
+
 
             const {
                 author_id,
@@ -78,7 +92,14 @@ export default {
             return  result?.rows ? result.rows[0] : []
         },
 
-        async deleteWatchlistAuthor(_: any, args: { input: { author_id: number, watchlist_id: number } } ) {
+        async deleteWatchlistAuthor(_: any, args: { input: { author_id: number, watchlist_id: number } } , contextValue: any) {
+            
+            const user = contextValue.user 
+
+            if (!user?.id) {
+                throw new GraphQLError(QRATED_AUTH_ERROR)
+            }
+
             
             const {
                 author_id,

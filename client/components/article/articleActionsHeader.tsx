@@ -45,7 +45,15 @@ export const ArticleActionsHeaderComponent = ({
             <FontAwesomeIcon
                 icon={ faBookmark }
                 className={ utils.cnJoin([article.article_bookmark ? cnSmallIcon(staticAppSettings.txtEvidence) : cnSmallIcon(staticAppSettings.txt), 'clickable-icon', 'pl-3'])}
-                onClick={ () => onBookmarkArticle({ item_id: Number(article.article_id), val: !article.article_bookmark }) }
+                onClick={ () => {
+                    try {
+                        onBookmarkArticle({ item_id: Number(article.article_id), val: !article.article_bookmark }) 
+
+                    } catch (err) {
+                        console.log(err)
+                    }
+               
+                }}
             />
             <div>
                 <FontAwesomeIcon

@@ -12,6 +12,9 @@ import request from "graphql-request";
 import { GRAPHQL_ENDPOINT } from "../config";
 // import { FetchParams } from "../store/app";
 
+import { useAtom } from "jotai"
+import { toastAtom, toastWarning } from "../store/userAtoms"
+
 interface TagInput {tag_name: string, tag_origin: string}
 
 export const useTagsWithArticlesCount = (
@@ -70,6 +73,8 @@ export const useTagsWithArticlesCount = (
 
 export const useAddtag = () => {
     
+    const [, setToast] = useAtom(toastAtom)
+
     const client = useQueryClient()
 
     return useMutation({
@@ -82,11 +87,19 @@ export const useAddtag = () => {
         onSuccess: () => {
             client.invalidateQueries([GqlCacheKeys.tags])
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+  
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
     })
     
 }
 
 export const useWatchlistTag = () => {
+
+    const [, setToast] = useAtom(toastAtom)
 
     const client = useQueryClient()
   
@@ -104,10 +117,18 @@ export const useWatchlistTag = () => {
 
             updateClientTagsCache(client, returned)
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+  
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 
 export const useUnwatchlistTag = () => {
+
+    const [, setToast] = useAtom(toastAtom)
 
     const client = useQueryClient()
     
@@ -125,6 +146,12 @@ export const useUnwatchlistTag = () => {
 
             updateClientTagsCache(client, returned)
         },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+  
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
       })
 }
 

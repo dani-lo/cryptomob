@@ -15,6 +15,8 @@ import userResolver from './userResolver'
 
 import etlResolver from "./etlResolver"
 
+export const QRATED_AUTH_ERROR = 'You must login to do that ...'
+
 export const resolvers = {
     'article': articleResolver,
     'author':authorResolver,
