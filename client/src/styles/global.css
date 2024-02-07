@@ -190,6 +190,13 @@ input {
 
 /* PAGINATION:START */
 
+ul.pagination {
+  background: white;
+  border: 1px solid #c1c1c1;
+  margin: auto;
+  border-radius: 0.1rem;
+}
+
 .pagination-item {
   /* padding: 1rem; */
   cursor: pointer;

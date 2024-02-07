@@ -15,6 +15,7 @@ import { getAppStaticSettings } from "@/src/store/static"
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
 import { PaginationComponent } from "../pagination"
 import { stripHtml } from "@/src/helpers/strip"
+import { later } from "@/src/helpers/later"
 
 const ARTICLE_PER_PAGE = 4
 
@@ -98,7 +99,10 @@ export const AuthorDetailModalComponent = ({
         <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }} ref={ modRef }>
             <div className="overlay-full-content rounded-lg shadow article-detail">
                 <StyledContainedBar>
-                    <CloseIconButtonComponent onClose={ onClose } />
+                    <CloseIconButtonComponent onClose={ () => { 
+                        setAct(false) 
+                        later(300).then(onClose)
+                    }}  />
                 </StyledContainedBar>
                 <IconTitleComponent
                     text={ author.author_name }

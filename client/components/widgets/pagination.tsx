@@ -36,7 +36,7 @@ export const PaginationComponent = ({
     }
 
     return <div className={ cnPaginationContainer }>
-        <ul className={ utils.cnJoin(['inline-flex text-sm', appStaticSettings.bg, 'p-3']) } style={{ background: 'white'}}>
+        <ul className={ utils.cnJoin(['inline-flex text-sm', appStaticSettings.bg, 'p-3', 'pagination shadow']) }>
             <li 
                     onClick={ (e) =>  {
                         e.preventDefault()

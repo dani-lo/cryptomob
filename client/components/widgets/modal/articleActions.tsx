@@ -74,7 +74,7 @@ export const ArticleColorizeActionModalComponent = ({ article, onClose }: { arti
 
     return <div className="overlay-filler p-4 bg-white" style={{ overflowY: 'scroll', background: currColor }}>
         <StyledContainedBar>
-            <CloseIconButtonComponent onClose={ onClose } />
+            <CloseIconButtonComponent onClose={ onClose } dark={ true } />
         </StyledContainedBar>
         <h5 className={ cnames.cnSectionTitle +  ' mt-4 mb-4' }>{ article.article_title }</h5>
         <ColorPickerComponent 

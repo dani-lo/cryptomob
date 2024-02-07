@@ -28,6 +28,7 @@ import { getAppStaticSettings } from "@/src/store/static"
 import { Tag } from "@/src/models/tag"
 import { useTagsWithArticlesCount } from "@/src/hooks/useTags"
 import { stripHtml } from "@/src/helpers/strip"
+import { later } from "@/src/helpers/later"
 
 export const ArticleDetailModalComponent = ({ article, userId, onClose }: { 
         article: ArticleAPiData | null, 
@@ -56,7 +57,10 @@ export const ArticleDetailModalComponent = ({ article, userId, onClose }: {
             <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }} ref={ modRef }>
                 <div className="overlay-full-content rounded-lg shadow article-detail">
                     <StyledContainedBar>
-                        <CloseIconButtonComponent onClose={ onClose } />
+                        <CloseIconButtonComponent onClose={ () => { 
+                        setAct(false) 
+                        later(300).then(onClose)
+                    }}  />
                     </StyledContainedBar>
                     <ArticleDetailComponent
                         article={ article }

@@ -1,5 +1,6 @@
 // import { useState } from "react"
 // import Dropdown from 'react-dropdown'
+import { CSSTransition } from 'react-transition-group'
 
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { CloseIconButtonComponent } from "../iconButtons/closeIconButton"
@@ -11,6 +12,8 @@ import { faClone } from "@fortawesome/free-solid-svg-icons"
 import { CategoryApiData } from "@/src/models/category"
 import { getAppStaticSettings } from "@/src/store/static"
 import { stripHtml } from "@/src/helpers/strip"
+import { useEffect, useRef, useState } from "react"
+import { later } from '@/src/helpers/later'
 // import Link from "next/link"
 // import { useUncategoryAuthor, useCategoryAuthor } from "@/src/hooks/useAuthors"
 
@@ -23,7 +26,18 @@ export const CategoryDetailModalComponent = ({
         onClose: () => void; 
         // userId: number;
     }) => {
-    
+        
+    const modRef = useRef(null)
+        
+    const [act, setAct] = useState(false)
+
+    useEffect(() => {
+
+        const to = setTimeout(() => setAct(true), 200)
+
+        return () => clearTimeout(to)
+    }, [])
+
     // const { data: categorysData } = useCategorysWIthItemsCount()
 
     // const [wid, setWid] = useState<string | undefined>(undefined)
@@ -60,36 +74,50 @@ export const CategoryDetailModalComponent = ({
     // }
     const {bg } = getAppStaticSettings()
 
-    return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
-        <div className="overlay-full-content rounded-lg shadow">
-            <StyledContainedBar>
-                <CloseIconButtonComponent onClose={ onClose } />
-            </StyledContainedBar>
-            <IconTitleComponent
-                text={ category?.category_name || ''}
-                icon={ faClone }
-                bgColor={ bg }
-            />
-             <div className="flex  p-6">
-                <div  style={{ overflowY: 'scroll', height: 'calc(100% - 200px)' }}>
-                <h3 className={ cnSectionTitle }>Articles</h3>
-                {
-                    category?.articles?.length ? 
-                          
-                        category.articles.map(a => {
-                            return <div  key={ a.article_id }>
+    return <CSSTransition
+            in={ act }
+            nodeRef={modRef}
+            timeout={200}
+            classNames="widget"
+            unmountOnExit
+            // onEnter={() => setShowButton(false)}
+            // onExited={() => setShowButton(true)}
+        >
+            <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }} ref={ modRef }>
+            <div className="overlay-full-content rounded-lg shadow">
+                <StyledContainedBar>
+                    <CloseIconButtonComponent onClose={ () => { 
+                        setAct(false) 
+                        later(300).then(onClose)
+                    }} 
+                    />
+                </StyledContainedBar>
+                <IconTitleComponent
+                    text={ category?.category_name || ''}
+                    icon={ faClone }
+                    bgColor={ bg }
+                />
+                <div className="flex  p-6">
+                    <div  style={{ overflowY: 'scroll', height: 'calc(100% - 200px)' }}>
+                    <h3 className={ cnSectionTitle }>Articles</h3>
+                    {
+                        category?.articles?.length ? 
                             
-                            <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
-                            <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
-                            </div>
-                        })
-                            
-                        : 
-                        <p className={ cnParagraph }>No articles found</p>
-                }
-                
+                            category.articles.map(a => {
+                                return <div  key={ a.article_id }>
+                                
+                                <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title }</a></h2>
+                                <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
+                                </div>
+                            })
+                                
+                            : 
+                            <p className={ cnParagraph }>No articles found</p>
+                    }
+                    
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </CSSTransition>
 }

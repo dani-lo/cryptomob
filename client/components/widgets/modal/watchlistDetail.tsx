@@ -1,5 +1,6 @@
 // import { useState } from "react"
 // import Dropdown from 'react-dropdown'
+import { CSSTransition } from 'react-transition-group'
 
 import { StyledContainedBar } from "@/src/styles/main.styled"
 import { CloseIconButtonComponent } from "../iconButtons/closeIconButton"
@@ -12,9 +13,10 @@ import { WatchlistApiData } from "@/src/models/watchlist"
 import Link from "next/link"
 import { PaginationComponent } from "../pagination"
 import { PaginationCtrl } from "@/src/utils/paginationCtrl"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { getAppStaticSettings } from "@/src/store/static"
 import { stripHtml } from "@/src/helpers/strip"
+import { later } from '@/src/helpers/later'
 // import { useState } from "react"
 // import { useUnwatchlistAuthor, useWatchlistAuthor } from "@/src/hooks/useAuthors"
 
@@ -32,6 +34,17 @@ export const WatchlistDetailModalComponent = ({
         // userId: number;
     }) => {
     
+    const modRef = useRef(null)
+    
+    const [act, setAct] = useState(false)
+
+    useEffect(() => {
+
+        const to = setTimeout(() => setAct(true), 200)
+
+        return () => clearTimeout(to)
+    }, [])
+
     const [articlesPage, setArticlesPage] = useState(0)
     const [authorsPage, setAuthorsPage] = useState(0)
     const [tagsPage, setTagsPage] = useState(0)
@@ -56,91 +69,104 @@ export const WatchlistDetailModalComponent = ({
         tagsPerPage
     )
 
-    return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
-        <div className="overlay-full-content rounded-lg shadow article-detail">
-            <StyledContainedBar>
-                <CloseIconButtonComponent onClose={ onClose } />
-            </StyledContainedBar>
-            <IconTitleComponent
-                text={ watchlist.watchlist_name }
-                icon={ faBinoculars }
-                bgColor={ bg }
-            />
-            <div className="flex  p-6">
-                <div style={{ height: '100%' }} className="sectioned">
-                    {
-                        watchlist.articles?.length ? 
-                            <div>
-                            <h3 className={ cnSectionTitle }>Watchlist Articles</h3>
-                                {
-                                    watchlist.articles.map((a, i) => {
-                                        return  paginationCtrlArticles.pageItemInRange(i) ? <div  key={ a.article_id }>
-                                                <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title.substring(0, 20) }</a></h2>
-                                                <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
-                                            </div> :
-                                            null
-                                    })
-                                }
-                            { 
-                                (watchlist.articles?.length || 0) > articlesPerPage ?<PaginationComponent
-                                    paginationCtrl={  paginationCtrlArticles }
-                                    onSelectPage={ 
-                                        (nextOffset: number) => setArticlesPage(Math.floor(nextOffset / articlesPerPage))
-                                    }
-                                />: null
-                            }
-                            </div> : null
-                    }
-                    {
-                        watchlist.authors?.length ? 
-                        <div>
-                            <h3 className={ cnSectionTitle }>Watchlist Authors</h3>
+    return <CSSTransition
+            in={ act }
+            nodeRef={modRef}
+            timeout={200}
+            classNames="widget"
+            unmountOnExit
+            // onEnter={() => setShowButton(false)}
+            // onExited={() => setShowButton(true)}
+        >
+        <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }} ref={ modRef }>
+            <div className="overlay-full-content rounded-lg shadow article-detail">
+                <StyledContainedBar>
+                    <CloseIconButtonComponent onClose={ () => { 
+                        setAct(false) 
+                        later(300).then(onClose)
+                    }}  />
+                </StyledContainedBar>
+                <IconTitleComponent
+                    text={ watchlist.watchlist_name }
+                    icon={ faBinoculars }
+                    bgColor={ bg }
+                />
+                <div className="flex  p-6">
+                    <div style={{ height: '100%' }} className="sectioned">
+                        {
+                            watchlist.articles?.length ? 
+                                <div>
+                                <h3 className={ cnSectionTitle }>Watchlist Articles</h3>
                                     {
-                                        watchlist.authors.map((a, i) => {
-                                            return  paginationCtrlAuthors.pageItemInRange(i) ?  <div  key={ a.author_id } className="mr-6">
-                                                <h2 className={ cnSectionSmallTitle }><Link href={ `/authors?authorId=${ a.author_id }` } target="_blank">{ a.author_name.substring(0, 20) }</Link></h2>
-                                                <p>{ a.articles?.length || 0 } articles</p>
-                                            </div> : null
+                                        watchlist.articles.map((a, i) => {
+                                            return  paginationCtrlArticles.pageItemInRange(i) ? <div  key={ a.article_id }>
+                                                    <h2 className={ cnSectionSmallTitle }><a href={ a.article_link} target="_blank">{ a.article_title.substring(0, 20) }</a></h2>
+                                                    <p className={ cnParagraph }>{ stripHtml(a.article_description) }</p>
+                                                </div> :
+                                                null
                                         })
                                     }
                                 { 
-                                    (watchlist.authors?.length || 0) > authorsPerPage ?<PaginationComponent
-                                        paginationCtrl={  paginationCtrlAuthors }
+                                    (watchlist.articles?.length || 0) > articlesPerPage ?<PaginationComponent
+                                        paginationCtrl={  paginationCtrlArticles }
                                         onSelectPage={ 
-                                            (nextOffset: number) => setAuthorsPage(Math.floor(nextOffset / authorsPerPage))
+                                            (nextOffset: number) => setArticlesPage(Math.floor(nextOffset / articlesPerPage))
                                         }
                                     />: null
                                 }
-                                </div>: null
-                    }
-                    {
-                        watchlist.tags?.length ? 
-                        <div>
-                            <h3 className={ cnSectionTitle }>Watchlist Tags</h3>
+                                </div> : null
+                        }
+                        {
+                            watchlist.authors?.length ? 
+                            <div>
+                                <h3 className={ cnSectionTitle }>Watchlist Authors</h3>
                                         {
-                                            watchlist.tags.map((a, i) => {
-                                                return  paginationCtrlTags.pageItemInRange(i) ? <div  key={ a.tag_id }  className="mr-6">
-                                                    <h2 className={ cnSectionSmallTitle }><Link href={ `/tags?tagId=${ a.tag_id }` } target="_blank">{ a.tag_name.substring(0, 20) }</Link></h2>
+                                            watchlist.authors.map((a, i) => {
+                                                return  paginationCtrlAuthors.pageItemInRange(i) ?  <div  key={ a.author_id } className="mr-6">
+                                                    <h2 className={ cnSectionSmallTitle }><Link href={ `/authors?authorId=${ a.author_id }` } target="_blank">{ a.author_name.substring(0, 20) }</Link></h2>
                                                     <p>{ a.articles?.length || 0 } articles</p>
                                                 </div> : null
                                             })
                                         }
-                                { 
-                                        (watchlist.tags?.length || 0) > tagsPerPage ?<PaginationComponent
-                                            paginationCtrl={  paginationCtrlTags }
+                                    { 
+                                        (watchlist.authors?.length || 0) > authorsPerPage ?<PaginationComponent
+                                            paginationCtrl={  paginationCtrlAuthors }
                                             onSelectPage={ 
-                                                (nextOffset: number) => {
-                                                    setTagsPage(Math.floor(nextOffset / tagsPerPage))
-                                                }
+                                                (nextOffset: number) => setAuthorsPage(Math.floor(nextOffset / authorsPerPage))
                                             }
                                         />: null
-                                    
-                                }
-                            </div> : 
-                            null
-                    }
+                                    }
+                                    </div>: null
+                        }
+                        {
+                            watchlist.tags?.length ? 
+                            <div>
+                                <h3 className={ cnSectionTitle }>Watchlist Tags</h3>
+                                            {
+                                                watchlist.tags.map((a, i) => {
+                                                    return  paginationCtrlTags.pageItemInRange(i) ? <div  key={ a.tag_id }  className="mr-6">
+                                                        <h2 className={ cnSectionSmallTitle }><Link href={ `/tags?tagId=${ a.tag_id }` } target="_blank">{ a.tag_name.substring(0, 20) }</Link></h2>
+                                                        <p>{ a.articles?.length || 0 } articles</p>
+                                                    </div> : null
+                                                })
+                                            }
+                                    { 
+                                            (watchlist.tags?.length || 0) > tagsPerPage ?<PaginationComponent
+                                                paginationCtrl={  paginationCtrlTags }
+                                                onSelectPage={ 
+                                                    (nextOffset: number) => {
+                                                        setTagsPage(Math.floor(nextOffset / tagsPerPage))
+                                                    }
+                                                }
+                                            />: null
+                                        
+                                    }
+                                </div> : 
+                                null
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </CSSTransition>
 }
