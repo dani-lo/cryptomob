@@ -160,9 +160,9 @@ export const  ArticlesToolbarComponent = ({
                 // onEnter={() => setShowButton(false)}
                 // onExited={() => setShowButton(true)}
             >
-            <div ref={ filtersRef }>
-             <ArticlesFetchFiltersComponent />
-            </div>
+                <div ref={ filtersRef }>
+                <ArticlesFetchFiltersComponent />
+                </div>
                     
             </CSSTransition>
             {/* </TransitionGroup> */}

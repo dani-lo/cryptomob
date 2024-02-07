@@ -65,12 +65,12 @@ const subPanelStyle = (winW: number, pos: ThreePanelPos) => {
 //     </div>
 // }
 
-export const ThreePanel = ({ children }: any) => {
+export const ThreePanel = ({ children, simModeW }: any) => {
  
     // const appStaticSettings = getAppStaticSettings()
 
     const elemRef = useRef<HTMLDivElement>(null)
-    const [w, setW] = useState(0)
+    const [w, setW] = useState(simModeW ? simModeW : 0)
 
     // const size = useWindowSize()
 
@@ -90,7 +90,9 @@ export const ThreePanel = ({ children }: any) => {
     useLayoutEffect(() => {
 
         function updateSize() {
-          setW(window.innerWidth);
+            if (!simModeW) {
+                setW(window.innerWidth);
+            }
         }
 
         window.addEventListener('resize', updateSize)

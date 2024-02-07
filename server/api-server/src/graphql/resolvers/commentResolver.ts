@@ -7,7 +7,9 @@ import { text } from 'stream/consumers';
 export default {
     
     Query: {
-        paginatedComments(_parent: any, args: { params: { limit: number, offset: number, sortBy: string, sortDirection: string, fromDate: string, toDate: string } }) {
+        paginatedComments(_parent: any, args: { 
+            params: { limit: number, offset: number, sortBy: string, sortDirection: string, fromDate: string, toDate: string } 
+        }) {
             
             return []
         },
@@ -24,6 +26,8 @@ export default {
     Mutation: {
         
         async createComment(_: any, args: { input : { comment_text: string; article_id: number; user_id: number; } }) {
+
+            
 
             const {
                 comment_text,

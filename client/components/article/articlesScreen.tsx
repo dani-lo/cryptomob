@@ -124,16 +124,16 @@ export const ArticlesScreenComponent = () => {
   const allTags = data.paginatedArticles.articles.reduce((acc: TagApiData[], curr) => {
 
     const c = acc.concat(curr.tags)
-
     return c
   }, [])
 
   const activeArticle = data.paginatedArticles.articles.find(a => a.article_id === selectedArticle)
   const activeTag = allTags.find(a => a.tag_id === selectedArticleTag)
 
-  console.log('-------------------- TAGS --- selectedArticleTag is ', selectedArticleTag)
-  console.log(allTags)
-  console.log(activeTag)
+  // console.log('-------------------- TAGS --- selectedArticleTag is ', selectedArticleTag)
+  // console.log(allTags)
+  // console.log(activeTag)
+
   return <ThreePanel> 
       <HeaderComponent />
       <div className="qrated-ctn"> 
@@ -200,5 +200,6 @@ export const ArticlesScreenComponent = () => {
             null 
     }
   </ThreePanel>
+
 }
 

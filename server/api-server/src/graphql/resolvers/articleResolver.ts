@@ -11,8 +11,7 @@ export default {
     Query: {
         async paginatedArticles(_parent: any, args: { params: PaginationQueryParams }, ctx: any) {
             
-            console.log('======================================= pag arties --- CTX')
-            console.log(ctx.user)
+            
 
             const filters = {
                 appId: args.params.appId,
@@ -70,7 +69,10 @@ export default {
             return createdRows?.rows?.length ? createdRows.rows[0] : null
         },
 
-        async bookmarkArticlez(_parent: any, args: { input: { item_id: number, val: boolean }}) {
+        async bookmarkArticlez(_parent: any, args: { input: { item_id: number, val: boolean }}, contextValue: any) {
+
+            console.log('============== contextValue')
+            console.log(contextValue)
 
             const val = typeof args.input.val == 'undefined' ? true : args.input.val 
             const articleRows = await dataSources.articleService.pgAddBookmarkArticle(args.input.item_id, val)

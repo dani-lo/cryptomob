@@ -22,7 +22,7 @@ export const LoginButtonComponent = () => {
 
         <FontAwesomeIcon
             icon={ faBars }
-            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'mt-4 mr-2'])}
+            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon moby', 'mt-4 mr-2'])}
             onClick={ () => {
                 setUserUi(v => !v) 
                 setPanel('left')
@@ -31,7 +31,7 @@ export const LoginButtonComponent = () => {
 
         <FontAwesomeIcon
             icon={ faUser }
-            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon', 'mt-4 ml-2'])}
+            className={ utils.cnJoin([cnBigIcon(staticAppSettings.txt), 'clickable-icon login-icon', 'mt-4 ml-2'])}
             onClick={ () => {
                 setUserUi(v => !v) 
                 setPanel('user')

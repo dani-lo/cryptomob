@@ -46,8 +46,9 @@ export const AccountComponent = ({ onClose }: { onClose: () => void}) => {
 
     const isValidUser = !!userwithtok.user_id && !!userwithtok.user_email && !!userwithtok.token
 
-    return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
-        <div className="overlay-small-content rounded-lg shadow">
+    return <div className="overlay-full p-4 bg-white" >
+        <div className="overlay-small-content rounded-lg shadow article-detail">
+            
             <StyledContainedBar>
                 <CloseIconButtonComponent onClose={ onClose } />
             </StyledContainedBar>

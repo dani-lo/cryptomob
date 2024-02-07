@@ -19,10 +19,38 @@
     padding: 0 0 0 1rem;
 }
 
+.navbar .clickable-icon {
+    display: none;
+   }
+
+.login-icon {
+    color: white;
+}
+
 @media only screen and (max-width: 768px) {
     .moby {
         display: block;
    }
+
+   .login-icon {
+        color: inherit;
+   }
+
+   .navbar .clickable-icon {
+    display: block;
+   }
+
+   .navbar nav ul {
+        margin-top: 1rem;
+   }
+
+   .navbar nav ul  li {
+    padding: 0.75rem 0;
+   }
+
+   /* h1 {
+    margin-top: 0;
+   } */
 
    .qrated-ctn {
         margin: 0;
@@ -95,6 +123,10 @@
     }
     .article-detail-content > div:first-child {
         padding:0;
+    }
+
+    .toast p {
+        width: 100%;
     }
 }
 

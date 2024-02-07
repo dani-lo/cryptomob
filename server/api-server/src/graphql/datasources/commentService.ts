@@ -36,6 +36,7 @@ export class CommentService extends DataSource {
 
     async pgCreateComment(text: string, articleId: number, userId: number) {
 
+        console.log('===============')
         const pgPool = getPool()
         const pgclient = await pgPool.connect()
 

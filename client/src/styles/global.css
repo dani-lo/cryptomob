@@ -128,8 +128,13 @@ button:hover {
   background: white;
   margin: auto;
   position: relative;
-  padding: 2rem;
+  padding: 0;
   max-width: 1000px;
+}
+
+.overlay-small-content > div.user-account-data {
+  
+  padding: 1rem;
 }
 
 
@@ -444,4 +449,8 @@ input:focus, input:focus-visible, input:focus-within {
 
 .sectioned h3:first-child {
   margin-top: auto;
+}
+
+.create-articles {
+  padding-top: 2rem;
 }

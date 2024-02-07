@@ -2,9 +2,10 @@
 eslint complexity: ["error", 30]
 */
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Dropdown from 'react-dropdown'
- 
+import { CSSTransition } from 'react-transition-group'
+
 import { useCategoriesWithArticlesCount } from "@/src/hooks/useCategories"
 import { useCategoriseArticle, useTagArticle, useUnwatchlistArticle, useWatchlistArticle } from "@/src/hooks/useArticles"
 
@@ -33,18 +34,38 @@ export const ArticleDetailModalComponent = ({ article, userId, onClose }: {
         userId: number, 
         onClose: () => void }) => {
 
-    return <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }}>
-        <div className="overlay-full-content rounded-lg shadow article-detail">
-            <StyledContainedBar>
-                <CloseIconButtonComponent onClose={ onClose } />
-            </StyledContainedBar>
-            <ArticleDetailComponent
-                article={ article }
-                userId={ userId}
-            />
-        </div>
-        
-    </div>
+    const modRef = useRef(null)
+    const [act, setAct] = useState(false)
+
+    useEffect(() => {
+
+        const to = setTimeout(() => setAct(true), 200)
+
+        return () => clearTimeout(to)
+    }, [])
+    
+    return <CSSTransition
+            in={ act }
+            nodeRef={modRef}
+            timeout={200}
+            classNames="widget"
+            unmountOnExit
+            // onEnter={() => setShowButton(false)}
+            // onExited={() => setShowButton(true)}
+        >
+            <div className="overlay-full p-4 bg-white" style={{ overflowY: 'scroll' }} ref={ modRef }>
+                <div className="overlay-full-content rounded-lg shadow article-detail">
+                    <StyledContainedBar>
+                        <CloseIconButtonComponent onClose={ onClose } />
+                    </StyledContainedBar>
+                    <ArticleDetailComponent
+                        article={ article }
+                        userId={ userId}
+                    />
+                </div>
+                
+            </div>
+        </CSSTransition>
 }
 
 export const ArticleDetailComponent = ({ article, userId }: { article: ArticleAPiData | null, userId: number }) => {

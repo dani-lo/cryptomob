@@ -79,26 +79,24 @@ export const CreateArticleComponent = ({ authorsData }: { authorsData:  (AuthorA
         }
     })
    
-    return <div className={ cnames.utils.cnJoin([cnames.cnCardSectionContainer, 'create-article']) }>
-        <div>
-            <h2>Author</h2>
-            <div className={ cnames.cnDropdownContainer} style={{ width: '200px;' }}>
+    return <div className={ cnames.utils.cnJoin([ 'create-articles']) }>
+        <div style={{ width: '425px'}}>
+            <h2 style={{ marginTop: 0 }}>Author</h2>
                 <Select 
                     options={options}
                     onChange={ (newVal) => setArticleData({ ...articleData, authorId: newVal?.value || 0 })}
                     value={ options.find(opt =>  Number(opt.value) === Number(articleData.authorId))  || null }
                 />
-            </div>
             <CreateAuthorComponent 
                 onAddedAuthor={ (authorId: number) => {
                     setArticleData({ ...articleData, authorId: authorId }) 
                 }}
             />
         </div>
-        <h2>Article Detail</h2>
-        <div className="flex" style={{ alignItems: 'flex-end', flexWrap: 'wrap' }}>
+        <h2 className="pt-4">Article Detail</h2>
+        <div className="" style={{ alignItems: 'flex-end', flexWrap: 'wrap' }}>
             
-            <div style={{ display: 'inline-block', padding: '0 0.5rem 0.5rem 0' }}>
+            <div style={{ padding: '0 0.5rem 0.5rem 0' }}>
                 <label className={ cnames.cnPostscriptum }>Title</label>
                 <input
                     name="postContent"
@@ -107,7 +105,7 @@ export const CreateArticleComponent = ({ authorsData }: { authorsData:  (AuthorA
                     onChange={(e) =>  setArticleData({ ...articleData, title: e.target.value }) }
                 />
             </div>
-            <div style={{ display: 'inline-block', padding: '0 0.5rem 0.5rem 0' }}>
+            <div style={{ padding: '0 0.5rem 0.5rem 0' }}>
                 <label className={ cnames.cnPostscriptum }>Description</label>
                 <input
                     name="postContent"
@@ -116,7 +114,7 @@ export const CreateArticleComponent = ({ authorsData }: { authorsData:  (AuthorA
                     onChange={(e) =>  setArticleData({ ...articleData, description: e.target.value }) }
                 />
             </div>
-            <div style={{ display: 'inline-block', padding: '0 0.5rem 0.5rem 0' }}>
+            <div style={{ padding: '0 0.5rem 0.5rem 0' }}>
                 <label className={ cnames.cnPostscriptum }>Link</label>
                 <input
                     name="postContent"

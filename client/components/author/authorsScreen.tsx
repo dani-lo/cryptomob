@@ -34,6 +34,7 @@ import { SortDirection } from '@/src/helpers/sort'
 import { AuthorSortby, READ_PAGINATED_AUTHORS } from '@/src/queries/authorQueries'
 import { HeaderComponent } from '../header';
 import { ThreePanel } from '../widgets/threePanel';
+import { currPanelAtom } from '@/src/store/uiAtoms';
 
 export interface AuthorsApiDataResult {
   recordsCount: number;
@@ -45,16 +46,16 @@ type  AuthorApiDataWithArticlesCount = AuthorApiData  & { articles_count: number
 
 export const AuthorsScreenComponent = () => {
 
-  const { data: udata } = useUsers()
-
   const ctx = useContext(ApiParamsContext)
 
+  const { data: udata } = useUsers()
+
   const [user, setUser] = useAtom(currUserAtom)
+  const [, setPanel] = useAtom(currPanelAtom)
+  const [fetchParams] = useAtom(ctx.queryParams.tags)
 
   const searchParams = useSearchParams()
   const router = useRouter()
-
-  const [fetchParams] = useAtom(ctx.queryParams.tags)
 
   const authorId = searchParams.get('authorId')
 
@@ -115,6 +116,7 @@ export const AuthorsScreenComponent = () => {
             userId={ 1 }
             author={ reqAuthor } 
             onClose={ () => {
+                setPanel('mid')
                 router.replace('/authors')
             }} 
         /> 

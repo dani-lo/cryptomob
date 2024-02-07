@@ -17,10 +17,10 @@ export const authenticateToken = (req: RequestWithUser, res: Response, next: Nex
     
     const token = authHeader && authHeader.split(' ')[1]
     
-
     if (!token) {
         return next()
     }
+
     jwt.verify(token, TOKEN_SECRET, (err: any, user: any) => {
 
         req.user = user
@@ -58,7 +58,7 @@ export const appUseLogin = (app: Application) => {
         async (req, res) => {
 
             try {
-                // const 
+
                 const user = await dataSources.userService.pgGetUserByEmail(req.body.email)
 
                 if (user?.rows?.length) {
