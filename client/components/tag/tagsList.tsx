@@ -76,7 +76,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
 
     return <div className="items-list">
             <div className="flex items-center justify-between items-list-util">
-                <div style={{ flex: 1 }} className='pb-4'>
+                <div style={{ flex: 1 }}    >
                     <InlineSearchComponent 
                         currTerm={ searchterm }
                         onSearch={ onSearchCb } 

@@ -34,7 +34,7 @@ export default function RootLayout({
             <LoginButtonComponent />
             <TailwindHiddenLoaderComponent />
             <ToastComponent />
-            <Providers>
+            <Providers> pu;;
                 <ApiParamsContextProvider>
                     {children}
                 </ApiParamsContextProvider>

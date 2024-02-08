@@ -49,7 +49,6 @@ export const HeaderComponent = ()  => {
         </StyledContainedBar>
         
         <h1 className={ appStaticSettings.txtEvidence }>
-            
             { appStaticSettings.appName }
         </h1>
 
@@ -63,7 +62,11 @@ export const HeaderComponent = ()  => {
                     
                     <p className={ utils.cnJoin([cnParagraph, appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear]) }>
                         <FontAwesomeIcon icon={faLaptopCode} />
-                        <a  className={ appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear }>yogabhavana</a>
+                        <a  
+                            className={ appId === 1 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear }
+                            href="https://yogabhavana.qrated-review.net/articles"
+                            target="_blank"    
+                        >yogabhavana</a>
                     </p>
                     <p className={ cnParagraph }>Q-Rated list of articles on yoga practice and philosophy (including Buddhist and Kashmiri Shaiva resources)</p>
                 </li>
@@ -73,7 +76,11 @@ export const HeaderComponent = ()  => {
                     ]) } >
                     <p className={ utils.cnJoin([cnParagraph, appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear]) }>
                         <FontAwesomeIcon className={ appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear } icon={faLaptopCode} />
-                        <a  className={ appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear }>fullstacked</a>
+                        <a  
+                            className={ appId === 2 ? appStaticSettings.txtEvidence : appStaticSettings.txtClear }
+                            href="https://fullstacked.qrated-review.net/articles"   
+                            target="_blank"     
+                        >fullstacked</a>
                     </p>
                     <p className={ cnParagraph }>Q-Rated list of articles on programming and computer science</p>
                 </li>
