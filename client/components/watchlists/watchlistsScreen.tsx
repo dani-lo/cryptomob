@@ -20,6 +20,7 @@ import { useUsers } from '@/src/hooks/useUsers'
 import { HeaderComponent } from '../header';
 import { ThreePanel } from '../widgets/threePanel';
 import { currPanelAtom } from '@/src/store/uiAtoms';
+import { WatchlistsIntroComponent } from './watchlistsIntro';
  
 export const WatchlistsScreenComponent = () => {
 
@@ -64,6 +65,7 @@ export const WatchlistsScreenComponent = () => {
     return <ThreePanel>
         <HeaderComponent />
         <div className="qrated-ctn"> 
+            <WatchlistsIntroComponent />
             <WatchlistsListComponent watchlists={ data.watchlists } />
         </div>
         {

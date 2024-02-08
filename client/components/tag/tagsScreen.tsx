@@ -37,6 +37,7 @@ import { SortDirection } from '@/src/helpers/sort'
 import { HeaderComponent } from '../header'
 import { ThreePanel } from '../widgets/threePanel'
 import { currPanelAtom } from '@/src/store/uiAtoms'
+import { TagsIntroComponent } from './tagsIntro'
 
 export interface TagApiDataResult {
     recordsCount: number;
@@ -139,6 +140,7 @@ export const TagsScreenComponent = () => {
     return <ThreePanel>
         <HeaderComponent />
         <div className="qrated-ctn"> 
+            <TagsIntroComponent />
             <TagsListComponent
                 paginatedTags={ data.paginatedTags} 
             />

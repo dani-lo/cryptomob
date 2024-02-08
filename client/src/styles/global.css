@@ -192,7 +192,7 @@ input {
 
 ul.pagination {
   background: white;
-  border: 1px solid #c1c1c1;
+  border: 1px solid #f1f1f1;
   margin: auto;
   border-radius: 0.1rem;
 }
@@ -208,7 +208,7 @@ ul.pagination {
 }
 .page-link {
   
-  width: 38px;
+  width: 30px;
   border-radius: 0.2rem;;
   text-align: center;
   text-decoration: underline;
@@ -384,10 +384,18 @@ input:focus, input:focus-visible, input:focus-within {
 
 /* LOADING */
 
+.app-loading {
+  margin-left: 250px;
+}
+
 .app-loading #toolbar > div  {
   opacity: 0.5;
 }
 
+
+.app-loading .sect-intro {
+  padding: 0 1rem 1rem;
+}
 
 .loading-card-container {
   position: relative;
@@ -416,8 +424,8 @@ input:focus, input:focus-visible, input:focus-within {
 
 .app-loading table  {
     opacity: 0.5;
-    margin-top: 4rem;
-    margin-left: 250px;
+    margin-top: 0;
+    
     padding: 1rem;
 }
 

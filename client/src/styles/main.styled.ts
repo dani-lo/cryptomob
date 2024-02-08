@@ -27,8 +27,8 @@ export const StyledCard = styled.div<{ w?: string, h?: string, minw?: string}>`
     ${ props => props.w ? 'width: ' + props.w + ';': '' }
     ${ props => props.minw ? 'min-width: ' + props.minw + ';': '' }
 
-    @media only screen and (max-width: 768px) {
-        min-width: 0;
+    @media only screen and (max-width: 1200px) {
+        min-width: 100%;
     }
 `
 

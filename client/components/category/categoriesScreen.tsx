@@ -25,6 +25,7 @@ import { getAppStaticSettings } from '@/src/store/static';
 import { HeaderComponent } from '../header';
 import { ThreePanel } from '../widgets/threePanel';
 import { currPanelAtom } from '@/src/store/uiAtoms';
+import { CategoriesIntroComponent } from './categoriesIntro';
 
 export const CategoriesScreenComponent = () => {
 
@@ -74,6 +75,7 @@ export const CategoriesScreenComponent = () => {
     return <ThreePanel> 
       <HeaderComponent />
       <div className="qrated-ctn"> 
+        <CategoriesIntroComponent />
         <CategoriesListComponent categories={ data.categories } />
       </div>
       {/* {

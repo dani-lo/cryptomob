@@ -1,4 +1,8 @@
+import { AuthorsIntroComponent } from '@/components/author/authorsIntro'
+import { CategoriesIntroComponent } from '@/components/category/categoriesIntro'
 import { HeaderComponent } from '@/components/header'
+import { TagsIntroComponent } from '@/components/tag/tagsIntro'
+import { WatchlistsIntroComponent } from '@/components/watchlists/watchlistsIntro'
 import { AppStaticSettings } from '@/src/store/static'
 import { cnBold, cnCardContainer, cnCardTitle, cnItemCard, cnPage, cnParagraph, cnSectionSmallTitle, cnTable, cnTag, utils } from '@/src/styles/classnames.tailwind'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -98,11 +102,23 @@ export const GhostArticlesLoadingComponent = ({staticAppSettings}: { staticAppSe
   </div>
 }
 
-export const GhostTableLoadingComponent = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
+export const GhostTableLoadingComponent = ({staticAppSettings, section}: { staticAppSettings : AppStaticSettings, section ?: string }) => {
 
   const cnTableFull = cnTable(staticAppSettings.bg)
 
   return <div className="app-loading pt-4">
+    {
+        section === 'tags' ? <TagsIntroComponent /> : null
+    }
+    {
+        section === 'authors' ? <AuthorsIntroComponent /> : null
+    }
+    {
+        section === 'categories' ? <CategoriesIntroComponent /> : null
+    }
+    {
+        section === 'watchlists' ? <WatchlistsIntroComponent /> : null
+    }
     <table className={ cnTableFull.table }>
       <thead className={ cnTableFull.thead }>
           <tr className={ cnTableFull.tr }>
@@ -154,9 +170,10 @@ export const GhostArticlesLoader = ({staticAppSettings}: { staticAppSettings : A
   </div>
 }
 
-export const GhostTabularLoader = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
+export const GhostTabularLoader = ({staticAppSettings, section}: { staticAppSettings : AppStaticSettings, section ?: string }) => {
   return <div className={ utils.cnJoin([cnPage, 'content', 'suspense-content']) }>
       <HeaderComponent />
-      <GhostTableLoadingComponent staticAppSettings={ staticAppSettings } />
+      
+      <GhostTableLoadingComponent staticAppSettings={ staticAppSettings } section={ section } />
   </div>
 }

@@ -13,7 +13,7 @@ const WatchlistsPage = () => {
   return <div  className={ utils.cnJoin([cnPage, 'content']) }> 
     <Suspense
         fallback={
-          <GhostTabularLoader staticAppSettings={ appStaticSettings } />
+          <GhostTabularLoader staticAppSettings={ appStaticSettings } section="watchlists" />
         }
       >
         <WatchlistsScreenComponent  />

@@ -15,7 +15,7 @@ const AuthorsPage = () => {
     <div>
     <Suspense
         fallback={
-          <GhostTabularLoader staticAppSettings={ appStaticSettings } />
+          <GhostTabularLoader staticAppSettings={ appStaticSettings } section="authors" />
         }
       >
         <AuthorsScreenComponent  />

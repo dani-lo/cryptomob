@@ -35,6 +35,7 @@ import { AuthorSortby, READ_PAGINATED_AUTHORS } from '@/src/queries/authorQuerie
 import { HeaderComponent } from '../header';
 import { ThreePanel } from '../widgets/threePanel';
 import { currPanelAtom } from '@/src/store/uiAtoms';
+import { AuthorsIntroComponent } from './authorsIntro';
 
 export interface AuthorsApiDataResult {
   recordsCount: number;
@@ -108,6 +109,7 @@ export const AuthorsScreenComponent = () => {
   return <ThreePanel> 
     <HeaderComponent />
     <div className="qrated-ctn"> 
+      <AuthorsIntroComponent />
       <AuthorsListComponent paginatedAuthors={ data.paginatedAuthors } />
     </div>
     {

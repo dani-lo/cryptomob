@@ -6,7 +6,7 @@ export class PaginationCtrl {
     public totalPages: number
     public itemsPerPage: number
     public offset: number
-    public maxPagesInWidget = 7
+    public maxPagesInWidget = 6
 
     // static
 
