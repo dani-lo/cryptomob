@@ -12,9 +12,9 @@ export const InlineSearchComponent = ({ onSearch, currTerm } : { onSearch: (term
     useEffect(() => {
         
         const delayInputTimeoutId =  setTimeout(() => {
-            if (searchval !== '') {
+            // if (searchval !== '') {
                 onSearch(searchval);
-            }
+            // }
         }, 500)
         
         return () => {

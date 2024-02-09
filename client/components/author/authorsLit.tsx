@@ -16,8 +16,9 @@ import { AuthorsApiDataResult } from './authorsScreen';
 import { ApiParamsContext } from '@/context/apiParams.context';
 import { PaginationComponent } from '../widgets/pagination';
 import { IconTitleComponent } from '../widgets/iconed';
-import { faPerson } from '@fortawesome/free-solid-svg-icons';
+import { faPerson, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { currPanelAtom } from '@/src/store/uiAtoms';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
  
 export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: AuthorsApiDataResult}) => {
 
@@ -84,16 +85,16 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
                             onSortBy('author_name')
                     }}>
                         <div className={ cnTableFull.thContent}>
-                            Author name
-                                { sortby[0] === 'author_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                            <span>Author name</span>
+                                { sortby[0] === 'author_name' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } /> }
                          </div>
                     </th>
                     <th scope="col" className={ cnTableFull.th }onClick={ () => {
                             onSortBy('articles_count')
                     }}>
                         <div className={ cnTableFull.thContent}>
-                                Articles count
-                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                            <span>Articles count</span>
+                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } /> }
                         </div>
                     </th>
                     <th scope="col" className={ cnTableFull.th }>
@@ -130,7 +131,12 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
                             <Link 
                                 href={ `/authors?authorId=${ t.author_id }` }
                                 onClick={ () => setPanel('right')}
-                            >view</Link>
+                            >
+                                <FontAwesomeIcon
+                                    // className={ cname }
+                                    icon={ faPlus }
+                                />
+                            </Link>
                         </td>
                     </tr>
                 })

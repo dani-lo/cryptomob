@@ -103,8 +103,8 @@ export const cnTable  = (bg: string) =>  {
     const cns = {
         table: 'as-table w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-6',
         thead: 'as-thead text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400',
-        th: 'as-th px-4 py-3   text-white text-sm underline font-lld ' + bg,
-        thContent: 'flex items-center justify-between cursor-pointer',
+        th: 'as-th px-4 py-3   text-white text-sm font-lld ' + bg,
+        thContent: 'flex items-center justify-between',
         td: 'as-td text-sm px-4 py-3 bg-gray-50 text-gray-900' ,
         tr: 'as-tr',
         tdAction: 'as-td text-sm px-4 py-3 bg-gray-50 text-gray-900 text-center' ,

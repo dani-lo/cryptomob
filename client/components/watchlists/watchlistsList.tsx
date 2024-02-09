@@ -17,7 +17,8 @@ import { getAppStaticSettings } from '@/src/store/static';
 import { useAtom } from 'jotai';
 import { currPanelAtom } from '@/src/store/uiAtoms';
 import { IconTitleComponent } from '../widgets/iconed';
-import { faBinoculars } from '@fortawesome/free-solid-svg-icons';
+import { faBinoculars, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
  
 type WatchlistProp = WatchlistApiData & ResourceItemsCount
 
@@ -80,7 +81,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Watchlist name
-                                { sortby[0] === 'watchlist_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'watchlist_name' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                             </div>
                             
                         </th>
@@ -89,7 +90,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Articles count
-                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                             </div>
                         </th>
                         <th scope="col" className={ cnTableFull.th } onClick={ () => {
@@ -97,7 +98,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Tags Count
-                                { sortby[0] === 'tags_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'tags_count' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                             </div>
                         </th>
                         
@@ -106,7 +107,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Authors count
-                                { sortby[0] === 'authors_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'authors_count' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                             </div>
                         </th>
                         <th scope="col" className={ cnTableFull.th }>
@@ -170,7 +171,12 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                                 <Link 
                                     href={ `/watchlists?watchlistId=${ w.watchlist_id }` }
                                     onClick={ () => setPanel('right')}
-                                >view</Link>
+                                >
+                                    <FontAwesomeIcon
+                                        // className={ cname }
+                                        icon={ faPlus }
+                                    />
+                                </Link>
                             </td>
                         </tr>
                     })

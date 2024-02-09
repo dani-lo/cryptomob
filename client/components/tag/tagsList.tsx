@@ -25,8 +25,9 @@ import { ResourceItemsCount } from '@/src/queries'
 import { cnBold, cnTable, utils } from '@/src/styles/classnames.tailwind'
 import { PaginationComponent } from '../widgets/pagination';
 import { IconTitleComponent } from '../widgets/iconed';
-import { faTags } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTags } from '@fortawesome/free-solid-svg-icons'
 import { currPanelAtom } from '@/src/store/uiAtoms';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiDataResult}) => {
 
@@ -94,7 +95,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Tag name
-                                { sortby[0] === 'tag_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'tag_name' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                             </div>
                         </th>
                         
@@ -111,7 +112,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                         }}>
                             <div className={ cnTableFull.thContent}>
                                 Count in Articles
-                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                             </div>
                         </th>
                         <th scope="col" className={ cnTableFull.th }>
@@ -160,7 +161,12 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                             <Link 
                                 href={ `/tags?tagId=${ t.tag_id }` }
                                 onClick={ () => setPanel('right')}
-                            >view</Link>
+                            >
+                                <FontAwesomeIcon
+                                        // className={ cname }
+                                        icon={ faPlus }
+                                    />
+                            </Link>
                         </span>
                     </td>
                 </tr>

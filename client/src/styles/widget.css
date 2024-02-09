@@ -55,3 +55,27 @@
 #toolbar {
     padding: 1rem 1rem 0 0;
 }
+
+/* TABLES */
+
+.as-th  {
+    cursor: pointer;
+}
+
+.as-th:first-child {
+    width: 400px;
+}
+
+.as-th div span {
+    /* text-decorati */
+    text-decoration: underline;
+}
+
+.as-th:hover {
+    opacity: 0.5;
+    text-decoration: underline;
+}
+
+.as-td:last-child {
+    width: 100px;
+}

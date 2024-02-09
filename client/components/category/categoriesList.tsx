@@ -10,9 +10,10 @@ import { SortIconComponent } from '../widgets/sortIcon';
 import Link from 'next/link';
 import { getAppStaticSettings } from '@/src/store/static';
 import { IconTitleComponent } from '../widgets/iconed';
-import { faClone } from '@fortawesome/free-solid-svg-icons';
+import { faClone, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useAtom } from 'jotai';
 import { currPanelAtom } from '@/src/store/uiAtoms';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
  
 type CategoryProps = CategoryApiData & ResourceItemsCount
 
@@ -63,7 +64,7 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                     }}>
                         <div className={ cnTableFull.thContent}>
                             Category name
-                                { sortby[0] === 'category_name' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'category_name' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                          </div>
                     </th>
                     <th scope="col" className={ cnTableFull.th }onClick={ () => {
@@ -71,7 +72,7 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                     }}>
                         <div className={ cnTableFull.thContent}>
                                 Count in Articles
-                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : null }
+                                { sortby[0] === 'articles_count' ? <SortIconComponent sortDir={ sortby[1] } /> : <SortIconComponent sortDir={ null } />  }
                         </div>
                     </th>
                     <th scope="col" className={ cnTableFull.th }>
@@ -110,10 +111,17 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                             </span>
                         </td>
                         <td className={ cnTableFull.tdAction }>
-                            <span><Link 
-                                href={ `/categories?categoryId=${ t.category_id }` }
-                                onClick={ () => setPanel('right')}
-                            >view</Link></span>
+                            <span>
+                                <Link 
+                                    href={ `/categories?categoryId=${ t.category_id }` }
+                                    onClick={ () => setPanel('right')}
+                                >
+                                    <FontAwesomeIcon
+                                        // className={ cname }
+                                        icon={ faPlus }
+                                    />
+                                </Link>
+                            </span>
                         </td>
                     </tr>
                 })

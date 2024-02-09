@@ -8,11 +8,12 @@ import { SortDirection } from "@/src/helpers/sort";
 
 export const SortIconComponent = ({ sortDir }: { sortDir: SortDirection | null}) => {
 
-    if (sortDir === null) {
-        return null
-    } 
+    const cname = sortDir === null ? 'disabled' : ''
+    const icon = sortDir === null ? faCaretDown : sortDir === SortDirection.desc ? faCaretDown : faCaretUp
+        
 
     return <FontAwesomeIcon
-        icon={ sortDir === SortDirection.desc ? faCaretDown : faCaretUp }
+        className={ cname }
+        icon={ icon }
     />
 }
