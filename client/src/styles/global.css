@@ -469,3 +469,23 @@ input:focus, input:focus-visible, input:focus-within {
 .create-articles {
   padding-top: 2rem;
 }
+
+.prod-flag {
+  display: none;
+}
+
+.loading-gen-container {
+  padding: 1rem;
+  width: 500px;
+}
+
+.loading-gen-container h5 {
+  background: #e9e9e9;
+  padding: 1.2rem;
+  margin: 2rem 0;
+}
+
+.loading-gen-container p {
+  background: #f4f4f4;
+  padding: 1rem;
+}

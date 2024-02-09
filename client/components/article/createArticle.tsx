@@ -7,6 +7,7 @@ import { useAddArticle } from "@/src/hooks/useArticles"
 import { CreateAuthorComponent } from "../author/createAuthor";
 import { AuthorApiData } from "@/src/models/author";
 import { getAppStaticSettings } from "@/src/store/static";
+import { PROD_CNAME_FLAG } from "@/src/config";
 
 interface ArticleInput {
     title: string; 
@@ -79,7 +80,7 @@ export const CreateArticleComponent = ({ authorsData }: { authorsData:  (AuthorA
         }
     })
    
-    return <div className={ cnames.utils.cnJoin([ 'create-articles']) }>
+    return <div className={ cnames.utils.cnJoin([ 'create-articles', PROD_CNAME_FLAG]) }>
         <div style={{ width: '425px'}}>
             <h2 style={{ marginTop: 0 }}>Author</h2>
                 <Select 

@@ -1,5 +1,6 @@
 import { AuthorsIntroComponent } from '@/components/author/authorsIntro'
 import { CategoriesIntroComponent } from '@/components/category/categoriesIntro'
+import { EtlIntroComponent } from '@/components/etl/etlIntro'
 import { HeaderComponent } from '@/components/header'
 import { TagsIntroComponent } from '@/components/tag/tagsIntro'
 import { WatchlistsIntroComponent } from '@/components/watchlists/watchlistsIntro'
@@ -102,6 +103,37 @@ export const GhostArticlesLoadingComponent = ({staticAppSettings}: { staticAppSe
   </div>
 }
 
+export const GenTextualLoadingComponent = ({section}: { section ?: string }) => {
+
+  // const numArticles = 12
+
+  return <div className="app-loading">
+    {
+        section === 'etl' ? <EtlIntroComponent /> : null
+    }
+
+    <div className="loading-gen-container">
+
+      <h5 className={ cnCardTitle }>
+              ...
+      </h5> 
+      <p  className={ cnParagraph }>
+      ...
+      </p>
+      <p className={ cnParagraph }>..</p>
+      <p className={ cnParagraph }>
+          <span className={ cnBold }>...</span>. 
+          <span className={ cnBold }>...</span>
+      </p>
+      <h5 className={ cnCardTitle }>
+              ...
+      </h5> 
+      <p className={ cnParagraph }>..</p>
+      <p className={ cnParagraph }>..</p>
+    </div>
+  </div>
+}
+
 export const GhostTableLoadingComponent = ({staticAppSettings, section}: { staticAppSettings : AppStaticSettings, section ?: string }) => {
 
   const cnTableFull = cnTable(staticAppSettings.bg)
@@ -175,5 +207,13 @@ export const GhostTabularLoader = ({staticAppSettings, section}: { staticAppSett
       <HeaderComponent />
       
       <GhostTableLoadingComponent staticAppSettings={ staticAppSettings } section={ section } />
+  </div>
+}
+
+export const GhostGenTextualLoader = ({section}: { section ?: string }) => {
+  return <div className={ utils.cnJoin([cnPage, 'content', 'suspense-content']) }>
+      <HeaderComponent />
+      
+      <GenTextualLoadingComponent section={ section } />
   </div>
 }

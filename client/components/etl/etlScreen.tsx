@@ -2,7 +2,6 @@
 import {  useEffect, useState } from 'react'
 
 import { ErrorComponent } from '@/components/widgets/status/error'
-import { EmptyComponent } from '@/components/widgets/status/empty'
 
 import { cnBold, cnButton, cnPostscriptum, cnSectionSmallTitle, cnTextualList, utils } from '@/src/styles/classnames.tailwind' 
 import { getAppStaticSettings } from '@/src/store/static'
@@ -22,6 +21,7 @@ import { CreateArticleComponent } from '@/components/article/createArticle'
 import { useAuthorsWithArticlesCount } from '@/src/hooks/useAuthors'
 import { ThreePanel } from '@/components/widgets/threePanel'
 import { HeaderComponent } from '@/components/header'
+import { EtlIntroComponent } from './etlIntro'
 // import { ThreePanel } from '@/components/widgets/threePanel'
 
 export const EtlScreenComponent = () => {
@@ -46,7 +46,7 @@ export const EtlScreenComponent = () => {
     const [result, setResult] = useState<any>(null)
 
     const appStaticSettings = getAppStaticSettings()
-    const { data, isError, isLoading } = useRssSources(appStaticSettings.appId)
+    const { data, isError } = useRssSources(appStaticSettings.appId)
 
     const onPopulate = async () => {
         setPopulating(true)
@@ -84,9 +84,9 @@ export const EtlScreenComponent = () => {
     return <ErrorComponent />
     }
 
-    if (!data?.rssSources?.length) {
-        return <EmptyComponent />
-    }
+    // if (!data?.rssSources?.length) {
+    //     return <EmptyComponent />
+    // }
 
     // const opacity = isLoading || isFetching || populating ? 1 : 0
 
@@ -97,8 +97,8 @@ export const EtlScreenComponent = () => {
 
     return <ThreePanel>
         <HeaderComponent />
-        {
-        isLoading ? null : <div className="qrated-ctn"> 
+        <div className="qrated-ctn etl-ctn"> 
+            <EtlIntroComponent />
             <CreateArticleComponent 
                 authorsData={ authorsData?.authors }  
             />
@@ -114,7 +114,7 @@ export const EtlScreenComponent = () => {
             
             <ul className={ utils.cnJoin([cnTextualList.ul, 'mt-8']) }>
             {
-                data.rssSources.map(source => {
+                data?.rssSources.map(source => {
                     return <li className={ cnTextualList.li } key={ source.source_id }>
                         <h5 className={ cnSectionSmallTitle }>{ source.source_url.replace('https://', '').replace('www.', '') }</h5>
                         <p className={ cnPostscriptum }>last refreshed { dateToPostgresDateString(new Date(yesterday)) }</p>
@@ -123,7 +123,6 @@ export const EtlScreenComponent = () => {
             }
             </ul>
         </div>
-        }
         <div>{ null }</div>
     </ThreePanel>
 }
