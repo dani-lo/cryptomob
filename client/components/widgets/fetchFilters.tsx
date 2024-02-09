@@ -138,7 +138,7 @@ export const FetchMinFiltersComponent = ({
                 checked={ !!vals.authored } 
                 value="authored"
                 label="Author not unknown" 
-                desc="Lorem  text of the printing and typesetting i" 
+                desc="Only show known authors" 
                 onChange={ () => {
                     onChange('authored', !vals.authored)
                 }}
@@ -156,14 +156,14 @@ export const FetchMinFiltersComponent = ({
                 checked={ !!vals.commented } 
                 value='commented' 
                 label="Commented articles" 
-                desc="Lorem Ipsum is simply dummy text of the printing" 
+                desc="Filter by articles with comments" 
                 onChange={ () => {
                     onChange('commented', !vals.commented)
                 }}
             />
             {/* </div>
             <div className="px-2"> */}
-            <CheckboxInputComponent 
+            {/* <CheckboxInputComponent 
                 checked={ !!vals.userTagged } 
                 value='userTagged'
                 label="Tags from users" 
@@ -171,12 +171,21 @@ export const FetchMinFiltersComponent = ({
                 onChange={ () => {
                     onChange('userTagged', !vals.userTagged)
                 }}
+            /> */}
+            <CheckboxInputComponent 
+                checked={ !!vals.watchlisted } 
+                value='watchlisted'
+                label="Watchlisted" 
+                desc="Articles added to watchlists" 
+                onChange={ () => {
+                    onChange('watchlisted', !vals.watchlisted)
+                }}
             />
             <CheckboxInputComponent 
                 checked={ !!vals.userAdded } 
                 value='userAdded'
                 label="Articles from users" 
-                desc="Lorem Ipsum is simply dummy text of the printing" 
+                desc="Articles added by users (not rss)" 
                 onChange={ () => {
                     onChange('userAdded', !vals.userAdded)
                 }}
@@ -185,7 +194,7 @@ export const FetchMinFiltersComponent = ({
                 checked={ !!vals.categoryized } 
                 value='categoryized'
                 label="Categorized items" 
-                desc="Lorem Ipsum is simply dummy text of the printing" 
+                desc="Articles belonging to any category" 
                 onChange={ () => {
                     onChange('categoryized', !vals.categoryized)
                 }}
@@ -194,7 +203,7 @@ export const FetchMinFiltersComponent = ({
                 checked={ !!vals.bookmarked } 
                 value='bookmarked'
                 label="Bookmarked items" 
-                desc="Lorem Ipsum is simply dummy text of the printing" 
+                desc="Articles that have been bookmarked" 
                 onChange={ () => {
                     onChange('bookmarked', !vals.bookmarked)
                 }}
