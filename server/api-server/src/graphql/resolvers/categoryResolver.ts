@@ -52,7 +52,7 @@ export default {
 
             const user = contextValue.user 
 
-            if (!user?.id) {
+            if (!user?.userId) {
                 throw new GraphQLError(QRATED_AUTH_ERROR)
             }
              

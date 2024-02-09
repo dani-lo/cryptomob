@@ -14,10 +14,7 @@ export const authenticateToken = (req: RequestWithUser, res: Response, next: Nex
     const authHeader = req.headers['authorization']
     const { TOKEN_SECRET } = process.env
     
-    const token = authHeader && authHeader.split(' ')[1]
-    
-    console.log(token)
-
+    const token = authHeader && authHeader.split(' ')[1] a
     
     if (!token) {
         return next()

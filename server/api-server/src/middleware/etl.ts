@@ -31,15 +31,12 @@ export const appUseEtl = (app: Application) => {
         //   const parseScript = `${ path.resolve('..') }/libparse/main.py`
           
         //   let stdoutChunks: Uint8Array[] = []
-  
-        //   console.log(parseScript)
-  
+    
         //   try {
   
         //     const etl_proc = spawn('python3', [parseScript, '--app-id', '2'])//, ['--app-id', '2'])
   
         //     etl_proc.stdout.on('data', (data) => {
-        //       console.log(`stdout: ${data}`)
         //       stdoutChunks = stdoutChunks.concat(data)
         //     });
   
@@ -52,10 +49,8 @@ export const appUseEtl = (app: Application) => {
   
         //       const stdoutContent = Buffer.concat(stdoutChunks).toString();
               
-        //       console.log(`child process exited with code ${code}`);
               
         //       const result = JSON.parse(stdoutContent)
-        //       console.log(result)
   
         //       res.send({
         //         status: 200,
@@ -63,7 +58,6 @@ export const appUseEtl = (app: Application) => {
         //       }) 
         //     }); 
         //   } catch(err) {
-        //     console.log('!!CALL TO LIBPARSE ERRORED!!')
         //     console.log(err)
         //   } 
 

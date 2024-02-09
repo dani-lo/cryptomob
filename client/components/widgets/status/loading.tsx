@@ -164,7 +164,7 @@ export const GhostTableLoadingComponent = ({staticAppSettings, section}: { stati
 export const GhostArticlesLoader = ({staticAppSettings}: { staticAppSettings : AppStaticSettings }) => {
   return <div className={ utils.cnJoin([cnPage, 'content', 'suspense-content']) }>
       <HeaderComponent />
-      <div className="qrated-ctn  p-5"> 
+      <div className="p-5"> 
         <GhostArticlesLoadingComponent staticAppSettings={ staticAppSettings } />
       </div>
   </div>

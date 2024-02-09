@@ -69,8 +69,8 @@ async function main() {
           
           // const token = authHeader && authHeader.split(' ')[1]
           // getTokenUser()
-          console.log("console.log(req.headers['authorization']) ----")
-          console.log(req.headers['authorization'])
+          // console.log('++++== req.user')
+          // console.log(req.user)
           return {
             schema: schemaWithResolvers,
             rootValue: root,

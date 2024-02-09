@@ -33,9 +33,13 @@
     margin-left: 0.1rem;
 }
 
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 1150px) {
     .moby {
         display: block;
+   }
+
+   #toolbar {
+    display: none;
    }
 
    .app-loading {
@@ -124,7 +128,7 @@
 
     .StyledCardContainer {
         margin-top: 2rem;
-        display: block;
+        /* display: block; */
         min-width: none;
     }
 
@@ -181,7 +185,7 @@
         display: none;
     }
 
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 1150px) {
     
     .as-table {
         display: block;

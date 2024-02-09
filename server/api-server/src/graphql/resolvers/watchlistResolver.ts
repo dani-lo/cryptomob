@@ -27,7 +27,7 @@ export default {
 
             const user = contextValue.user 
 
-            if (!user?.id) {
+            if (!user?.userId) {
                 throw new GraphQLError(QRATED_AUTH_ERROR)
             }
 
@@ -58,9 +58,7 @@ export default {
             return result.rows
         },
         async authors(parent: { watchlist_id: number }) {
-            
-            // console.log('---- WL AUTHORS', parent.watchlist_id)
-            
+                        
             const result = await dataSources.watchlistService.pgGetWatchlistAuthors(parent.watchlist_id)
 
             return result.rows
