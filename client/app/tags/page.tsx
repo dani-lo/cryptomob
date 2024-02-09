@@ -9,14 +9,13 @@ const TagsPage = () => {
 
   return <div  className={ utils.cnJoin([cnPage, 'content']) }> 
     
-    {/* <Suspense
+    <Suspense
         fallback={
           <GhostTabularLoader staticAppSettings={ appStaticSettings } section="tags" />
         }
       >
         <TagsScreenComponent  />
-      </Suspense> */}
-      <GhostTabularLoader staticAppSettings={ appStaticSettings } section="tags" />
+      </Suspense>
   </div>
 }
 
