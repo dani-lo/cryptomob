@@ -38,6 +38,8 @@ import { ArticleDetailModalComponent } from '../widgets/modal/articleDetail'
 import { currPanelAtom } from '@/src/store/uiAtoms'
 import { TagDetailModalComponent } from '../widgets/modal/tagDetail'
 import { TagApiData } from '@/src/models/tag'
+import { AuthorDetailModalComponent } from '../widgets/modal/authorDetail'
+import { AuthorApiData } from '@/src/models/author'
 // import { useMeta } from '@/src/hooks'
 
 interface ArticleApiDataResult {
@@ -68,6 +70,7 @@ export const ArticlesScreenComponent = () => {
 
   const [selectedArticle, setSelectedArticle] = useState(0)
   const [selectedArticleTag, setSelectedArticleTag] = useState(0)
+  const [selectedArticleAuthor, setSelectedArticleAuthor] = useState(0)
 
   const appStaticSettings = getAppStaticSettings()
   const appId = appStaticSettings.appId
@@ -127,12 +130,18 @@ export const ArticlesScreenComponent = () => {
     return c
   }, [])
 
+  const allAuthors = data.paginatedArticles.articles.reduce((acc: AuthorApiData[], curr) => {
+
+    if (curr.author) {
+      acc.push(curr.author)
+    }
+
+    return acc
+  }, [])
+
   const activeArticle = data.paginatedArticles.articles.find(a => a.article_id === selectedArticle)
   const activeTag = allTags.find(a => a.tag_id === selectedArticleTag)
-
-  // console.log('-------------------- TAGS --- selectedArticleTag is ', selectedArticleTag)
-  // console.log(allTags)
-  // console.log(activeTag)
+  const activeAuthor = allAuthors.find(a => a.author_id === selectedArticleAuthor)
 
   return <ThreePanel> 
       <HeaderComponent />
@@ -173,6 +182,10 @@ export const ArticlesScreenComponent = () => {
               setSelectedArticleTag(id)
               setPanel('right')
              }} 
+             selectArticleAuthor={ (id: number) => {
+              setSelectedArticleAuthor(id)
+              setPanel('right')
+             }}
           /> : null
         }
     </div>
@@ -197,7 +210,18 @@ export const ArticlesScreenComponent = () => {
 
               }} 
             /> : 
-            null 
+        selectedArticleAuthor ?
+            <AuthorDetailModalComponent 
+              userId={ user?.user_id || 0 } 
+              author={ activeAuthor || null } 
+              onClose={ () => {
+                  setPanel('mid')
+                  setSelectedArticleAuthor(0)
+
+              }} 
+            /> : 
+            null
+
     }
   </ThreePanel>
 

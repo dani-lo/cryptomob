@@ -24,7 +24,7 @@ export const AuthorDetailModalComponent = ({
         userId,
         onClose 
     }: { 
-        author: AuthorApiData; 
+        author: AuthorApiData | null; 
         onClose: () => void; 
         userId: number;
     }) => {
@@ -53,15 +53,15 @@ export const AuthorDetailModalComponent = ({
         return () => clearTimeout(to)
     }, [])
 
+    if (author === null) {
+        return null
+    }
+
     const paginator = numArticles > ARTICLE_PER_PAGE ? new PaginationCtrl(
         numArticles,
         articlesOffset,
         ARTICLE_PER_PAGE
     ) : null
-
-    if (!author) {
-        return null
-    }
 
     const disabledWatchlist = (watchlistID: number) => author.watchlists?.some(w => w.watchlist_id === Number(watchlistID))
 

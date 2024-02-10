@@ -26,6 +26,7 @@ interface Props {
     deleteArticle:  UseMutateFunction<unknown, unknown, UpdateBoolInput, unknown>;
     selectTag: (tagId: number) => void;
     selectArticle: (articleId: number) => void;
+    selectAuthor: (authorId: number) => void;
     userId: number;
 }
 
@@ -82,7 +83,7 @@ export const ArticleCardComponent = (props: Props) => {
                 ellipsys(description, 70)
             }
             </p>
-            <p className={ cnParagraph }>By: <a href="">{ article.author?.author_name || 'Unknown Author' }</a>, { timestampToDateString(Number(article.article_datepub), true) }</p>
+            <p className={ cnParagraph }>By: <span className="clickable" onClick={ () => props.selectAuthor(article.author?.author_id || 0) }>{ article.author?.author_name || 'Unknown Author' }</span>, { timestampToDateString(Number(article.article_datepub), true) }</p>
             <p className={ cnParagraph }>
                 Category: <span className={ cnBold }>{ article.category ? article.category.category_name : 'none'}</span>. 
                 Member of <span className={ cnBold }>{ article.watchlists?.length || 0 }</span> watchlists
@@ -102,7 +103,6 @@ export const ArticleCardComponent = (props: Props) => {
                     <span className={ cnPayoff }>No Tags AVaialble for this article</span>
                 }
             </p>
-            
             {
                 modalaction === ArticleModalActions.AddComment ? 
                     <ArticleCommentActionModalComponent 

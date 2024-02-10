@@ -110,6 +110,7 @@ export class ArticleService extends DataSource {
             const articlesCount = await pgclient.query(`
                 SELECT COUNT(article_id) as articlescount FROM articles
                 WHERE ${ strArticlesWhere }
+                AND ( articles.article_delete IS NOT TRUE OR articles.article_delete IS NULL )
             `)
             
             return  Promise.resolve({

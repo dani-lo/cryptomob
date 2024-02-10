@@ -19,10 +19,11 @@ import { currUserAtom } from "@/src/store/userAtoms";
 
 interface PaginatedAtriclesProp { articles: ArticleAPiData[], recordsCount: number;  }
 
-export const ArticlesListComponent = ({ paginatedArticles, selectArticle, selectArticleTag }: { 
+export const ArticlesListComponent = ({ paginatedArticles, selectArticle, selectArticleTag, selectArticleAuthor }: { 
       paginatedArticles: PaginatedAtriclesProp; 
       selectArticle: (articleId: number) => void;
       selectArticleTag:  (articleTagId: number) => void; 
+      selectArticleAuthor:  (articleAuthorId: number) => void; 
     }) => {
 
     // const [tagId, setTagId] = useState(0)
@@ -77,6 +78,7 @@ export const ArticlesListComponent = ({ paginatedArticles, selectArticle, select
               selectTag= { selectArticleTag }
               userId={ user?.user_id || 0 }
               selectArticle={ selectArticle }
+              selectAuthor={ selectArticleAuthor }
             />
           })
       }
