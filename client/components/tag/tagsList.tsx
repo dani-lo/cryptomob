@@ -62,7 +62,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
     const paginator = new PaginationCtrl(
         filtered.length,
         fetchParams.offset,
-        1000
+        12
     )
     
     const paginated = paginator.takeLocal(filtered)
