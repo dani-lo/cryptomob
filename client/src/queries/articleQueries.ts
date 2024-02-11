@@ -164,3 +164,11 @@ export const TAG_ARTICLE = gql`
     }
   }
 `
+
+export const UNTAG_ARTICLE = gql`
+  mutation unsetArticleTag($input: ArticleTagMutation) {
+    unsetArticleTag(input: $input) {
+      article_id
+    }
+  }
+`

@@ -110,7 +110,7 @@ export const AuthorDetailModalComponent = ({
                     bgColor={ bg }
                 />
                 
-                <div className="flex  p-6">
+                <div className="flex  px-6">
                     <div style={{ width: '400px' }}>
                         <p className={ cnParagraph }>Add to Watchlist</p>
                         <Dropdown 

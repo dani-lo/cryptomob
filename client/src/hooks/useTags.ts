@@ -15,7 +15,7 @@ import { GRAPHQL_ENDPOINT } from "../config";
 import { useAtom } from "jotai"
 import { toastAtom, toastWarning } from "../store/userAtoms"
 
-interface TagInput {tag_name: string, tag_origin: string}
+interface TagInput {tag_name: string, tag_origin: string, app_id ?: number}
 
 export const useTagsWithArticlesCount = (
         appId: number) => {

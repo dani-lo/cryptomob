@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react"
 import { useAddtag } from "@/src/hooks/useTags"
 
 import * as cnames from "@/src/styles/classnames.tailwind"
+import { getAppStaticSettings } from "@/src/store/static"
 
 export const CreateTagComponent = () => {
 
@@ -10,13 +11,17 @@ export const CreateTagComponent = () => {
 
     const addTagMutation =  useAddtag()
 
+    const appStaticSettings = getAppStaticSettings()
+    const appId = appStaticSettings.appId
+
     const handleSubmit = (e: FormEvent) => {
         
         e.preventDefault()
 
         addTagMutation.mutate({
             tag_name: text,
-            tag_origin: 'user'
+            tag_origin: 'user',
+            app_id: appId
         })
 
         setText('')

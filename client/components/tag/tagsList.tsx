@@ -62,7 +62,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
     const paginator = new PaginationCtrl(
         filtered.length,
         fetchParams.offset,
-        fetchParams.limit
+        1000
     )
     
     const paginated = paginator.takeLocal(filtered)
@@ -141,6 +141,7 @@ export const TagsListComponent = ({ paginatedTags }: { paginatedTags: TagApiData
                                 text={ ellipsys(t.tag_name, 20) }
                                 icon={ faTags }
                                 bgColor={ appStaticSettings.bg }
+                                actionLink={ `/tags?tagId=${ t.tag_id }` }
                             />
                         </div>          
                     </td>

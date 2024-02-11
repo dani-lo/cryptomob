@@ -118,6 +118,7 @@ export const AuthorsListComponent = ({ paginatedAuthors }: { paginatedAuthors: A
                                     text={ ellipsys(t.author_name, 20) }
                                     icon={ faPerson }
                                     bgColor={ appStaticSettings.bg }
+                                    actionLink={ `/authors?authorId=${ t.author_id }` }
                                 />
                             </div>  
                                            

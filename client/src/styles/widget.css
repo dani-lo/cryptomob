@@ -4,7 +4,7 @@
     z-index: var(--z-5);
     padding: 0;
     left: 0;
-    top: -6rem;
+    top: -8rem;
     position: fixed;
     transition: top 0.2s;
     width: 100%;

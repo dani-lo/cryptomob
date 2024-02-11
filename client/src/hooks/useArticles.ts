@@ -8,7 +8,7 @@ import { GRAPHQL_ENDPOINT } from '@/src/config'
 
 import { ArticleAPiData } from "../models/article";
 import { dateToPostgresDateString } from "../helpers/date";
-import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, COLOR_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, TAG_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
+import { ArticlesSortby, BOOKMARK_ARTICLE, CATEGORISE_ARTICLE, COLOR_ARTICLE, CREATE_ARTICLE, DELETE_ARTICLE, TAG_ARTICLE, UNTAG_ARTICLE, UNWATCHLIST_ARTICLE, WATCHLIST_ARTICLE } from "../queries/articleQueries";
 import { FetchParams, QueryFilterParams } from "../store/app";
 
 import { UpdateBoolInput } from ".";
@@ -280,6 +280,31 @@ export const useTagArticle = () => {
         mutationFn: (input: { article_id: number; user_id: number; tag_id: number; }) => {
             return gqlClient.request(
                 TAG_ARTICLE,
+                { input }
+            )
+        },
+        onSuccess: () => {
+            client.invalidateQueries([GqlCacheKeys.paginatedArticles])
+        },
+        onError: (err: any) : void => {
+            
+            const thrownError = err.response?.errors[0] || null
+
+            toastWarning(setToast, thrownError?.message ? thrownError.message : 'An error occurred')
+        }
+      })
+}
+
+export const useUntagArticle = () => {
+
+    const [, setToast] = useAtom(toastAtom)
+    
+    const client = useQueryClient()
+  
+    return useMutation({ 
+        mutationFn: (input: { article_id: number; user_id: number; tag_id: number; }) => {
+            return gqlClient.request(
+                UNTAG_ARTICLE,
                 { input }
             )
         },

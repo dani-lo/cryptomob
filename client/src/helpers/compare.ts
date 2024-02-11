@@ -7,6 +7,20 @@ export const fnCmp = (a: number, b: number) => {
     return 0
 }
 
+export const fnCmpSortBy = (a: {[k: string]: any} , b:  {[k: string]: any} , key: string) => {
+    
+    console.log(':::::::::::: fnCmpSortBy ::::::::')
+    console.log(a)
+    console.log(b)
+
+    if (a[key] > b[key]) {
+        return 1
+    } else if (a[key] < b[key]) {
+        return -1
+    }
+    return 0
+}
+
 export const compareNumericArraysOrNumbers = (itemOne: number[] | number, itemTwo: number[] | number) => {
 
     return  JSON.stringify((typeof itemOne === 'number' ? [itemOne] : itemOne).slice().sort(fnCmp)) 

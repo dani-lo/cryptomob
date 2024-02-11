@@ -35,6 +35,8 @@ export const ArticlesFetchFiltersComponent = () => {
     // const [activetab, setActivetab] = useState(ModelType.Tag)
 
     const ctx = useContext(ApiParamsContext)
+
+    const [fetchParams, setFetchParams]  = useAtom(ctx.queryParams.articles)
     
     const [protectedFilters, setProtectedFilters] = useAtom(ctx?.filterParams?.articles.protect)
     const [publicFilters, setPublicFilters] = useAtom(ctx?.filterParams?.articles.pub)
@@ -94,7 +96,8 @@ export const ArticlesFetchFiltersComponent = () => {
                 onChange={ (k, v) => {
 
                     const newMinItems = { ...protectedFilters.minItems, [k]: v }
-
+                    console.log(protectedFilters)
+                    setFetchParams({ ...fetchParams, offset: 0 })
                     setProtectedFilters({ ...protectedFilters, minItems : newMinItems })
                 }}
             />

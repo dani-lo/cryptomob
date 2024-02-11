@@ -91,7 +91,7 @@ export const WatchlistDetailModalComponent = ({
                     icon={ faBinoculars }
                     bgColor={ bg }
                 />
-                <div className="flex  p-6">
+                <div className="flex  px-6">
                     <div style={{ height: '100%' }} className="sectioned">
                         {
                             watchlist.articles?.length ? 

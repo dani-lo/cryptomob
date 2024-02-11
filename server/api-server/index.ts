@@ -15,6 +15,7 @@ import { resolvers } from './src/graphql/resolvers'
 
 import { appUseEtl } from './src/middleware/etl'
 import { appUsePing } from './src/middleware/tester' 
+import { appUsePrune } from './src/middleware/prune' 
 import { appUseLogin, authenticateToken } from './src/middleware/auth'
 
 const schemaAddress = './src/graphql/schema.graphql'
@@ -86,6 +87,7 @@ async function main() {
     appUseLogin(app)
     appUseEtl(app)
     appUsePing(app)
+    appUsePrune(app)
   //   app.use(
   //     "/etl/:appId",
   //     async (req, res, next)=>{

@@ -7,7 +7,7 @@ import Dropdown from 'react-dropdown'
 import { CSSTransition } from 'react-transition-group'
 
 import { useCategoriesWithArticlesCount } from "@/src/hooks/useCategories"
-import { useCategoriseArticle, useTagArticle, useUnwatchlistArticle, useWatchlistArticle } from "@/src/hooks/useArticles"
+import { useCategoriseArticle, useTagArticle, useUntagArticle, useUnwatchlistArticle, useWatchlistArticle } from "@/src/hooks/useArticles"
 
 import { ArticleAPiData, ArticleBase } from "@/src/models/article"
 
@@ -19,7 +19,7 @@ import { cnBold, cnButton, cnParagraph, cnSectionSmallTitle, utils } from "@/src
 // import { Tag } from "@/src/models/tag"
 import { CommentBaloonsComponent } from "@/components/comment/commentBaloons"
 import { IconTitleComponent } from "../iconed"
-import { faNewspaper } from "@fortawesome/free-solid-svg-icons"
+import { faBolt, faComment, faNewspaper } from "@fortawesome/free-solid-svg-icons"
 // import Link from "next/link"
 import { Watchlist } from "@/src/models/watchlist"
 import { Category } from "@/src/models/category"
@@ -29,6 +29,10 @@ import { Tag } from "@/src/models/tag"
 import { useTagsWithArticlesCount } from "@/src/hooks/useTags"
 import { stripHtml } from "@/src/helpers/strip"
 import { later } from "@/src/helpers/later"
+import { ellipsys } from "@/src/helpers/ellipsys"
+import { fnCmpSortBy } from "@/src/helpers/compare"
+import { TabbedHeader } from "../tabbed"
+import { ItemTags } from "../itemTags"
 
 export const ArticleDetailModalComponent = ({ article, userId, onClose }: { 
         article: ArticleAPiData | null, 
@@ -80,44 +84,62 @@ export const ArticleDetailComponent = ({ article, userId }: { article: ArticleAP
     const { data: categories } = useCategoriesWithArticlesCount(appId)
     const { data: tags } = useTagsWithArticlesCount(appId)
     
+    const [act, setAct] = useState(0)
+
     if (article === null) {
         return null
     }
     
     const description = stripHtml(article.article_description)
 
-    return <div className="flex flex-col justify-between leading-normal" style={{ display: 'flex',flexDirection: 'column',height: '100%' }}>
-            <IconTitleComponent
-                text={ article.article_title }
-                link={ article.article_link }
-                icon={ faNewspaper }
-                bgColor={ bg }
-            />
-            <p  className={ utils.cnJoin([cnParagraph, 'my-6 mx-6']) }>
-            {
-                description
-            }
-            </p>
-        <div className="flex p-6 pt-0 article-detail-content" style={{ overflowY: 'scroll', flex: 2 }}>
-                
-            <ArticleDetailActions
+    return <div>
+        <IconTitleComponent
+            text={ article.article_title }
+            link={ article.article_link }
+            icon={ faNewspaper }
+            bgColor={ bg }
+        />
+        <p  className={ utils.cnJoin([cnParagraph, 'my-6 mx-6']) }>
+        {
+            ellipsys(description, 1000)
+        }
+        </p>
+        <TabbedHeader
+            tabitems={ [
+                {
+                    icon: faBolt,
+                    title: 'article actions',
+                    idx: 0
+                },
+                {
+                    icon: faComment,
+                    title: 'article comments',
+                    idx: 1
+                }
+            ]}
+            activeTab={ act }
+            onTabSelect={ (n: number) => setAct(n)}
+        />
+        <div className="p-4">
+        {
+            act === 0 ? <ArticleDetailActions
                 watchlists={ watchlists?.watchlists || [] }
                 categories={ categories?.categories || [] }
                 tags= { tags?.tags.map(t => new Tag(t, false)) || [] }
                 article={ new ArticleBase(article) }
                 userId={ userId }
-            />
-            <div className="my-2 pl-8 article-detail-comments">
-                <h5 className={cnSectionSmallTitle }>User comments</h5>
-                {
-                    article.comments?.length ? 
-                    <CommentBaloonsComponent comments={ article.comments } />:
-                    <p className={ cnParagraph }>No comments for this article. You can add comments from the comment button within the article card toolbar</p>
-                }
-            </div>
-    </div>
-            
+            /> : null
+        }
+        {
+            act === 1 ? 
+                article.comments?.length ? 
+                    <CommentBaloonsComponent comments={ article.comments } /> :
+                    <p className={ cnParagraph }>No comments for this article. You can add comments from the comment button within the article card toolbar</p>:
+                    null 
+            }
         </div>
+    </div>
+
 }
 
 const ArticleDetailActions = ({ 
@@ -144,6 +166,7 @@ const ArticleDetailActions = ({
         const watchlistArticleMutation = useWatchlistArticle()
         const unwatchlistTagMutation = useUnwatchlistArticle()
         const tagArticleMutation = useTagArticle()
+        const untagArticleMutation  = useUntagArticle()
 
         if (article === null) {
             return null
@@ -156,8 +179,6 @@ const ArticleDetailActions = ({
                 user_id: Number(userId),
                 category_id: cid ? Number(cid) : 0 ,
             })
-
-            // setCid(undefined)
         }
 
         const onSetTag = () => {
@@ -171,6 +192,14 @@ const ArticleDetailActions = ({
             setTid(undefined)
         }
 
+        const onDeleteTag = (tagId: number) => {
+            untagArticleMutation.mutate({
+                article_id: Number(article.article_id),
+                user_id: Number(userId),
+                tag_id: Number(tagId)
+            })
+
+        }
         const onSetWatchlist = () => {
 
             watchlistArticleMutation.mutate({
@@ -178,8 +207,6 @@ const ArticleDetailActions = ({
                 user_id: Number(userId),
                 watchlist_id: wid ? Number(wid) : 0,
             })
-
-            // setWid(undefined)
         }
 
         const onDeleteWatchlist = (watchlistId: number) => {
@@ -195,16 +222,26 @@ const ArticleDetailActions = ({
         const disabledCategory = (categoryID: number) => article.category?.category_id === categoryID
         const disabledTag = (tagID: number) => article.tags?.some(t => t.tag_id === Number(tagID))
 
-        const watchlistOpts = watchlists ? watchlists.map(w => {
-            return { label: w.watchlist_name, value: `${ w.watchlist_id }`, className: disabledWatchlist(w.watchlist_id) ? 'disabled' : '' }
-        }) : []
-        const categoriesOpts = categories ? categories.map(c => {
-            return { label: c.category_name, value: `${ c.category_id }` , className: disabledCategory(c.category_id)  ? 'disabled' : ''}
-        }) : []
-        const tagOpts = tags ? tags.map(t => {
-            return { label: t.tag_name, value: `${ t.tag_id }` , className: disabledTag(t.tag_id)  ? 'disabled' : ''}
-        }) : []
+        const watchlistOpts = watchlists ? 
+            watchlists.map(w => {
+                return { label: w.watchlist_name, value: `${ w.watchlist_id }`, className: disabledWatchlist(w.watchlist_id) ? 'disabled' : '' }
+            }).sort((a,b) => fnCmpSortBy(a,b, 'label')) 
+            : []
 
+        const categoriesOpts = categories ? 
+            categories.map(c => {
+                return { label: c.category_name, value: `${ c.category_id }` , className: disabledCategory(c.category_id)  ? 'disabled' : ''}
+            }).sort((a,b) => fnCmpSortBy(a,b, 'label')) 
+            : []
+
+        const tagOpts = tags ? 
+            tags.map(t => {
+                return { label: t.tag_name, value: `${ t.tag_id }` , className: disabledTag(t.tag_id)  ? 'disabled' : ''}
+            }).sort((a,b) => fnCmpSortBy(a,b, 'label')) 
+            : []
+
+        console.log(tagOpts)
+        
         const catSelected = !!cid
         const catChanged = (!!currentCategory && Number(currentCategory.category_id) !== Number(cid)) || (!currentCategory && catSelected)
 
@@ -214,8 +251,8 @@ const ArticleDetailActions = ({
         const tagSelected = !!tid
         const tagChanged = tagSelected
 
-        return <div className="my-2 pr-8 sectioned">
-            <div style={{ width: '300px' }}>
+        return <div className=" flex justify-between">
+            <div className="pr-8" style={ { flex: 1 }}>
                 <h3 className={cnSectionSmallTitle}>Watchlists: <span className={ cnBold }>{ article.watchlists?.length || 0 }</span></h3>
                 <p className={ cnParagraph }>Add article to watchlist</p>
                 <Dropdown 
@@ -247,7 +284,7 @@ const ArticleDetailActions = ({
                 }
             </div>
             
-            <div style={{ width: '300px' }}>
+            <div className="pr-8" style={ { flex: 1 }}>
                 <h3 className={cnSectionSmallTitle}>Tags: <span className={ cnBold }>{ article.tags?.length || 0 }</span></h3>
                 <p className={ cnParagraph }>Add tag to article</p>
                 <Dropdown 
@@ -271,14 +308,14 @@ const ArticleDetailActions = ({
                     </div>
                 </div>
                 { 
-                    article.watchlists?.length ? <ItemWatchlists
-                        watchlists={ article.watchlists || [] }
-                        title="Member of watchlists"
-                        onDeleteWatchlist={ onDeleteWatchlist }
+                    article.tags?.length ? <ItemTags
+                        tags={ article.tags || [] }
+                        title="Tags List"
+                        onDeleteTag={ onDeleteTag }
                     /> : null
                 }
             </div>
-            <div className="my-2" style={{ width: '300px' }}>
+            <div className="" style={ { flex: 1 }}>
                 <h3 className={cnSectionSmallTitle}>Category: <span className={ cnBold }>{ article.category ? article.category.category_name : 'none'}</span></h3>
                 <p className={ cnParagraph }>{  article.category ? 'Assign to different category' : 'Assign  category to article'}</p>
                 <Dropdown 

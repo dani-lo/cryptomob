@@ -100,6 +100,7 @@ export const CategoriesListComponent = ({ categories}: { categories: CategoryPro
                                     text={ ellipsys(t.category_name, 20) }
                                     icon={ faClone }
                                     bgColor={ appStaticSettings.bg }
+                                    actionLink={`/categories?categoryId=${ t.category_id }` }
                                 />
                             </div>           
                         </td>

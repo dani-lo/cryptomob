@@ -11,29 +11,30 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core"
 export interface TabItem {
     icon: IconDefinition,
     title: string,
-    forInfoSource: InfoSource,
-    forModel: ModelType
+    forInfoSource?: InfoSource,
+    forModel?: ModelType,
+    idx?: number
 }
 
 export const TabbedHeader = ({ tabitems, activeTab, onTabSelect}: { 
         tabitems: TabItem[] ,
-        activeTab: ModelType, 
-        infoSource: InfoSource,
-        onTabSelect: (tabId: ModelType) => void,
+        activeTab: ModelType | number, 
+        infoSource?: InfoSource,
+        onTabSelect: (tabId:number) => void,
     }) => {
 
     return <div>
-        <ul className="flex flex-wrap justify-evenly">
+        <ul className="flex flex-wrap ml-4">
             {
                 tabitems.map(item => {
 
-                    const active = item.forModel === activeTab
+                    const active = item.forModel ? item.forModel === activeTab : item.idx === activeTab
 
-                    return <li className="mr-2" key={ item.forModel }>
+                    return <li className={ utils.cnJoin(["mr-2 tab-item", active ? 'active' : ''])} key={ item.forModel }>
                         <a 
                             href="#" 
-                            className={ active ? utils.activeText(cnTabItem) : cnTabItem } 
-                            onClick={ () => onTabSelect(item.forModel) }
+                            className={  cnTabItem } 
+                            onClick={ () => onTabSelect(item.idx || 0) }
                         >
                             <FontAwesomeIcon
                                 icon={ item.icon }

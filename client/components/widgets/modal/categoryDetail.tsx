@@ -97,7 +97,7 @@ export const CategoryDetailModalComponent = ({
                     icon={ faClone }
                     bgColor={ bg }
                 />
-                <div className="flex  p-6">
+                <div className="flex  px-6">
                     <div  style={{ overflowY: 'scroll', height: 'calc(100% - 200px)' }}>
                     <h3 className={ cnSectionTitle }>Articles</h3>
                     {
@@ -114,7 +114,6 @@ export const CategoryDetailModalComponent = ({
                             : 
                             <p className={ cnParagraph }>No articles found</p>
                     }
-                    
                     </div>
                 </div>
             </div>

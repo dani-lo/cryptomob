@@ -34,10 +34,32 @@
 
 .sect-intro h2{
     margin-top: 0;
-    padding-top: 3em;
+    padding-top: 2em;
+}
+
+.action-link {
+    display: none;
+}
+
+.mob-top-nav {
+    width: 250px;
+  justify-content: space-between;
+  display: flex;
+  padding-right: 1rem;
 }
 
 @media only screen and (max-width: 1150px) {
+
+    .mob-top-nav  {
+        width: auto;
+        justify-content: space-between;
+        display: block;
+        padding-right: 0;
+    }
+    .action-link {
+        display: block;
+    }
+
     .moby {
         display: block;
    }
@@ -60,7 +82,7 @@
     }
 
    .sect-intro {
-        padding-top: 3em;
+        padding-top: 2em;
         /* margin-top: 4rem;
         margin-left: 0.1rem; */
     }
@@ -237,6 +259,12 @@
         display: block;
     }
 
+    .as-td .list-item-header h4{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
     .as-td > span.row-title {
         display: none;
     }
@@ -263,5 +291,9 @@
        font-weight: bold; 
        display: inline;
         padding-right: 1rem;
+    }
+
+    .as-td:last-child, .as-th:last-child {
+        display: none;
     }
 }

@@ -97,7 +97,7 @@ export class ArticleService extends DataSource {
         const strOrderBy = ` article_id ${ sortDirectionPg } `
 
         try {
-
+          
             const articles = await pgclient.query(`
                 SELECT * FROM articles
                 WHERE ${ strArticlesWhere }
@@ -390,7 +390,7 @@ export class ArticleService extends DataSource {
         try {   
             await pgclient.query(`
                 DELETE FROM  articles_tags
-                WHERE article_id = ${ articleId } AND tag_id = ${ tagId };
+                WHERE article_id = ${ articleId } AND tag_id = ${ tagId }
                 RETURNING *;
             `)
 
@@ -469,5 +469,140 @@ export class ArticleService extends DataSource {
             pgclient.release()
         }
     }
+
+    async pgPruneAuthors () {
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+
+            console.log(`
+                SELECT authors.author_id FROM authors
+                JOIN articles ON articles.author_id = authors.author_id 
+                WHERE articles.article_delete = true;
+            `)
+
+            const candidateAuthors = await pgclient.query(`
+                SELECT authors.author_id FROM authors
+                JOIN articles ON articles.author_id = authors.author_id 
+                WHERE articles.article_delete = true;
+            `) 
+
+            const excludeAuthors = await pgclient.query(`
+                SELECT authors.author_id FROM authors
+                JOIN articles ON articles.author_id = authors.author_id 
+                WHERE articles.article_delete IS NULL OR articles.article_delete = false;
+            `) 
+
+            const excludeAuthorsIDs = (excludeAuthors.rows || []).map(row => row.author_id)
+
+            const authorsWithNoLiveArticle = []
+
+            for (const author of (candidateAuthors.rows || [])) {
+                if (excludeAuthorsIDs.indexOf(author.author_id) === -1) {
+                    authorsWithNoLiveArticle.push(author)
+                }
+            }
+
+            return authorsWithNoLiveArticle || []
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error pruning articles ....')
+        } finally {
+            pgclient.release()
+        }
+    }
+
+    async pgPruneTags () {
+        const pgPool = getPool()
+        const pgclient = await pgPool.connect()
+
+        try {
+
+            // console.log(`
+            //     SELECT authors.author_id FROM authors
+            //     JOIN articles ON articles.author_id = authors.author_id 
+            //     WHERE articles.article_delete = true;
+            // `)
+
+            const candidateTags = await pgclient.query(`
+                SELECT articles_tags.tag_id FROM articles_tags
+                JOIN articles ON articles.article_id = articles_tags.article_id 
+                WHERE articles.article_delete = true;
+            `) 
+
+            const excludeTags = await pgclient.query(`
+                SELECT articles_tags.tag_id FROM articles_tags
+                JOIN articles ON articles.article_id = articles_tags.article_id 
+                WHERE articles.article_delete IS NULL OR articles.article_delete = false;
+            `) 
+
+            const excludeTagsIDs = (excludeTags.rows || []).map(row => row.tag_id)
+
+            const tagsWithNoLiveArticle = []
+
+            for (const tag of (candidateTags.rows || [])) {
+                if (excludeTagsIDs.indexOf(tag.tag_id) === -1) {
+                    tagsWithNoLiveArticle.push(tag)
+                }
+            }
+
+            return tagsWithNoLiveArticle || []
+        } catch (error) {
+            console.log(error)
+            return Promise.reject('Error pruning articles ....')
+        } finally {
+            pgclient.release()
+        }
+    }
+
+    // async pgPruneWatchlists () {
+    //     const pgPool = getPool()
+    //     const pgclient = await pgPool.connect()
+
+    //     try {
+
+    //         // console.log(`
+    //         //     SELECT authors.author_id FROM authors
+    //         //     JOIN articles ON articles.author_id = authors.author_id 
+    //         //     WHERE articles.article_delete = true;
+    //         // `)
+
+    //         const allArticles =  await pgclient.query(`
+    //         SELECT articles.article_id
+    //         JOIN articles ON articles.article_id = watchlists_articles.article_id 
+    //         WHERE articles.article_delete = true;
+    //     `) 
+
+    //         const candidateWatchlists = await pgclient.query(`
+    //             SELECT watchlists_articles.watchlist_id FROM watchlists_articles
+    //             JOIN articles ON articles.article_id = watchlists_articles.article_id 
+    //             WHERE articles.article_delete = true;
+    //         `) 
+
+    //         const excludeTags = await pgclient.query(`
+    //             SELECT articles_tags.tag_id FROM articles_tags
+    //             JOIN articles ON articles.article_id = articles_tags.article_id 
+    //             WHERE articles.article_delete IS NULL OR articles.article_delete = false;
+    //         `) 
+
+    //         const excludeTagsIDs = (excludeTags.rows || []).map(row => row.tag_id)
+
+    //         const tagsWithNoLiveArticle = []
+
+    //         for (const tag of (candidateTags.rows || [])) {
+    //             if (excludeTagsIDs.indexOf(tag.tag_id) === -1) {
+    //                 tagsWithNoLiveArticle.push(tag)
+    //             }
+    //         }
+
+    //         return tagsWithNoLiveArticle || []
+    //     } catch (error) {
+    //         console.log(error)
+    //         return Promise.reject('Error pruning articles ....')
+    //     } finally {
+    //         pgclient.release()
+    //     }
+    // }
 }
 

@@ -40,7 +40,7 @@ import { TagDetailModalComponent } from '../widgets/modal/tagDetail'
 import { TagApiData } from '@/src/models/tag'
 import { AuthorDetailModalComponent } from '../widgets/modal/authorDetail'
 import { AuthorApiData } from '@/src/models/author'
-// import { useMeta } from '@/src/hooks'
+
 
 interface ArticleApiDataResult {
   recordsCount: number;
@@ -59,7 +59,6 @@ const sortOptions = [
 ]
 
 export const ArticlesScreenComponent = () => {
-
 
   const ctx = useContext(ApiParamsContext)
 

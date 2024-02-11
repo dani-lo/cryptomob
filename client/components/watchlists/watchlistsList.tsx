@@ -135,6 +135,7 @@ export const WatchlistsListComponent = ({ watchlists } : { watchlists: Watchlist
                                         text={ ellipsys(w.watchlist_name, 20) }
                                         icon={ faBinoculars }
                                         bgColor={ appStaticSettings.bg }
+                                        actionLink={ `/watchlists?watchlistId=${ w.watchlist_id }` }
                                     />
                                 </div>    
                             </td>

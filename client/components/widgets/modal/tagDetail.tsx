@@ -121,7 +121,7 @@ export const TagDetailModalComponent = ({
                     bgColor={ bg }
                 />
                 {/* <h4 className={ cnSectionSubTitle}>Added by: { tag.tag_origin === 'user' ? `User` : 'System' }</h4>  */}
-                <div className="flex  p-6">
+                <div className="flex  px-6">
                     <div style={{ width: '400px' }}>
                         <p className={ cnParagraph }>Add to Watchlist</p>
                         <Dropdown 
